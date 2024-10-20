@@ -1,7 +1,7 @@
 {
   "description": "Renovate configuration for managing Python dependencies, MkDocs, and style/linting tools.",
   "extends": ["config:base"],
-  "baseBranches": ["development"],
+  "baseBranches": ["develop"],
   "prHourlyLimit": 2,
   "automerge": false,
   "packageRules": [
