@@ -43,10 +43,10 @@ Properties")
 
 Email ==> Contact
 
-Person[("Person")]
-Organization[("Organization")]
-TLSCertificate[("Fingerprint")]
-Registration[("Registration")]
+Person["Person"]
+Organization["Organization"]
+TLSCertificate["Fingerprint"]
+Registration["Registration"]
 
 registrationEmail@{ shape: braces, label: "admin_email
 tech_email
