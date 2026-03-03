@@ -22,15 +22,23 @@ extra_css = ["stylesheets/extra.css"]
 
 nav = [
   { "Home" = "index.md" },
-  { "Installation" = "installation.md" },
-  { "CLI Reference" = [
-    { "Overview" = "cli/index.md" },
+  { "Getting Started" = [
+    { "Installation" = "installation.md" },
+    { "Deployment" = "deployment/index.md" },
+    { "Docker" = "deployment/docker.md" },
+    { "Configuration Best Practices" = "deployment/config-best-practices.md" },
+  ]},
+  { "Reference" = [
+    { "CLI Overview" = "cli/index.md" },
     { "enum" = "cli/enum.md" },
     { "engine" = "cli/engine.md" },
     { "subs" = "cli/subs.md" },
     { "assoc" = "cli/assoc.md" },
     { "track" = "cli/track.md" },
     { "viz" = "cli/viz.md" },
+    { "Configuration" = "configuration/index.md" },
+    { "Data Sources" = "configuration/data_sources.md" },
+    { "Transformations" = "configuration/transformations.md" },
   ]},
   { "Architecture" = [
     { "Overview" = "architecture/index.md" },
@@ -44,29 +52,13 @@ nav = [
     { "DNS Caching" = "architecture/dns-caching.md" },
     { "Network Mapping" = "architecture/network-mapping.md" },
     { "Data Model" = "architecture/data-model.md" },
-  ]},
-  { "Plugins" = [
-    { "Overview" = "plugins/index.md" },
+    { "Plugins" = "plugins/index.md" },
     { "DNS Discovery" = "plugins/dns-discovery.md" },
     { "API Integrations" = "plugins/api-integrations.md" },
     { "Service Discovery" = "plugins/service-discovery.md" },
     { "Enrichment" = "plugins/enrichment.md" },
   ]},
-  { "Configuration" = [
-    { "Configuration" = "configuration/index.md" },
-    { "Data Sources" = "configuration/data_sources.md" },
-    { "Transformations" = "configuration/transformations.md" },
-  ]},
-  { "Asset Database" = [
-    { "Asset Database" = "asset_db/index.md" },
-    { "PostgreSQL" = "asset_db/postgres.md" },
-    { "Triples" = "asset_db/triples.md" },
-    { "Getting Started" = "asset_db/getting-started.md" },
-    { "Caching" = "asset_db/caching.md" },
-    { "Migrations" = "asset_db/migrations.md" },
-    { "API Reference" = "asset_db/api-reference.md" },
-  ]},
-  { "Open Asset Model" = [
+  { "Data Model" = [
     { "Open Asset Model" = "open_asset_model/index.md" },
     { "Assets" = [
       { "Assets" = "open_asset_model/assets/index.md" },
@@ -109,11 +101,9 @@ nav = [
     ]},
     { "Implementation Guide" = "open_asset_model/implementation.md" },
     { "Use Cases & Examples" = "open_asset_model/use-cases.md" },
-  ]},
-  { "Deployment" = [
-    { "Overview" = "deployment/index.md" },
-    { "Docker" = "deployment/docker.md" },
-    { "Configuration Best Practices" = "deployment/config-best-practices.md" },
+    { "Asset Database" = "asset_db/index.md" },
+    { "PostgreSQL" = "asset_db/postgres.md" },
+    { "Triples" = "asset_db/triples.md" },
   ]},
   { "Contributing" = [
     { "Contributing" = "contributing/contributing.md" },
@@ -142,15 +132,11 @@ features = [
     "content.tooltips",
     "navigation.footer",
     "navigation.indexes",
-    "navigation.instant",
-    "navigation.instant.prefetch",
     "navigation.path",
     "navigation.sections",
     "navigation.tabs",
     "navigation.top",
-    "navigation.tracking",
     "search.highlight",
-    "toc.follow",
 ]
 
 [project.theme.icon]
