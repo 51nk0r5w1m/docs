@@ -225,3 +225,233 @@ Network Infrastructure:
 
 !!! warning "Legal Considerations"
     WHOIS queries and network reconnaissance may be subject to terms of service and legal restrictions. Ensure proper authorization before scanning.
+
+## Technical Deep Dive
+
+### Event-Driven Processing Model
+
+Every network asset discovery generates an **Event** — the fundamental unit of work that flows through the Amass engine.
+
+```mermaid
+graph LR
+    subgraph "Event Structure"
+        Event["et.Event"]
+        Event --> Name["Name: string<br/>'FQDN - example.com'"]
+        Event --> Entity["Entity: *dbt.Entity<br/>(wraps OAM Asset)"]
+        Event --> Meta["Meta: interface{}<br/>(optional metadata)"]
+        Event --> Dispatcher["Dispatcher: et.Dispatcher"]
+        Event --> Session["Session: et.Session"]
+    end
+
+    subgraph "Event Processing Wrapper"
+        EDE["et.EventDataElement"]
+        EDE --> EventRef["Event: *et.Event"]
+        EDE --> Error["Error: error"]
+        EDE --> Queue["Queue: chan *EventDataElement"]
+    end
+
+    Event -.wrapped in.-> EDE
+```
+
+### Complete Event Flow
+
+This diagram shows how a discovered network asset travels from creation through pipeline processing to completion:
+
+```mermaid
+graph TB
+    subgraph "1. Event Creation"
+        Input["User Input / Plugin Discovery"]
+        Input --> CreateEvent["Create et.Event"]
+        CreateEvent --> Event["Event{<br/>Name, Entity,<br/>Session, Dispatcher}"]
+    end
+
+    subgraph "2. Dispatch & Queue"
+        Event --> Dispatch["dispatcher.DispatchEvent()"]
+        Dispatch --> Validate{"Validate<br/>Event"}
+        Validate --> |Valid| CheckDup{"Already<br/>in Queue?"}
+        CheckDup --> |No| QAppend["session.Queue().Append()"]
+        QAppend --> QDB[("queue.db<br/>SQLite")]
+        QDB --> WaitFill["Wait for<br/>fillPipelineQueues()"]
+    end
+
+    subgraph "3. Pipeline Processing"
+        WaitFill --> GetNext["session.Queue().Next()"]
+        GetNext --> Wrap["Wrap in<br/>EventDataElement"]
+        Wrap --> APQueue["AssetPipeline.Queue"]
+        APQueue --> Pipeline["Pipeline Execution"]
+
+        Pipeline --> P1["Priority 1<br/>Handlers"]
+        P1 --> P2["Priority 2<br/>Handlers"]
+        P2 --> Pn["Priority N<br/>Handlers"]
+    end
+
+    subgraph "4. Handler Processing"
+        Pn --> Handler["Handler.Callback()"]
+        Handler --> CheckTrans["Check<br/>Transformations"]
+        CheckTrans --> |Allowed| Execute["Execute Logic"]
+        Execute --> NewEvents["Generate<br/>New Events?"]
+        NewEvents --> |Yes| Dispatch
+    end
+
+    subgraph "5. Completion"
+        Pn --> Sink["Pipeline Sink"]
+        Sink --> Complete["Completion Callback"]
+        Complete --> UpdateStats["Increment<br/>WorkItemsCompleted"]
+        Complete --> Mark["Mark Processed<br/>in Queue"]
+    end
+
+    CheckDup --> |Yes| Skip["Skip: Duplicate"]
+    Validate --> |Invalid| Reject["Reject"]
+```
+
+Key properties of this model:
+
+1. Events can generate new events recursively (discovery cascade)
+2. The session queue prevents duplicate processing
+3. Pipelines execute handlers in strict priority order
+4. Transformations filter which handlers execute for a given asset
+5. Completion callbacks track overall progress statistics
+
+### Handler Priority System
+
+Handlers registered by plugins execute in **priority order** from 1 (highest) to 9 (lowest). For network infrastructure mapping, this ordering ensures DNS resolution completes before IP enrichment, and IP enrichment completes before service probing:
+
+```mermaid
+graph LR
+    subgraph "Priority Levels"
+        P1["Priority 1<br/>DNS TXT Records<br/>(Org Discovery)"]
+        P2["Priority 2<br/>DNS CNAME<br/>(Alias Resolution)"]
+        P3["Priority 3<br/>DNS A/AAAA<br/>(IP Discovery)"]
+        P4["Priority 4<br/>DNS NS/MX/SRV<br/>(Subdomain Enum)"]
+        P5["Priority 5<br/>DNS Apex<br/>(Domain Hierarchy)"]
+        P6["Priority 6<br/>Company Search<br/>(API Queries)"]
+        P7["Priority 7<br/>Company Enrich<br/>(Funding/Employees)"]
+        P8["Priority 8<br/>DNS Reverse<br/>(PTR Lookups)"]
+        P9["Priority 9<br/>Service Discovery<br/>(HTTP/TLS Probes)"]
+    end
+
+    P1 --> P2 --> P3 --> P4 --> P5 --> P6 --> P7 --> P8 --> P9
+```
+
+DNS TXT records at priority 1 may reveal organization identifiers, enabling CNAME resolution (priority 2) which yields IP addresses (priority 3), ultimately enabling service discovery (priority 9).
+
+### Asset Pipeline Structure
+
+For each OAM asset type, the registry constructs a pipeline of all registered handlers for that type, ordered by priority:
+
+```mermaid
+graph TB
+    subgraph "Asset Pipeline for oam.FQDN"
+        Input["PipelineQueue<br/>et.PipelineQueue"]
+
+        Input --> Stage1["Priority 1 Stage<br/>DNS TXT Handler"]
+        Stage1 --> Stage2["Priority 2 Stage<br/>DNS CNAME Handler"]
+        Stage2 --> Stage3["Priority 3 Stage<br/>DNS A/AAAA Handler"]
+        Stage3 --> Stage4["Priority 4 Stage<br/>DNS NS/MX/SRV Handler"]
+        Stage4 --> Stage5["Priority 5 Stage<br/>DNS Apex Handler"]
+
+        Stage5 --> Sink["Sink<br/>Completion Callback"]
+    end
+
+    subgraph "Stage Types"
+        FIFO["FIFO<br/>(MaxInstances = 0)"]
+        FixedPool["FixedPool<br/>(MaxInstances > 0)"]
+        Parallel["Parallel<br/>(Multiple handlers<br/>same priority)"]
+    end
+```
+
+| Stage Type | When Used | Behavior |
+|------------|-----------|----------|
+| `FIFO` | Single handler, `MaxInstances = 0` | Serial processing, unlimited goroutines |
+| `FixedPool` | Single handler, `MaxInstances > 0` | Concurrent processing, limited pool |
+| `Parallel` | Multiple handlers, same priority | All handlers run concurrently |
+
+### Transformation Matching
+
+Transformation rules in `config.yaml` control which plugins are permitted to process which asset types. This is evaluated for every handler execution:
+
+```mermaid
+flowchart TD
+    Start["Handler Execution"]
+    Start --> HasTrans{"Transformations<br/>defined for<br/>asset type?"}
+
+    HasTrans --> |No| Execute["Execute Handler"]
+
+    HasTrans --> |Yes| AllExclude{"Is plugin in<br/>'all' exclude list?"}
+    AllExclude --> |Yes| Skip["Skip Handler"]
+
+    AllExclude --> |No| PluginMatch{"Is plugin<br/>explicitly<br/>listed in 'to'?"}
+    PluginMatch --> |Yes| Execute
+
+    PluginMatch --> |No| TransMatch{"Does plugin produce<br/>transformation<br/>in config?"}
+    TransMatch --> |Yes| Execute
+    TransMatch --> |No| Skip
+```
+
+Example transformation configuration:
+
+```yaml
+transformations:
+  - from: FQDN
+    to: all
+    exclude:
+      - dnsSubs
+  - from: IPAddress
+    to: dnsReverse
+```
+
+### OAM Asset Type Hierarchy
+
+Network assets discovered during mapping are represented using the Open Asset Model (OAM). The full hierarchy of asset types recognized by the engine:
+
+```mermaid
+graph TB
+    subgraph "Network Assets"
+        FQDN["oam.FQDN<br/>oamdns.FQDN{Name}"]
+        IP["oam.IPAddress<br/>oamnet.IPAddress{Address, Type}"]
+        Netblock["oam.Netblock<br/>oamnet.Netblock{CIDR, Type}"]
+        ASN["oam.AutonomousSystem<br/>oamnet.AutonomousSystem{Number}"]
+    end
+
+    subgraph "Organizational Assets"
+        Org["oam.Organization<br/>org.Organization{Name}"]
+        Contact["oam.ContactRecord<br/>contact.ContactRecord"]
+        Person["oam.Person<br/>people.Person{Name}"]
+        Location["oam.Location<br/>contact.Location{Address}"]
+    end
+
+    subgraph "Service Assets"
+        Service["oam.Service<br/>platform.Service{Port, Protocol}"]
+        TLS["oam.TLSCertificate<br/>oamcert.TLSCertificate"]
+        URL["oam.URL<br/>url.URL{Raw}"]
+    end
+
+    subgraph "Registration Assets"
+        Domain["oam.DomainRecord<br/>oamreg.DomainRecord"]
+        IPNet["oam.IPNetRecord<br/>oamreg.IPNetRecord"]
+        Autnum["oam.AutnumRecord<br/>oamreg.AutnumRecord"]
+    end
+```
+
+### Session Queue Schema
+
+Each enumeration session tracks work items in a dedicated SQLite-backed queue, preventing duplicate processing of discovered assets:
+
+```mermaid
+erDiagram
+    Element {
+        uint64 ID PK
+        time CreatedAt
+        time UpdatedAt
+        string Type "oam.AssetType"
+        string EntityID "dbt.Entity.ID"
+        bool Processed
+    }
+```
+
+| Method | Purpose |
+|--------|---------|
+| `Has(e)` | Check if entity is already queued |
+| `Append(e)` | Add entity to queue |
+| `Next(atype, num)` | Get next batch of unprocessed entities |
+| `Processed(e)` | Mark entity as processed |

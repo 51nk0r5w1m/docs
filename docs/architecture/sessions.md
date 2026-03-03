@@ -239,6 +239,275 @@ query {
 }
 ```
 
+## Technical Reference
+
+### Session Object
+
+The `Session` struct represents the state of an active engine enumeration. Each session is uniquely identified by a UUID and contains all necessary components to execute an independent enumeration operation.
+
+| Field | Type | Purpose |
+|-------|------|---------|
+| `id` | `uuid.UUID` | Unique identifier for the session |
+| `log` | `*slog.Logger` | Structured JSON logger for session events |
+| `ps` | `*pubsub.Logger` | Publish-subscribe logger for GraphQL subscriptions |
+| `cfg` | `*config.Config` | Session configuration including scope and transformations |
+| `scope` | `*scope.Scope` | Determines which assets are in-scope for enumeration |
+| `db` | `repository.Repository` | Primary database connection (SQLite, Postgres, or Neo4j) |
+| `cache` | `*cache.Cache` | Two-tier cache with temporary and persistent storage |
+| `queue` | `*sessionQueue` | Work queue backed by SQLite database |
+| `ranger` | `cidranger.Ranger` | CIDR range manager for IP address matching |
+| `tmpdir` | `string` | Temporary directory for session-specific files |
+| `stats` | `*et.SessionStats` | Work item counters (completed vs total) |
+| `done` | `chan struct{}` | Signals session termination |
+| `finished` | `bool` | Indicates if session has been terminated |
+
+**Session Component Architecture**
+
+```mermaid
+graph TB
+    subgraph Session["Session (session.go)"]
+        ID["id: uuid.UUID"]
+        Config["cfg: *config.Config"]
+        Scope["scope: *scope.Scope"]
+        Logger["log: *slog.Logger"]
+        PubSub["ps: *pubsub.Logger"]
+        Stats["stats: *SessionStats"]
+        Done["done: chan struct{}"]
+    end
+
+    subgraph Storage["Storage Layer"]
+        DB["db: repository.Repository<br/>(SQLite/Postgres/Neo4j)"]
+        Cache["cache: *cache.Cache<br/>(2-tier: temp + persistent)"]
+        Queue["queue: *sessionQueue<br/>(SQLite work queue)"]
+        TmpDir["tmpdir: string<br/>(session-UUID/)"]
+    end
+
+    subgraph Network["Network Utilities"]
+        Ranger["ranger: cidranger.Ranger<br/>(CIDR matching)"]
+    end
+
+    Session --> Storage
+    Session --> Network
+
+    Queue --> QueueDB["QueueDB<br/>queue.db (SQLite)"]
+    Cache --> CacheDB["Cache DB<br/>cache.db (SQLite)"]
+    TmpDir --> QueueDB
+    TmpDir --> CacheDB
+```
+
+### Session Creation Flow
+
+Sessions are created via the `CreateSession` function, which performs the following initialization sequence:
+
+1. **Configuration Validation**: Uses provided config or creates default
+2. **Session Object Creation**: Generates UUID, initializes scope, ranger, and stats
+3. **Database Setup**: Determines primary database from config and establishes connection
+4. **Temporary Directory**: Creates `session-{UUID}` directory in output path
+5. **Cache Initialization**: Creates file-based cache repository with 1-minute TTL
+6. **Queue Creation**: Initializes SQLite-backed work queue
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant CreateSession
+    participant Session
+    participant DB as "Database"
+    participant FS as "Filesystem"
+    participant Cache
+    participant Queue
+
+    Client->>CreateSession: CreateSession(cfg)
+    CreateSession->>Session: new Session{id: uuid.New()}
+    CreateSession->>Session: setupDB()
+    Session->>DB: selectDBMS() + assetdb.New()
+    DB-->>Session: repository.Repository
+    CreateSession->>FS: os.MkdirTemp("session-{UUID}")
+    FS-->>Session: tmpdir path
+    CreateSession->>Cache: cache.New(fileRepo, db, 1min)
+    Cache-->>Session: *cache.Cache
+    CreateSession->>Queue: newSessionQueue(session)
+    Queue-->>Session: *sessionQueue
+    CreateSession-->>Client: Session
+```
+
+### Database Selection
+
+The `selectDBMS` method determines which database to use based on the `GraphDBs` configuration. If no primary database is specified, SQLite is used by default.
+
+| System | DSN Format | Default Pragmas |
+|--------|-----------|-----------------|
+| **SQLite** | `{output_dir}/assetdb.db?_pragma=...` | `busy_timeout(30000)`, `journal_mode(WAL)` |
+| **Postgres** | `host={host} port={port} user={user} password={pass} dbname={db}` | None |
+| **Neo4j** | `{url}` (`bolt://` or `neo4j://`) | None |
+
+### Session Manager
+
+The `manager` struct is a singleton that manages the lifecycle of all active sessions. It provides thread-safe operations using a `sync.RWMutex` and maintains a map of session UUIDs to Session objects.
+
+```mermaid
+graph TB
+    subgraph Manager["manager (manager.go)"]
+        RWMutex["sync.RWMutex"]
+        Logger["logger: *slog.Logger"]
+        Sessions["sessions: map[uuid.UUID]et.Session"]
+    end
+
+    subgraph Operations["Operations"]
+        New["NewSession(cfg)<br/>→ CreateSession + AddSession"]
+        Add["AddSession(s)<br/>→ Lock + append to map"]
+        Cancel["CancelSession(id)<br/>→ Kill + cleanup"]
+        Get["GetSession(id)<br/>→ RLock + lookup"]
+        GetAll["GetSessions()<br/>→ RLock + collect all"]
+        Shutdown["Shutdown()<br/>→ CancelSession for all"]
+    end
+
+    subgraph Session1["Session 1"]
+        S1ID["UUID: abc-123"]
+        S1Queue["Queue"]
+        S1Cache["Cache"]
+        S1DB["DB"]
+    end
+
+    subgraph Session2["Session 2"]
+        S2ID["UUID: def-456"]
+        S2Queue["Queue"]
+        S2Cache["Cache"]
+        S2DB["DB"]
+    end
+
+    Manager --> Operations
+    Sessions --> Session1
+    Sessions --> Session2
+```
+
+### Session Termination
+
+The `CancelSession` method performs graceful termination:
+
+1. **Signal Termination**: Calls `s.Kill()` to close the `done` channel
+2. **Wait for Completion**: Polls session stats every 500ms until all work items are completed
+3. **Cleanup Resources**: Closes queue DB, cache, nullifies CIDR ranger, removes temp directory, closes primary DB
+4. **Remove from Map**: Deletes the session from the manager's map
+
+```mermaid
+sequenceDiagram
+    participant Manager
+    participant Session
+    participant Stats
+    participant Queue
+    participant Cache
+    participant DB
+    participant FS
+
+    Manager->>Session: Kill()
+    Session->>Session: close(done)
+    Session->>Session: finished = true
+
+    loop Every 500ms
+        Manager->>Stats: Lock() + check completed vs total
+        alt completed >= total
+            Stats-->>Manager: Exit loop
+        end
+    end
+
+    Manager->>Queue: Close()
+    Manager->>Cache: Close()
+    Manager->>Session: ranger = nil
+    Manager->>FS: os.RemoveAll(tmpdir)
+    Manager->>DB: Close()
+    Manager->>Manager: delete(sessions, id)
+```
+
+### Queue Operations Detail
+
+**Work Queue Flow**
+
+```mermaid
+graph LR
+    subgraph Dispatcher["Dispatcher"]
+        DispatchEvent["DispatchEvent(e)"]
+    end
+
+    subgraph SessionQueue["sessionQueue"]
+        Has["Has(e) → db.Has(e.ID)"]
+        Append["Append(e) → db.Append(type, id)"]
+        Next["Next(type, num) → db.Next()<br/>+ cache.FindEntityById()"]
+        Processed["Processed(e) → db.Processed(id)"]
+    end
+
+    subgraph QueueDB["QueueDB (SQLite)"]
+        Insert["INSERT Element<br/>{Type, EntityID, Processed=false}"]
+        Select["SELECT * WHERE<br/>etype=? AND processed=false<br/>ORDER BY created_at LIMIT ?"]
+        Update["UPDATE processed=true<br/>WHERE entity_id=?"]
+    end
+
+    subgraph Cache["Session Cache"]
+        Find["FindEntityById(id)<br/>→ *dbt.Entity"]
+    end
+
+    DispatchEvent -->|"1. Check duplicate"| Has
+    Has --> QueueDB
+    DispatchEvent -->|"2. Schedule"| Append
+    Append --> Insert
+
+    Dispatcher -->|"3. Fill pipelines"| Next
+    Next --> Select
+    Next --> Find
+
+    Dispatcher -->|"4. Mark done"| Processed
+    Processed --> Update
+```
+
+### GraphQL Client/Server Architecture
+
+Sessions are exposed via a GraphQL API that enables remote enumeration control. The API follows a client-server architecture where `amass enum` acts as a client and `amass engine` runs the server.
+
+```mermaid
+graph TB
+    subgraph Client["Client (client.go)"]
+        CreateSess["CreateSession(cfg)<br/>→ createSessionFromJson mutation"]
+        CreateAsset["CreateAsset(asset, token)<br/>→ createAsset mutation"]
+        TermSess["TerminateSession(token)<br/>→ terminateSession mutation"]
+        GetStats["SessionStats(token)<br/>→ sessionStats query"]
+        Subscribe["Subscribe(token)<br/>→ logMessages subscription"]
+    end
+
+    subgraph Server["Server Resolvers (schema.resolvers.go)"]
+        ResolvCreate["CreateSessionFromJSON<br/>(input.config)"]
+        ResolvAsset["CreateAsset<br/>(input.sessionToken, data)"]
+        ResolvTerm["TerminateSession<br/>(sessionToken)"]
+        ResolvStats["SessionStats<br/>(sessionToken)"]
+        ResolvLogs["LogMessages<br/>(sessionToken)"]
+    end
+
+    subgraph SessionMgr["SessionManager"]
+        NewSession["NewSession(cfg)"]
+        GetSession["GetSession(token)"]
+        CancelSession["CancelSession(token)"]
+    end
+
+    subgraph DispatcherNode["Dispatcher"]
+        DispatchEvent["DispatchEvent(event)"]
+    end
+
+    CreateSess -->|HTTP POST| ResolvCreate
+    ResolvCreate --> NewSession
+    NewSession -->|Return token| Client
+
+    CreateAsset -->|HTTP POST| ResolvAsset
+    ResolvAsset --> GetSession
+    ResolvAsset --> DispatchEvent
+
+    TermSess -->|HTTP POST| ResolvTerm
+    ResolvTerm --> CancelSession
+
+    GetStats -->|HTTP POST| ResolvStats
+    ResolvStats --> GetSession
+
+    Subscribe -->|WebSocket| ResolvLogs
+    ResolvLogs --> GetSession
+```
+
 ## Best Practices
 
 !!! tip "Session Management"

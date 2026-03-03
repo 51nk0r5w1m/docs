@@ -301,3 +301,173 @@ func (p *MyPlugin) Start(r *engine.Registry) error {
     - Lower priorities run first and should handle foundational discovery
     - Higher priorities should focus on enrichment and validation
     - Avoid priority conflicts between related handlers
+
+## Technical Reference
+
+### Plugin Instantiation Structure
+
+```mermaid
+graph TB
+    PluginFunc["Plugin Constructor<br/>NewDNS(), NewAviato(), etc."]
+    PluginInstance["et.Plugin Instance<br/>&dnsPlugin{}"]
+    PluginFields["Plugin Fields<br/>• name: string<br/>• log: *slog.Logger<br/>• source: *et.Source<br/>• handler instances"]
+    Registry["et.Registry"]
+    StartMethod["Start(r et.Registry) error"]
+    
+    PluginFunc -->|"returns"| PluginInstance
+    PluginInstance -->|"contains"| PluginFields
+    Registry -->|"passed to"| StartMethod
+    PluginInstance -->|"implements"| StartMethod
+    
+    HandlerReg["r.RegisterHandler(&et.Handler{...})"]
+    StartMethod -->|"calls"| HandlerReg
+```
+
+### Handler Registration Structure
+
+```mermaid
+graph LR
+    Handler["et.Handler struct"]
+    Plugin["Plugin: et.Plugin"]
+    Name["Name: string"]
+    Priority["Priority: int<br/>1-9 (lower=higher)"]
+    MaxInstances["MaxInstances: int<br/>Concurrency limit"]
+    Transforms["Transforms: []string<br/>Asset types produced"]
+    EventType["EventType: oam.AssetType<br/>Trigger asset type"]
+    Callback["Callback: func(*et.Event) error<br/>Processing function"]
+    
+    Handler --> Plugin
+    Handler --> Name
+    Handler --> Priority
+    Handler --> MaxInstances
+    Handler --> Transforms
+    Handler --> EventType
+    Handler --> Callback
+```
+
+### DNS Plugin Handler Details
+
+The DNS plugin registers six handlers in its `Start()` method, each with a specific priority and callback:
+
+| Handler Name | Priority | EventType | Transforms | Callback | Purpose |
+|--------------|----------|-----------|------------|----------|---------|
+| DNS-TXT | 1 | `oam.FQDN` | `["FQDN"]` | `dnsTXT.check` | Extract organization IDs from TXT records |
+| DNS-CNAME | 2 | `oam.FQDN` | `["FQDN"]` | `dnsCNAME.check` | Resolve CNAME aliases |
+| DNS-IP | 3 | `oam.FQDN` | `["IPAddress"]` | `dnsIP.check` | Resolve A/AAAA records to IPs |
+| DNS-Subdomains | 4 | `oam.FQDN` | `["FQDN"]` | `dnsSubs.check` | Enumerate NS/MX/SRV records |
+| DNS-Apex | 5 | `oam.FQDN` | `["FQDN"]` | `dnsApex.check` | Build domain hierarchy |
+| DNS-Reverse | 8 | `oam.IPAddress` | `["FQDN"]` | `dnsReverse.check` | PTR lookups for IPs |
+
+### Priority Assignment Rationale
+
+```mermaid
+graph TD
+    P1["Priority 1: DNS-TXT<br/>Extract organization data<br/>from verification records"]
+    P2["Priority 2: DNS-CNAME<br/>Resolve aliases before<br/>IP resolution"]
+    P3["Priority 3: DNS-IP<br/>A/AAAA records to IPs<br/>Foundation for other lookups"]
+    P4["Priority 4: DNS-Subdomains<br/>NS/MX/SRV enumeration<br/>Expands FQDN scope"]
+    P5["Priority 5: DNS-Apex<br/>Build domain tree<br/>Establish hierarchy"]
+    P6["Priority 6-7: API Enrichment<br/>GLEIF, Company searches"]
+    P8["Priority 8: DNS-Reverse<br/>PTR lookups<br/>Requires IP resolution"]
+    P9["Priority 9: Service Discovery<br/>Active probing<br/>HTTP/TLS/JARM"]
+    
+    P1 --> P2
+    P2 --> P3
+    P3 --> P4
+    P4 --> P5
+    P5 --> P6
+    P6 --> P8
+    P8 --> P9
+    
+    style P1 fill:#f9f9f9
+    style P2 fill:#f9f9f9
+    style P3 fill:#f9f9f9
+    style P9 fill:#f9f9f9
+```
+
+### Plugin Loading and Initialization
+
+```mermaid
+sequenceDiagram
+    participant Load as LoadAndStartPlugins()
+    participant Funcs as pluginNewFuncs[]
+    participant Plugin as et.Plugin
+    participant Registry as et.Registry
+    participant Handler as Handler Callback
+    
+    Load->>Funcs: Iterate constructor functions
+    Funcs->>Plugin: Call NewDNS(), NewAviato(), etc.
+    Plugin->>Plugin: Initialize fields<br/>(name, source, log)
+    Load->>Plugin: Call Start(registry)
+    Plugin->>Registry: RegisterHandler(&et.Handler{...})
+    Registry->>Registry: Add to pipeline<br/>by priority
+    Note over Plugin: Plugin started,<br/>handlers registered
+    
+    Note over Registry,Handler: During execution...
+    Registry->>Handler: Invoke callback(event)
+    Handler->>Handler: Execute check() logic
+```
+
+The loading process iterates through the `pluginNewFuncs` array, instantiates each plugin, and calls `Start()`. If any plugin fails to start, all previously started plugins are stopped to ensure a clean state.
+
+**Plugin Constructor Pattern:**
+
+All plugins follow a consistent constructor pattern:
+
+1. Return a struct that implements `et.Plugin`
+2. Initialize the plugin's `name` field
+3. Create an `et.Source` struct with name and confidence score
+4. Initialize any plugin-specific fields (handlers, state)
+
+### Handler Callback Pattern
+
+Handler callbacks follow a consistent four-phase pattern: **check → lookup → query → store → process**. This pattern ensures efficient TTL-based caching and clean separation of concerns.
+
+```mermaid
+graph TD
+    Entry["check(e *et.Event) error"]
+    ExtractAsset["Extract asset from e.Entity<br/>Type assertion to expected type"]
+    CheckTTL["TTLStartTime()<br/>Calculate TTL window"]
+    MonitoredCheck["AssetMonitoredWithinTTL()<br/>Check if recently queried"]
+    
+    Lookup["lookup(e, since)<br/>Query cache for existing data"]
+    Query["query(e)<br/>Perform DNS/API query"]
+    Store["store(e, results)<br/>Save to cache with edges"]
+    MarkMonitored["MarkAssetMonitored()<br/>Record query timestamp"]
+    
+    Process["process(e, results)<br/>Dispatch new events"]
+    Return["return nil or error"]
+    
+    Entry --> ExtractAsset
+    ExtractAsset --> CheckTTL
+    CheckTTL --> MonitoredCheck
+    
+    MonitoredCheck -->|"Within TTL"| Lookup
+    MonitoredCheck -->|"Expired/Never"| Query
+    
+    Query --> Store
+    Store --> MarkMonitored
+    
+    Lookup --> Process
+    MarkMonitored --> Process
+    Process --> Return
+```
+
+**Phase Breakdown:**
+
+1. **Check**: Entry point, validates event and calculates TTL window
+2. **Lookup**: Retrieves cached data if available within TTL
+3. **Query**: Performs actual DNS/API queries if cache miss or TTL expired
+4. **Store**: Persists results to session cache with appropriate edges/properties
+5. **Process**: Dispatches new events to trigger cascading discovery
+
+**Example: DNS TXT Handler Implementation**
+
+```
+dnsTXT.check(e *et.Event):
+    1. Extract FQDN from e.Entity.Asset
+    2. Calculate TTL start time for "FQDN" → "FQDN" (DNS plugin)
+    3. If AssetMonitoredWithinTTL: call lookup()
+    4. Else: call query() and store()
+    5. If results found: call process() to dispatch organization events
+```

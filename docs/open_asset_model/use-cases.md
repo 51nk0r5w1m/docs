@@ -1,0 +1,416 @@
+# Use Cases & Examples
+
+This page demonstrates practical usage scenarios for the Open Asset Model. It covers asset creation, relationship validation, data serialization, and integration patterns with discovery tools like OWASP Amass. These examples illustrate how the model serves as a specification for building asset graphs with enforced integrity constraints.
+
+---
+
+## Asset Creation and Validation
+
+The primary workflow involves creating asset instances that implement the `Asset` interface. Each asset must provide three methods: `Key()` for unique identification, `AssetType()` for type classification, and `JSON()` for serialization.
+
+### Asset Type Classification
+
+The model defines 21 asset type constants that enable type-safe routing and validation. When an asset is created, its `AssetType()` method returns one of these constants, allowing validation functions to query the relationship taxonomy.
+
+| Asset Category | Types | Use Case |
+|----------------|-------|----------|
+| Network Infrastructure | FQDN, IPAddress, Netblock, AutonomousSystem | Internet reconnaissance |
+| Organizational | Organization, Person, Location, Phone, ContactRecord | Entity attribution |
+| Digital Artifacts | File, URL, Service, TLSCertificate | Web infrastructure |
+| Registration Records | DomainRecord, AutnumRecord, IPNetRecord | WHOIS/RDAP data |
+| Financial | Account, FundsTransfer | Transaction tracking |
+| Identity | Identifier | Universal identifiers (LEI, DUNS, etc.) |
+| Product | Product, ProductRelease | Technology inventory |
+
+### Workflow: Creating and Identifying Assets
+
+```mermaid
+graph TD
+    Start["Discovery Tool Creates Asset"]
+    Instantiate["Instantiate Concrete Type<br/>(e.g., File, FQDN, IPAddress)"]
+    SetFields["Set Required Fields<br/>(URL, Name, Type, etc.)"]
+    GetKey["Call Key() Method"]
+    KeyReturned["Unique Key String Returned"]
+    GetType["Call AssetType() Method"]
+    TypeReturned["AssetType Constant Returned<br/>(e.g., model.FQDN)"]
+    Store["Store in Asset Graph/Database"]
+
+    Start --> Instantiate
+    Instantiate --> SetFields
+    SetFields --> GetKey
+    GetKey --> KeyReturned
+    KeyReturned --> GetType
+    GetType --> TypeReturned
+    TypeReturned --> Store
+```
+
+---
+
+## Relationship Validation Workflows
+
+The relationship system enforces which connections are valid between asset types through the `ValidRelationship` function. This prevents invalid graph edges from being created.
+
+### Core Validation Functions
+
+Three primary functions enable relationship validation and discovery:
+
+| Function | Parameters | Return Value | Use Case |
+|----------|-----------|--------------|----------|
+| `GetAssetOutgoingRelations` | `subject AssetType` | `[]string` (labels) | Discover valid outgoing labels for asset type |
+| `GetTransformAssetTypes` | `subject AssetType, label string, rtype RelationType` | `[]AssetType` | Get valid destination types for specific relationship |
+| `ValidRelationship` | `src AssetType, label string, rtype RelationType, destination AssetType` | `bool` | Validate specific relationship instance |
+
+### Relationship Validation Decision Tree
+
+```mermaid
+graph TD
+    Start["Validate Relationship Request"]
+    CallValid["ValidRelationship(src, label, rtype, dest)"]
+    CallTransform["GetTransformAssetTypes(src, label, rtype)"]
+    LookupRelations["assetTypeRelations(src)"]
+    CheckExists["relations[label][rtype] exists?"]
+    GetTypes["Extract []AssetType from map"]
+    CheckDest["destination in []AssetType?"]
+    ReturnTrue["Return true"]
+    ReturnFalse["Return false"]
+
+    Start --> CallValid
+    CallValid --> CallTransform
+    CallTransform --> LookupRelations
+    LookupRelations --> CheckExists
+    CheckExists -->|No| ReturnFalse
+    CheckExists -->|Yes| GetTypes
+    GetTypes --> CheckDest
+    CheckDest -->|Yes| ReturnTrue
+    CheckDest -->|No| ReturnFalse
+```
+
+---
+
+## DNS Resolution Example
+
+This example demonstrates a complete workflow for validating DNS A record relationships between FQDN and IPAddress assets.
+
+### DNS A Record Validation Workflow
+
+```mermaid
+sequenceDiagram
+    participant Tool as "Discovery Tool"
+    participant API as "Validation API"
+    participant Taxonomy as "fqdnRels Map"
+
+    Tool->>Tool: "Resolve owasp.org DNS A record"
+    Tool->>Tool: "Found IP: 104.21.34.12"
+
+    Note over Tool: "Create Asset Instances"
+    Tool->>Tool: "fqdn = FQDN{Name: 'owasp.org'}"
+    Tool->>Tool: "ip = IPAddress{Address: '104.21.34.12'}"
+
+    Note over Tool: "Validate Before Storing"
+    Tool->>API: "ValidRelationship(FQDN, 'dns_record', BasicDNSRelation, IPAddress)"
+    API->>Taxonomy: "assetTypeRelations(FQDN)"
+    Taxonomy-->>API: "fqdnRels map"
+    API->>Taxonomy: "fqdnRels['dns_record'][BasicDNSRelation]"
+    Taxonomy-->>API: "[FQDN, IPAddress]"
+    API->>API: "IPAddress in [FQDN, IPAddress]?"
+    API-->>Tool: "true"
+
+    Tool->>Tool: "Store relationship: owasp.org --dns_record(A)--> 104.21.34.12"
+```
+
+!!! info "Invalid relationship example"
+    Attempting `ValidRelationship(FQDN, "dns_record", BasicDNSRelation, Organization)` returns `false` because `Organization` is not in the `fqdnRels["dns_record"][BasicDNSRelation]` allowed types (`[FQDN, IPAddress]`).
+
+---
+
+## Data Serialization and Transport
+
+All assets implement the `JSON()` method for serialization, enabling data exchange between discovery tools and storage systems.
+
+```mermaid
+graph LR
+    Discovery["Discovery Tool<br/>(OWASP Amass)"]
+    Asset["Asset Instance<br/>(FQDN, IPAddress, etc.)"]
+    JSON["JSON Bytes"]
+    Transport["Network/File Transport"]
+    Store["Storage System<br/>(Database, Graph DB)"]
+    Consumer["Consumer Tool<br/>(Visualization, Analysis)"]
+
+    Discovery --> Asset
+    Asset -->|"JSON()"| JSON
+    JSON --> Transport
+    Transport --> Store
+    Store --> Consumer
+```
+
+---
+
+## Multi-Asset Discovery Pipeline
+
+This example shows a complete discovery pipeline that validates relationships as assets are discovered.
+
+```mermaid
+flowchart TD
+    Start["Start: Seed Domain 'example.com'"]
+    CreateFQDN["Create FQDN Asset<br/>fqdn.Name = 'example.com'"]
+    QueryOutgoing["GetAssetOutgoingRelations(FQDN)"]
+    OutgoingLabels["Returns: ['port', 'dns_record', 'node', 'registration']"]
+
+    DNSLookup["Perform DNS Lookup"]
+    FoundIP["Found: 93.184.216.34"]
+    CreateIP["Create IPAddress Asset<br/>ip.Address = '93.184.216.34'"]
+
+    ValidateRel["ValidRelationship(FQDN, 'dns_record',<br/>BasicDNSRelation, IPAddress)"]
+    IsValid{"Valid?"}
+    StoreRel["Store Relationship:<br/>example.com --dns_record--> 93.184.216.34"]
+    SkipRel["Skip Invalid Relationship<br/>Log Error"]
+
+    CheckMore{"More DNS<br/>records?"}
+    FoundMX["Found MX: mail.example.com"]
+    CreateMXFQDN["Create FQDN Asset<br/>mx.Name = 'mail.example.com'"]
+    ValidateMX["ValidRelationship(FQDN, 'dns_record',<br/>PrefDNSRelation, FQDN)"]
+    StoreMX["Store MX Relationship"]
+
+    Serialize["Serialize All Assets to JSON"]
+    Persist["Persist to Database/Graph"]
+
+    Start --> CreateFQDN
+    CreateFQDN --> QueryOutgoing
+    QueryOutgoing --> OutgoingLabels
+    OutgoingLabels --> DNSLookup
+    DNSLookup --> FoundIP
+    FoundIP --> CreateIP
+    CreateIP --> ValidateRel
+    ValidateRel --> IsValid
+    IsValid -->|true| StoreRel
+    IsValid -->|false| SkipRel
+    StoreRel --> CheckMore
+    SkipRel --> CheckMore
+    CheckMore -->|Yes| FoundMX
+    CheckMore -->|No| Serialize
+    FoundMX --> CreateMXFQDN
+    CreateMXFQDN --> ValidateMX
+    ValidateMX --> StoreMX
+    StoreMX --> CheckMore
+    Serialize --> Persist
+```
+
+### Discovery Statistics Example
+
+| Metric | Count |
+|--------|-------|
+| Assets Created | 847 |
+| FQDN Assets | 312 |
+| IPAddress Assets | 156 |
+| Relationships Validated | 1,203 |
+| Valid Relationships Stored | 1,189 |
+| Invalid Relationships Rejected | 14 |
+
+---
+
+## WHOIS / Registration Data Integration
+
+The model supports comprehensive WHOIS/RDAP data through registration record assets and contact records.
+
+```mermaid
+graph TB
+    Domain["FQDN Asset<br/>'example.com'"]
+    Registration["DomainRecord Asset<br/>Created/Updated/Expiry Dates"]
+    Registrar["ContactRecord<br/>(Registrar Contact)"]
+    Admin["ContactRecord<br/>(Admin Contact)"]
+    Tech["ContactRecord<br/>(Technical Contact)"]
+    Org["Organization Asset<br/>'Example Corp'"]
+    Person["Person Asset<br/>'John Doe'"]
+    Location["Location Asset<br/>'123 Main St, City, State'"]
+    Phone["Phone Asset<br/>'+1-555-0123'"]
+    NS1["FQDN Asset<br/>'ns1.example.com'"]
+    NS2["FQDN Asset<br/>'ns2.example.com'"]
+
+    Domain -->|"registration<br/>(SimpleRelation)"| Registration
+    Registration -->|"registrar_contact<br/>(SimpleRelation)"| Registrar
+    Registration -->|"admin_contact<br/>(SimpleRelation)"| Admin
+    Registration -->|"technical_contact<br/>(SimpleRelation)"| Tech
+    Registration -->|"name_server<br/>(SimpleRelation)"| NS1
+    Registration -->|"name_server<br/>(SimpleRelation)"| NS2
+
+    Admin -->|"organization<br/>(SimpleRelation)"| Org
+    Admin -->|"person<br/>(SimpleRelation)"| Person
+    Admin -->|"location<br/>(SimpleRelation)"| Location
+    Admin -->|"phone<br/>(SimpleRelation)"| Phone
+```
+
+### WHOIS Relationship Taxonomy
+
+Valid relationships for `DomainRecord` assets:
+
+| Label | RelationType | Destination AssetType |
+|-------|--------------|----------------------|
+| `name_server` | SimpleRelation | FQDN |
+| `whois_server` | SimpleRelation | FQDN |
+| `registrar_contact` | SimpleRelation | ContactRecord |
+| `registrant_contact` | SimpleRelation | ContactRecord |
+| `admin_contact` | SimpleRelation | ContactRecord |
+| `technical_contact` | SimpleRelation | ContactRecord |
+| `billing_contact` | SimpleRelation | ContactRecord |
+
+---
+
+## TLS Certificate Discovery
+
+Certificate discovery creates interconnected asset graphs spanning multiple domains, organizations, and IP addresses.
+
+```mermaid
+sequenceDiagram
+    participant Scanner as "TLS Scanner"
+    participant IP as "IPAddress Asset"
+    participant Service as "Service Asset"
+    participant Cert as "TLSCertificate Asset"
+    participant FQDN as "FQDN Assets"
+    participant Org as "Organization Asset"
+    participant Validator as "ValidRelationship"
+
+    Scanner->>IP: "Scan 104.21.34.12:443"
+    Scanner->>Service: "Create Service{Port: 443, Protocol: 'TCP'}"
+    Scanner->>Validator: "ValidRelationship(IPAddress, 'port', PortRelation, Service)"
+    Validator-->>Scanner: "true"
+    Scanner->>Scanner: "Store: IP --port--> Service"
+
+    Scanner->>Cert: "Extract TLS Certificate"
+    Scanner->>Cert: "TLSCertificate{CommonName: '*.owasp.org', ...}"
+    Scanner->>Validator: "ValidRelationship(Service, 'certificate', SimpleRelation, TLSCertificate)"
+    Validator-->>Scanner: "true"
+    Scanner->>Scanner: "Store: Service --certificate--> Cert"
+
+    Scanner->>FQDN: "Create FQDN{Name: '*.owasp.org'}"
+    Scanner->>Validator: "ValidRelationship(TLSCertificate, 'common_name', SimpleRelation, FQDN)"
+    Validator-->>Scanner: "true"
+    Scanner->>Scanner: "Store: Cert --common_name--> FQDN"
+
+    Scanner->>FQDN: "Create FQDN{Name: 'owasp.org'} (SAN)"
+    Scanner->>Validator: "ValidRelationship(TLSCertificate, 'san_dns_name', SimpleRelation, FQDN)"
+    Validator-->>Scanner: "true"
+    Scanner->>Scanner: "Store: Cert --san_dns_name--> FQDN"
+
+    Scanner->>Org: "Create Organization{OrgName: 'OWASP Foundation'}"
+    Scanner->>Validator: "ValidRelationship(TLSCertificate, 'subject_contact', SimpleRelation, ContactRecord)"
+    Validator-->>Scanner: "true (via ContactRecord)"
+    Scanner->>Scanner: "Store: Cert --subject_contact--> ContactRecord --organization--> Org"
+```
+
+### Certificate Relationship Taxonomy
+
+`TLSCertificate` supports 10 outgoing relationship labels:
+
+| Label | Destination Types | Example |
+|-------|------------------|---------|
+| `common_name` | FQDN | `*.example.com` |
+| `san_dns_name` | FQDN | `www.example.com`, `api.example.com` |
+| `san_email_address` | Identifier | `admin@example.com` |
+| `san_ip_address` | IPAddress | `192.0.2.1` |
+| `san_url` | URL | `https://example.com` |
+| `subject_contact` | ContactRecord | Subject organization details |
+| `issuer_contact` | ContactRecord | CA organization details |
+| `issuing_certificate` | TLSCertificate | Parent certificate in chain |
+| `issuing_certificate_url` | URL | CA certificate URL |
+| `ocsp_server` | URL | OCSP responder endpoint |
+
+---
+
+## Integration with OWASP Amass
+
+OWASP Amass uses the Open Asset Model as its internal data structure and export format.
+
+```mermaid
+graph TB
+    subgraph "OWASP Amass"
+        Seeds["Seed Domains<br/>(Configuration)"]
+        Enum["Enumeration Engine"]
+        Sources["Data Sources<br/>(DNS, APIs, Web Scraping)"]
+    end
+
+    subgraph "Open Asset Model Integration"
+        CreateAssets["Asset Factory<br/>Creates FQDN, IPAddress, etc."]
+        Validate["ValidRelationship<br/>Checks Taxonomy"]
+        Store["Asset Graph<br/>(In-Memory/Database)"]
+    end
+
+    subgraph "Outputs"
+        JSON["JSON Export<br/>asset.JSON()"]
+        Graph["Graph Export<br/>(Neo4j, etc.)"]
+        Report["Text Reports"]
+    end
+
+    Seeds --> Enum
+    Enum --> Sources
+    Sources --> CreateAssets
+    CreateAssets --> Validate
+    Validate -->|"Valid"| Store
+    Validate -->|"Invalid"| CreateAssets
+    Store --> JSON
+    Store --> Graph
+    Store --> Report
+```
+
+---
+
+## Common Patterns and Anti-Patterns
+
+### ✅ Pattern: Query Before Creating Relationships
+
+```
+1. Create source asset (e.g., FQDN)
+2. Call GetAssetOutgoingRelations(FQDN) to discover valid labels
+3. For each label, call GetTransformAssetTypes(FQDN, label, rtype)
+4. Create destination assets only if types match expected discovery
+5. Validate with ValidRelationship before storing
+```
+
+### ✅ Pattern: Interface Compliance Testing
+
+```go
+func TestAssetInterface(t *testing.T) {
+    var _ model.Asset = File{}       // Value receiver check
+    var _ model.Asset = (*File)(nil) // Pointer receiver check
+}
+```
+
+### ✅ Pattern: Batch Validation
+
+```
+1. Collect discovered relationships in memory
+2. Batch validate using ValidRelationship
+3. Filter invalid relationships (log for debugging)
+4. Bulk insert valid relationships to storage
+5. Generate validation statistics
+```
+
+### ✅ Pattern: Relationship Label Discovery
+
+```
+// Given an Organization asset, discover what relationships can be created:
+
+labels := GetAssetOutgoingRelations(Organization)
+// Returns: ["id", "location", "parent", "subsidiary", "sister",
+//           "account", "website", "social_media_profile", "funding_source"]
+
+// For each label, query valid destination types:
+destTypes := GetTransformAssetTypes(Organization, "location", SimpleRelation)
+// Returns: [Location]
+```
+
+### ❌ Anti-Pattern: Skipping Validation
+
+!!! danger "Never skip validation"
+    Assuming a relationship is valid and storing directly to the database creates invalid graph structures that break queries and analysis.
+
+---
+
+## Summary
+
+| Use Case | Primary Functions | Output |
+|----------|------------------|--------|
+| Asset Creation | `Key()`, `AssetType()`, `JSON()` | Unique, typed, serializable assets |
+| Relationship Validation | `ValidRelationship()` | Boolean validation result |
+| Discovery Planning | `GetAssetOutgoingRelations()`, `GetTransformAssetTypes()` | Valid labels and destination types |
+| Data Transport | `JSON()` | Portable asset data |
+| Graph Construction | All validation functions + storage | Valid, queryable asset graph |
