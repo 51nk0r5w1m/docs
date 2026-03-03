@@ -60,6 +60,10 @@ nav = [
     { "Asset Database" = "asset_db/index.md" },
     { "PostgreSQL" = "asset_db/postgres.md" },
     { "Triples" = "asset_db/triples.md" },
+    { "Getting Started" = "asset_db/getting-started.md" },
+    { "Caching" = "asset_db/caching.md" },
+    { "Migrations" = "asset_db/migrations.md" },
+    { "API Reference" = "asset_db/api-reference.md" },
   ]},
   { "Open Asset Model" = [
     { "Open Asset Model" = "open_asset_model/index.md" },
