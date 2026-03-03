@@ -114,11 +114,11 @@ The `priority` value is a **relative score (1–10)** that can help inform which
 
 ## :material-clipboard-list-outline: Tips and Best Practices
 
-* ✅ Use `->ALL` to simplify enabling all known transformations for an asset type.
-* ✅ Use higher TTLs (e.g., 30+ days) for records that rarely change (e.g., `RDAP`, `GLEIF`, `DomainRecord`).
-* ⚠️ Keep `ttl` low (e.g., 60–1440 min) for time-sensitive records like DNS, services, or IP geolocation.
-* ✅ Set `confidence` thresholds higher (e.g., 70–90) in production pipelines where trust is critical.
-* ✅ Consider adjusting `priority` for critical infrastructure or high-value assets.
+- Use `->ALL` to simplify enabling all known transformations for an asset type.
+- Use higher TTLs (e.g., 30+ days) for records that rarely change (e.g., `RDAP`, `GLEIF`, `DomainRecord`).
+- Keep `ttl` low (e.g., 60–1440 min) for time-sensitive records like DNS, services, or IP geolocation.
+- Set `confidence` thresholds higher (e.g., 70–90) in production pipelines where trust is critical.
+- Consider adjusting `priority` for critical infrastructure or high-value assets.
 
 ## :material-rocket-launch: Summary
 

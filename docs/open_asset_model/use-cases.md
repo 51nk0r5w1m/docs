@@ -355,7 +355,7 @@ graph TB
 
 ## Common Patterns and Anti-Patterns
 
-### ✅ Pattern: Query Before Creating Relationships
+### Pattern: Query Before Creating Relationships
 
 ```
 1. Create source asset (e.g., FQDN)
@@ -365,7 +365,7 @@ graph TB
 5. Validate with ValidRelationship before storing
 ```
 
-### ✅ Pattern: Interface Compliance Testing
+### Pattern: Interface Compliance Testing
 
 ```go
 func TestAssetInterface(t *testing.T) {
@@ -374,7 +374,7 @@ func TestAssetInterface(t *testing.T) {
 }
 ```
 
-### ✅ Pattern: Batch Validation
+### Pattern: Batch Validation
 
 ```
 1. Collect discovered relationships in memory
@@ -384,7 +384,7 @@ func TestAssetInterface(t *testing.T) {
 5. Generate validation statistics
 ```
 
-### ✅ Pattern: Relationship Label Discovery
+### Pattern: Relationship Label Discovery
 
 ```
 // Given an Organization asset, discover what relationships can be created:
@@ -398,7 +398,7 @@ destTypes := GetTransformAssetTypes(Organization, "location", SimpleRelation)
 // Returns: [Location]
 ```
 
-### ❌ Anti-Pattern: Skipping Validation
+### Anti-Pattern: Skipping Validation
 
 !!! danger "Never skip validation"
     Assuming a relationship is valid and storing directly to the database creates invalid graph structures that break queries and analysis.
