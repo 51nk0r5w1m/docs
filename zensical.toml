@@ -26,16 +26,18 @@ nav = [
     { "Installation" = "installation.md" },
     { "Deployment" = "deployment/index.md" },
     { "Docker" = "deployment/docker.md" },
-    { "Configuration Best Practices" = "deployment/config-best-practices.md" },
+    { "Best Practices" = "deployment/config-best-practices.md" },
   ]},
-  { "Reference" = [
-    { "CLI Overview" = "cli/index.md" },
+  { "CLI" = [
+    { "Overview" = "cli/index.md" },
     { "enum" = "cli/enum.md" },
     { "engine" = "cli/engine.md" },
     { "subs" = "cli/subs.md" },
     { "assoc" = "cli/assoc.md" },
     { "track" = "cli/track.md" },
     { "viz" = "cli/viz.md" },
+  ]},
+  { "Configuration" = [
     { "Configuration" = "configuration/index.md" },
     { "Data Sources" = "configuration/data_sources.md" },
     { "Transformations" = "configuration/transformations.md" },
@@ -52,14 +54,16 @@ nav = [
     { "DNS Caching" = "architecture/dns-caching.md" },
     { "Network Mapping" = "architecture/network-mapping.md" },
     { "Data Model" = "architecture/data-model.md" },
-    { "Plugins" = "plugins/index.md" },
+  ]},
+  { "Plugins" = [
+    { "Overview" = "plugins/index.md" },
     { "DNS Discovery" = "plugins/dns-discovery.md" },
     { "API Integrations" = "plugins/api-integrations.md" },
     { "Service Discovery" = "plugins/service-discovery.md" },
     { "Enrichment" = "plugins/enrichment.md" },
   ]},
   { "Data Model" = [
-    { "Open Asset Model" = "open_asset_model/index.md" },
+    { "Overview" = "open_asset_model/index.md" },
     { "Assets" = [
       { "Assets" = "open_asset_model/assets/index.md" },
       { "Account" = "open_asset_model/assets/account.md" },
