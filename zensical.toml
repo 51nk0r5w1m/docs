@@ -135,7 +135,6 @@ features = [
     "content.tabs.link",
     "content.tooltips",
     "navigation.footer",
-    "navigation.indexes",
     "navigation.path",
     "navigation.tabs",
     "navigation.top",
