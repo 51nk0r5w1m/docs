@@ -1,0 +1,5563 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="In-depth OSINT collection and external attack surface mapping">
+      
+      
+        <meta name="author" content="OWASP Amass Contributors">
+      
+      
+        <link rel="canonical" href="https://51nk0r5w1m.github.io/docs/architecture/data-model/">
+      
+      
+        <link rel="prev" href="../network-mapping/">
+      
+      
+        <link rel="next" href="../../plugins/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="zensical-0.0.24">
+    
+    
+      
+        <title>Data Model & Storage - OWASP Amass Project</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.28978c9b.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/modern/palette.dfe2e883.min.css">
+      
+      
+
+  
+  
+  
+  
+  <style>:root{--md-annotation-icon:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M17%2013h-4v4h-2v-4H7v-2h4V7h2v4h4m-5-9A10%2010%200%200%200%202%2012a10%2010%200%200%200%2010%2010%2010%2010%200%200%200%2010-10A10%2010%200%200%200%2012%202%22/%3E%3C/svg%3E');}</style>
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,500,500i,700,700i%7CFira+Code:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Lato";--md-code-font:"Fira Code"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,a=__md_scope)=>JSON.parse(t.getItem(a.pathname+"."+e)),__md_set=(e,t,a=localStorage,_=__md_scope)=>{try{a.setItem(_.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#data-model-storage" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="OWASP Amass Project" class="md-header__button md-logo" aria-label="OWASP Amass Project" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.897 20.503c-.384 0-1.782-2.489-1.97-3.198-.393-1.486-.308-2.114-.285-2.314.072-.613.667-.92.703-1.748.01-.256.14-1.535.243-2.534a1.7 1.7 0 0 1-.733-.343c.676.908-.32 1.995-1.767 3.443-1.536 1.536-4.945 2.961-4.945 2.961s1.425-3.41 2.961-4.945c1.13-1.129 2.04-1.983 2.816-1.983.22 0 .427.067.627.216a1.7 1.7 0 0 1-.343-.733c-.999.103-2.278.232-2.534.244-.829.036-1.135.63-1.747.702-.07.008-.194.024-.388.024-.36 0-.963-.054-1.926-.31-.772-.203-3.648-1.84-3.14-2.045.26-.105 1.087-.176 2.175-.176 1.047 0 2.337.066 3.596.23 1.57.205 3.01.463 3.992.656q.024-.08.058-.154l-1.004-.48s-.8-.92-.715-.984l.012-.003c.126 0 .767.733.829.816l.605.202-.284-.249s-.388-1.438-.287-1.472h.004c.106 0 .459 1.25.489 1.34.07.06.303.152.596.32l-.308-.79s.14-1.305.243-1.305h.003c.105.021-.02 1.089-.047 1.221l.51.783a1.3 1.3 0 0 1 .463-.082c.184 0 .374.036.558.107-.236-.502-.218-1.025.095-1.338a.84.84 0 0 1 .353-.209.46.46 0 0 1 .457-.383c.127 0 .254.05.352.148a.5.5 0 0 1 .147.335c.151-.311.329-.73.317-.867-.03-.307-.386-.852-.39-.857a.076.076 0 0 1 .064-.119c.025 0 .05.012.064.035.016.023.381.582.414.927.018.198-.21.696-.333.95a2.23 2.23 0 0 1 .873.874c.245-.12.715-.334.927-.334l.024.001c.345.033.904.399.927.414a.076.076 0 0 1-.084.128c-.005-.004-.55-.36-.857-.39h-.015c-.15 0-.552.171-.852.317.12.004.242.053.335.147a.48.48 0 0 1 .012.681.46.46 0 0 1-.247.128.85.85 0 0 1-.21.354.92.92 0 0 1-.67.255c-.212 0-.441-.055-.667-.16.132.343.142.708.025 1.02l.783.51c.095-.019.666-.088.993-.088.13 0 .222.011.228.04.02.106-1.305.247-1.305.247l-.79-.308c.168.293.26.527.32.596.091.03 1.374.392 1.34.493q-.007.018-.063.017c-.283 0-1.41-.304-1.41-.304l-.248-.284.202.605c.087.065.876.755.813.841q-.006.007-.016.007c-.139 0-.967-.722-.967-.722l-.481-1.004a1 1 0 0 1-.154.058c.193.982.451 2.422.656 3.992.335 2.569.26 5.261.054 5.77q-.024.06-.076.06M12 24C5.373 24 0 18.627 0 12S5.373 0 12 0s12 5.373 12 12-5.373 12-12 12m0-22.153C6.393 1.847 1.847 6.393 1.847 12S6.393 22.153 12 22.153 22.153 17.607 22.153 12 17.607 1.847 12 1.847"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OWASP Amass Project
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Data Model &amp; Storage
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/owasp-amass/amass" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    OWASP Amass
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../installation/" class="md-tabs__link">
+        
+  
+  Installation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../cli/" class="md-tabs__link">
+          
+  
+  CLI Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../plugins/" class="md-tabs__link">
+          
+  
+  Plugins
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../configuration/" class="md-tabs__link">
+          
+  
+  Configuration
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../asset_db/" class="md-tabs__link">
+          
+  
+  Asset Database
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../open_asset_model/" class="md-tabs__link">
+          
+  
+  Open Asset Model
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../deployment/" class="md-tabs__link">
+          
+  
+  Deployment
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../contributing/contributing/" class="md-tabs__link">
+          
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="OWASP Amass Project" class="md-nav__button md-logo" aria-label="OWASP Amass Project" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.897 20.503c-.384 0-1.782-2.489-1.97-3.198-.393-1.486-.308-2.114-.285-2.314.072-.613.667-.92.703-1.748.01-.256.14-1.535.243-2.534a1.7 1.7 0 0 1-.733-.343c.676.908-.32 1.995-1.767 3.443-1.536 1.536-4.945 2.961-4.945 2.961s1.425-3.41 2.961-4.945c1.13-1.129 2.04-1.983 2.816-1.983.22 0 .427.067.627.216a1.7 1.7 0 0 1-.343-.733c-.999.103-2.278.232-2.534.244-.829.036-1.135.63-1.747.702-.07.008-.194.024-.388.024-.36 0-.963-.054-1.926-.31-.772-.203-3.648-1.84-3.14-2.045.26-.105 1.087-.176 2.175-.176 1.047 0 2.337.066 3.596.23 1.57.205 3.01.463 3.992.656q.024-.08.058-.154l-1.004-.48s-.8-.92-.715-.984l.012-.003c.126 0 .767.733.829.816l.605.202-.284-.249s-.388-1.438-.287-1.472h.004c.106 0 .459 1.25.489 1.34.07.06.303.152.596.32l-.308-.79s.14-1.305.243-1.305h.003c.105.021-.02 1.089-.047 1.221l.51.783a1.3 1.3 0 0 1 .463-.082c.184 0 .374.036.558.107-.236-.502-.218-1.025.095-1.338a.84.84 0 0 1 .353-.209.46.46 0 0 1 .457-.383c.127 0 .254.05.352.148a.5.5 0 0 1 .147.335c.151-.311.329-.73.317-.867-.03-.307-.386-.852-.39-.857a.076.076 0 0 1 .064-.119c.025 0 .05.012.064.035.016.023.381.582.414.927.018.198-.21.696-.333.95a2.23 2.23 0 0 1 .873.874c.245-.12.715-.334.927-.334l.024.001c.345.033.904.399.927.414a.076.076 0 0 1-.084.128c-.005-.004-.55-.36-.857-.39h-.015c-.15 0-.552.171-.852.317.12.004.242.053.335.147a.48.48 0 0 1 .012.681.46.46 0 0 1-.247.128.85.85 0 0 1-.21.354.92.92 0 0 1-.67.255c-.212 0-.441-.055-.667-.16.132.343.142.708.025 1.02l.783.51c.095-.019.666-.088.993-.088.13 0 .222.011.228.04.02.106-1.305.247-1.305.247l-.79-.308c.168.293.26.527.32.596.091.03 1.374.392 1.34.493q-.007.018-.063.017c-.283 0-1.41-.304-1.41-.304l-.248-.284.202.605c.087.065.876.755.813.841q-.006.007-.016.007c-.139 0-.967-.722-.967-.722l-.481-1.004a1 1 0 0 1-.154.058c.193.982.451 2.422.656 3.992.335 2.569.26 5.261.054 5.77q-.024.06-.076.06M12 24C5.373 24 0 18.627 0 12S5.373 0 12 0s12 5.373 12 12-5.373 12-12 12m0-22.153C6.393 1.847 1.847 6.393 1.847 12S6.393 22.153 12 22.153 22.153 17.607 22.153 12 17.607 1.847 12 1.847"/></svg>
+
+    </a>
+    OWASP Amass Project
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/owasp-amass/amass" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    OWASP Amass
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../cli/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CLI Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/enum/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    enum
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/subs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    subs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/assoc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    assoc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/track/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    track
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/viz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    viz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../engine-core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event-dispatcher/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Dispatcher
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugin-registry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin Registry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sessions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sessions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dns-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dns-wildcard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Wildcard Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dns-caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../network-mapping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network Mapping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#data-model-foundation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Model Foundation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Model Foundation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oam-asset-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OAM Asset Types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-wrapper-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Wrapper Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#three-tier-storage-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Three-Tier Storage Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Three-Tier Storage Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tier-1-work-queue-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 1: Work Queue Database
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tier-2-session-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 2: Session Cache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tier-3-persistent-graph-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 3: Persistent Graph Database
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#asset-and-entity-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asset and Entity Lifecycle
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Asset and Entity Lifecycle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stage-by-stage-breakdown" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage-by-Stage Breakdown
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#asset-creation-from-configuration-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asset Creation from Configuration Scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#session-specific-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session-Specific Storage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#asset-types-and-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asset Types and Properties
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Asset Types and Properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#asset-type-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asset Type Hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-attachment-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property Attachment Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dnsrecordproperty" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DNSRecordProperty
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asset-to-entity-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asset to Entity Conversion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dns-plugin-asset-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DNS Plugin Asset Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asset-type-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asset Type Summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relationships-and-edges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relationships and Edges
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Relationships and Edges">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#edge-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edge-creation-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Creation Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dns-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DNS Relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#identity-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Identity Relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#organizational-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organizational Relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#location-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Location Relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#network-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Network Relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-hierarchy-node-relation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain Hierarchy (node relation)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contact-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contact Relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#certificate-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Certificate Relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#financial-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Financial Relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-registration-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain Registration Relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#source-attribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Source Attribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#graph-database-and-querying" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Graph Database and Querying
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Graph Database and Querying">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#storage-architecture-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Storage Architecture Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-connection-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database Connection Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#queue-and-dispatcher-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Queue and Dispatcher Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#triple-based-graph-traversal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Triple-Based Graph Traversal
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oam_subs-subdomain-query-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        oam_subs: Subdomain Query Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oam_track-time-based-filtering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        oam_track: Time-Based Filtering
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oam_viz-graph-data-extraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        oam_viz: Graph Data Extraction
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#database-connection-strings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database Connection Strings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../plugins/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/dns-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/api-integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Integrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/service-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/enrichment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enrichment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../configuration/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Configuration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/data_sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Sources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/transformations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transformations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../asset_db/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset Database
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Asset Database
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/postgres/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PostgreSQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/triples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Triples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../open_asset_model/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Asset Model
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Open Asset Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../open_asset_model/assets/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assets
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8_2" id="__nav_8_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Assets
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/account/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Account
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/autnum_record/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AutnumRecord
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/autonomous_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AutonomousSystem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/contact_record/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ContactRecord
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/domain_record/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DomainRecord
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/file/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    File
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/fqdn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FQDN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/funds_transfer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FundsTransfer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/identifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/ip_address/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IPAddress
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/ipnet_record/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IPNetRecord
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/location/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Location
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/netblock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Netblock
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/person/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/phone/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/product/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/product_release/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ProductRelease
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/tls_certificate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TLSCertificate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/url/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    URL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../open_asset_model/relations/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relations
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8_3" id="__nav_8_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Relations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/basic_dns_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BasicDNSRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/port_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PortRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/pref_dns_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PrefDNSRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/simple_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SimpleRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/srv_dns_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SRVDNSRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../open_asset_model/properties/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Properties
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8_4" id="__nav_8_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Properties
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/properties/dns_property/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNSRecordProperty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/properties/simple_property/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SimpleProperty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/properties/source_property/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SourceProperty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/properties/vuln_property/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VulnProperty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/use-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Use Cases & Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../deployment/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deployment/docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deployment/config-best-practices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration Best Practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#data-model-foundation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Model Foundation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Model Foundation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oam-asset-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OAM Asset Types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-wrapper-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Wrapper Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#three-tier-storage-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Three-Tier Storage Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Three-Tier Storage Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tier-1-work-queue-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 1: Work Queue Database
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tier-2-session-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 2: Session Cache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tier-3-persistent-graph-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 3: Persistent Graph Database
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#asset-and-entity-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asset and Entity Lifecycle
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Asset and Entity Lifecycle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stage-by-stage-breakdown" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage-by-Stage Breakdown
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#asset-creation-from-configuration-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asset Creation from Configuration Scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#session-specific-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session-Specific Storage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#asset-types-and-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asset Types and Properties
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Asset Types and Properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#asset-type-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asset Type Hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-attachment-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property Attachment Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dnsrecordproperty" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DNSRecordProperty
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asset-to-entity-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asset to Entity Conversion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dns-plugin-asset-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DNS Plugin Asset Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asset-type-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asset Type Summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relationships-and-edges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relationships and Edges
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Relationships and Edges">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#edge-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edge-creation-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Creation Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dns-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DNS Relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#identity-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Identity Relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#organizational-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organizational Relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#location-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Location Relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#network-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Network Relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-hierarchy-node-relation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain Hierarchy (node relation)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contact-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contact Relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#certificate-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Certificate Relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#financial-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Financial Relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-registration-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain Registration Relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#source-attribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Source Attribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#graph-database-and-querying" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Graph Database and Querying
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Graph Database and Querying">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#storage-architecture-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Storage Architecture Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-connection-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database Connection Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#queue-and-dispatcher-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Queue and Dispatcher Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#triple-based-graph-traversal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Triple-Based Graph Traversal
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oam_subs-subdomain-query-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        oam_subs: Subdomain Query Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oam_track-time-based-filtering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        oam_track: Time-Based Filtering
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oam_viz-graph-data-extraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        oam_viz: Graph Data Extraction
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#database-connection-strings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database Connection Strings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Architecture
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+  
+
+
+<h1 id="data-model-storage">Data Model &amp; Storage<a class="headerlink" href="#data-model-storage" title="Permanent link">&para;</a></h1>
+<p>This document explains the data model and storage architecture used by OWASP Amass. It covers the Open Asset Model (OAM) specification that defines asset types and relationships, the three-tier storage architecture (graph database, cache, and work queue), and how assets flow through the system from discovery to persistent storage.</p>
+<hr />
+<h2 id="data-model-foundation">Data Model Foundation<a class="headerlink" href="#data-model-foundation" title="Permanent link">&para;</a></h2>
+<p>Amass uses the <strong>Open Asset Model (OAM)</strong> as its core data specification. OAM is a standardized schema for representing cybersecurity assets and their relationships in a graph structure. Each discovered piece of information (domain, IP address, organization, service, etc.) is represented as an OAM asset type.</p>
+<h3 id="oam-asset-types">OAM Asset Types<a class="headerlink" href="#oam-asset-types" title="Permanent link">&para;</a></h3>
+<p>The system supports 20 distinct asset types, each implementing the <code>oam.Asset</code> interface:</p>
+<pre class="mermaid"><code>graph TB
+    subgraph "Network Assets"
+        FQDN["FQDN&lt;br/&gt;oamdns.FQDN"]
+        IPAddress["IPAddress&lt;br/&gt;network.IPAddress"]
+        Netblock["Netblock&lt;br/&gt;network.Netblock"]
+        AS["AutonomousSystem&lt;br/&gt;network.AutonomousSystem"]
+    end
+
+    subgraph "Organization Assets"
+        Org["Organization&lt;br/&gt;org.Organization"]
+        Person["Person&lt;br/&gt;people.Person"]
+        Account["Account&lt;br/&gt;account.Account"]
+    end
+
+    subgraph "Infrastructure Assets"
+        Service["Service&lt;br/&gt;platform.Service"]
+        Product["Product&lt;br/&gt;platform.Product"]
+        Release["ProductRelease&lt;br/&gt;platform.ProductRelease"]
+        TLS["TLSCertificate&lt;br/&gt;oamcert.TLSCertificate"]
+    end
+
+    subgraph "Registration Assets"
+        DomainRec["DomainRecord&lt;br/&gt;oamreg.DomainRecord"]
+        IPNetRec["IPNetRecord&lt;br/&gt;oamreg.IPNetRecord"]
+        AutnumRec["AutnumRecord&lt;br/&gt;oamreg.AutnumRecord"]
+    end
+
+    subgraph "Contact Assets"
+        Contact["ContactRecord&lt;br/&gt;contact.ContactRecord"]
+        Location["Location&lt;br/&gt;contact.Location"]
+        Phone["Phone&lt;br/&gt;contact.Phone"]
+    end
+
+    subgraph "Other Assets"
+        URL["URL&lt;br/&gt;url.URL"]
+        File["File&lt;br/&gt;file.File"]
+        Transfer["FundsTransfer&lt;br/&gt;financial.FundsTransfer"]
+        ID["Identifier&lt;br/&gt;general.Identifier"]
+    end</code></pre>
+<h3 id="entity-wrapper-pattern">Entity Wrapper Pattern<a class="headerlink" href="#entity-wrapper-pattern" title="Permanent link">&para;</a></h3>
+<p>OAM assets are not stored directly. Instead, they are wrapped in a <code>dbt.Entity</code> object that provides metadata and tracking:</p>
+<pre class="mermaid"><code>graph LR
+    Asset["oam.Asset&lt;br/&gt;(FQDN, IPAddress, etc.)"]
+    Entity["dbt.Entity"]
+    ID["ID: string&lt;br/&gt;(unique identifier)"]
+    CreatedAt["CreatedAt: time.Time"]
+
+    Entity --&gt; Asset
+    Entity --&gt; ID
+    Entity --&gt; CreatedAt
+
+    Event["et.Event"] --&gt; Entity
+    Cache["cache.Cache"] --&gt; Entity
+    Queue["SessionQueue"] --&gt; Entity</code></pre>
+<p>The <code>Event</code> structure carries entities through the system:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Name</code></td>
+<td><code>string</code></td>
+<td>Human-readable event identifier</td>
+</tr>
+<tr>
+<td><code>Entity</code></td>
+<td><code>*dbt.Entity</code></td>
+<td>Wrapped OAM asset</td>
+</tr>
+<tr>
+<td><code>Meta</code></td>
+<td><code>interface{}</code></td>
+<td>Optional metadata (e.g., <code>EmailMeta</code>)</td>
+</tr>
+<tr>
+<td><code>Dispatcher</code></td>
+<td><code>Dispatcher</code></td>
+<td>Reference for dispatching new events</td>
+</tr>
+<tr>
+<td><code>Session</code></td>
+<td><code>Session</code></td>
+<td>Associated session context</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="three-tier-storage-architecture">Three-Tier Storage Architecture<a class="headerlink" href="#three-tier-storage-architecture" title="Permanent link">&para;</a></h2>
+<p>Amass maintains three distinct storage layers, each serving a specific purpose in the data lifecycle:</p>
+<pre class="mermaid"><code>graph TB
+    subgraph "Discovery Layer"
+        Plugins["Discovery Plugins"]
+        Event["et.Event&lt;br/&gt;with dbt.Entity"]
+    end
+
+    subgraph "Tier 1: Work Queue"
+        QueueDB["SQLite Queue DB&lt;br/&gt;queue.db"]
+        Element["Element Table&lt;br/&gt;ID, Type, EntityID, Processed"]
+    end
+
+    subgraph "Tier 2: Session Cache"
+        CacheDB["SQLite Cache DB&lt;br/&gt;cache.db"]
+        TempStorage["Temporary Storage&lt;br/&gt;During Enumeration"]
+    end
+
+    subgraph "Tier 3: Graph Database"
+        GraphDB["Persistent Database"]
+        SQLite["SQLite&lt;br/&gt;assetdb.db"]
+        Postgres["PostgreSQL"]
+        Neo4j["Neo4j"]
+    end
+
+    Plugins --&gt; Event
+    Event --&gt; QueueDB
+    QueueDB --&gt; Element
+
+    Event --&gt; CacheDB
+    CacheDB --&gt; TempStorage
+
+    CacheDB --&gt;|"Flush on interval"| GraphDB
+    GraphDB --&gt; SQLite
+    GraphDB --&gt; Postgres
+    GraphDB --&gt; Neo4j
+
+    style QueueDB fill:#fff5e6
+    style CacheDB fill:#e6f5ff
+    style GraphDB fill:#e6ffe6</code></pre>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Purpose</th>
+<th>Lifetime</th>
+<th>Backend</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cache</strong></td>
+<td>Temporary asset storage, deduplication</td>
+<td>Session duration</td>
+<td>SQLite</td>
+<td><code>&lt;tmpdir&gt;/cache.db</code></td>
+</tr>
+<tr>
+<td><strong>Queue</strong></td>
+<td>Work item tracking, processing state</td>
+<td>Session duration</td>
+<td>SQLite + GORM</td>
+<td><code>&lt;tmpdir&gt;/queue.db</code></td>
+</tr>
+<tr>
+<td><strong>Persistent</strong></td>
+<td>Long-term asset storage</td>
+<td>Permanent</td>
+<td>SQLite/Postgres/Neo4j</td>
+<td>Configurable</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tier-1-work-queue-database">Tier 1: Work Queue Database<a class="headerlink" href="#tier-1-work-queue-database" title="Permanent link">&para;</a></h3>
+<p>The work queue is a <strong>SQLite database</strong> (<code>queue.db</code>) that tracks which assets need processing. It implements a priority-based FIFO queue for each asset type.</p>
+<p><strong>Database Schema:</strong></p>
+<pre class="mermaid"><code>erDiagram
+    Element {
+        uint64 ID PK
+        time CreatedAt
+        time UpdatedAt
+        string Type "Asset type (FQDN, IPAddress, etc.)"
+        string EntityID "Unique entity identifier"
+        bool Processed "Processing status"
+    }</code></pre>
+<p><strong>Indexes:</strong>
+- <code>idx_created_at</code> — Orders by creation time (FIFO)
+- <code>idx_etype</code> — Filters by asset type
+- <code>idx_entity_id</code> — Ensures uniqueness
+- <code>idx_processed</code> — Filters unprocessed items</p>
+<p><strong>Key Operations:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Purpose</th>
+<th>SQL Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Has(eid)</code></td>
+<td>Check if entity is queued</td>
+<td><code>SELECT COUNT(*) WHERE entity_id = ?</code></td>
+</tr>
+<tr>
+<td><code>Append(type, eid)</code></td>
+<td>Add to queue</td>
+<td><code>INSERT INTO elements (type, entity_id, processed) VALUES (?, ?, false)</code></td>
+</tr>
+<tr>
+<td><code>Next(type, num)</code></td>
+<td>Get next N unprocessed</td>
+<td><code>SELECT * WHERE etype = ? AND processed = false ORDER BY created_at LIMIT ?</code></td>
+</tr>
+<tr>
+<td><code>Processed(eid)</code></td>
+<td>Mark as processed</td>
+<td><code>UPDATE elements SET processed = true WHERE entity_id = ?</code></td>
+</tr>
+<tr>
+<td><code>Delete(eid)</code></td>
+<td>Remove from queue</td>
+<td><code>DELETE FROM elements WHERE entity_id = ?</code></td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Dispatcher
+    participant QueueDB
+    participant Cache
+    participant Pipeline
+
+    Dispatcher-&gt;&gt;QueueDB: Next(FQDN, 100)
+    QueueDB--&gt;&gt;Dispatcher: [entity_id_1, entity_id_2, ...]
+
+    loop For each entity_id
+        Dispatcher-&gt;&gt;Cache: FindEntityById(id)
+        Cache--&gt;&gt;Dispatcher: dbt.Entity
+        Dispatcher-&gt;&gt;Pipeline: Append(Event)
+    end
+
+    Pipeline-&gt;&gt;Dispatcher: Processing complete
+    Dispatcher-&gt;&gt;QueueDB: Processed(entity_id)</code></pre>
+<h3 id="tier-2-session-cache">Tier 2: Session Cache<a class="headerlink" href="#tier-2-session-cache" title="Permanent link">&para;</a></h3>
+<p>The session cache is a <strong>temporary SQLite database</strong> (<code>cache.db</code>) created per session. It uses the <code>cache.Cache</code> abstraction from the <code>asset-db</code> library.</p>
+<p><strong>Cache Lifecycle:</strong></p>
+<pre class="mermaid"><code>graph LR
+    Create["Session Created"]
+    TmpDir["Temporary Directory&lt;br/&gt;/tmp/session-{UUID}"]
+    CacheFile["cache.db created"]
+    Flush["Periodic Flush&lt;br/&gt;Every 1 minute"]
+    GraphDB["Graph Database"]
+    Cleanup["Session Terminated&lt;br/&gt;Cache deleted"]
+
+    Create --&gt; TmpDir
+    TmpDir --&gt; CacheFile
+    CacheFile --&gt; Flush
+    Flush --&gt; GraphDB
+    CacheFile --&gt; Cleanup</code></pre>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cache Interface</td>
+<td><code>cache.Cache</code></td>
+</tr>
+<tr>
+<td>Backend Repository</td>
+<td>SQLite file</td>
+</tr>
+<tr>
+<td>Flush Interval</td>
+<td>1 minute</td>
+</tr>
+<tr>
+<td>DSN Options</td>
+<td><code>busy_timeout=30000</code>, <code>journal_mode=WAL</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="tier-3-persistent-graph-database">Tier 3: Persistent Graph Database<a class="headerlink" href="#tier-3-persistent-graph-database" title="Permanent link">&para;</a></h3>
+<p>The persistent graph database is the <strong>single source of truth</strong> for all discovered assets. Amass supports three database backends:</p>
+<pre class="mermaid"><code>graph TB
+    Config["Config.GraphDBs&lt;br/&gt;[]*Database"]
+
+    subgraph "SQLite (Default)"
+        SQLiteDSN["DSN: assetdb.db?_pragma=busy_timeout(30000)&amp;_pragma=journal_mode(WAL)"]
+        SQLiteFile["File: {outputdir}/assetdb.db"]
+    end
+
+    subgraph "PostgreSQL"
+        PgDSN["DSN: host={host} port={port} user={user} password={password} dbname={dbname}"]
+        PgConn["Connection String"]
+    end
+
+    subgraph "Neo4j"
+        Neo4jDSN["DSN: neo4j+s://{host}:{port}"]
+        Neo4jBolt["Bolt Protocol"]
+    end
+
+    Config --&gt;|"System: sqlite"| SQLiteDSN
+    Config --&gt;|"System: postgres"| PgDSN
+    Config --&gt;|"System: neo4j"| Neo4jDSN
+
+    SQLiteDSN --&gt; SQLiteFile
+    PgDSN --&gt; PgConn
+    Neo4jDSN --&gt; Neo4jBolt</code></pre>
+<p><strong>Environment Variable Support:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Purpose</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AMASS_DB_USER</code></td>
+<td>Database username</td>
+<td>(required)</td>
+</tr>
+<tr>
+<td><code>AMASS_DB_PASSWORD</code></td>
+<td>Database password</td>
+<td>(optional)</td>
+</tr>
+<tr>
+<td><code>AMASS_DB_HOST</code></td>
+<td>Database host</td>
+<td><code>localhost</code></td>
+</tr>
+<tr>
+<td><code>AMASS_DB_PORT</code></td>
+<td>Database port</td>
+<td><code>5432</code></td>
+</tr>
+<tr>
+<td><code>AMASS_DB_NAME</code></td>
+<td>Database name</td>
+<td><code>assetdb</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="asset-and-entity-lifecycle">Asset and Entity Lifecycle<a class="headerlink" href="#asset-and-entity-lifecycle" title="Permanent link">&para;</a></h2>
+<p>Assets flow through multiple stages from initial discovery to persistent storage:</p>
+<pre class="mermaid"><code>graph TB
+    subgraph "Stage 1: Discovery"
+        Plugin["Plugin Handler"]
+        NewAsset["Create OAM Asset&lt;br/&gt;(e.g., oamdns.FQDN)"]
+    end
+
+    subgraph "Stage 2: Cache Creation"
+        CacheCreate["cache.CreateAsset(asset)"]
+        Entity["Returns dbt.Entity&lt;br/&gt;with ID and timestamps"]
+    end
+
+    subgraph "Stage 3: Event Dispatch"
+        Event["Create et.Event"]
+        Dispatcher["Dispatcher.DispatchEvent()"]
+    end
+
+    subgraph "Stage 4: Queue Management"
+        QueueCheck["Queue.Has(entity)?"]
+        QueueAppend["Queue.Append(entity)"]
+        QueueElement["SQLite: Insert Element"]
+    end
+
+    subgraph "Stage 5: Pipeline Processing"
+        PipelineFetch["Dispatcher fills pipeline&lt;br/&gt;from Queue.Next()"]
+        HandlerExec["Handler.Callback(event)"]
+    end
+
+    subgraph "Stage 6: Persistence"
+        CacheFlush["Cache flushes&lt;br/&gt;every 1 minute"]
+        GraphDB["Graph Database&lt;br/&gt;Permanent Storage"]
+    end
+
+    Plugin --&gt; NewAsset
+    NewAsset --&gt; CacheCreate
+    CacheCreate --&gt; Entity
+    Entity --&gt; Event
+    Event --&gt; Dispatcher
+    Dispatcher --&gt; QueueCheck
+    QueueCheck --&gt;|"false"| QueueAppend
+    QueueAppend --&gt; QueueElement
+    QueueElement --&gt; PipelineFetch
+    PipelineFetch --&gt; HandlerExec
+    HandlerExec --&gt;|"New assets"| NewAsset
+    CacheCreate --&gt; CacheFlush
+    CacheFlush --&gt; GraphDB</code></pre>
+<h3 id="stage-by-stage-breakdown">Stage-by-Stage Breakdown<a class="headerlink" href="#stage-by-stage-breakdown" title="Permanent link">&para;</a></h3>
+<p><strong>Stage 1 — Plugin Discovery:</strong> A plugin handler discovers new information (e.g., DNS lookup finds an IP) and creates an OAM asset object.</p>
+<p><strong>Stage 2 — Cache Creation:</strong> Calls <code>session.Cache().CreateAsset(oamAsset)</code>. Cache wraps the asset in <code>dbt.Entity</code> with a unique ID and timestamp.</p>
+<p><strong>Stage 3 — Event Dispatch:</strong> Plugin creates <code>et.Event</code> with the entity and calls <code>dispatcher.DispatchEvent(event)</code>.</p>
+<p><strong>Stage 4 — Queue Management:</strong> Dispatcher checks <code>session.Queue().Has(entity)</code> to prevent duplicates. If not queued, calls <code>session.Queue().Append(entity)</code>.</p>
+<p><strong>Stage 5 — Pipeline Processing:</strong> Dispatcher periodically calls <code>Queue.Next(assetType, 100)</code> to fill pipelines. Handlers execute in priority order (1–9). After processing, marks as processed: <code>Queue.Processed(entity)</code>.</p>
+<p><strong>Stage 6 — Persistence:</strong> Cache flushes to the graph database every 1 minute.</p>
+<hr />
+<h2 id="asset-creation-from-configuration-scope">Asset Creation from Configuration Scope<a class="headerlink" href="#asset-creation-from-configuration-scope" title="Permanent link">&para;</a></h2>
+<p>Initial assets are created from the configuration scope before enumeration begins:</p>
+<pre class="mermaid"><code>graph LR
+    ConfigScope["config.Scope"]
+    Domains["Domains: []string"]
+    Addresses["Addresses: []net.IP"]
+    CIDRs["CIDRs: []*net.IPNet"]
+    ASNs["ASNs: []int"]
+
+    FQDN["oamdns.FQDN"]
+    IPAddr["network.IPAddress"]
+    Netblock["network.Netblock"]
+    AS["network.AutonomousSystem"]
+
+    Assets["[]*et.Asset"]
+
+    ConfigScope --&gt; Domains
+    ConfigScope --&gt; Addresses
+    ConfigScope --&gt; CIDRs
+    ConfigScope --&gt; ASNs
+
+    Domains --&gt; FQDN
+    Addresses --&gt; IPAddr
+    CIDRs --&gt; Netblock
+    ASNs --&gt; AS
+
+    FQDN --&gt; Assets
+    IPAddr --&gt; Assets
+    Netblock --&gt; Assets
+    AS --&gt; Assets</code></pre>
+<table>
+<thead>
+<tr>
+<th>Scope Field</th>
+<th>OAM Asset Type</th>
+<th>Properties</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Domains []string</code></td>
+<td><code>oamdns.FQDN</code></td>
+<td><code>Name: domain</code></td>
+</tr>
+<tr>
+<td><code>Addresses []net.IP</code></td>
+<td><code>network.IPAddress</code></td>
+<td><code>Address: netip.Addr</code>, <code>Type: "IPv4"/"IPv6"</code></td>
+</tr>
+<tr>
+<td><code>CIDRs []*net.IPNet</code></td>
+<td><code>network.Netblock</code></td>
+<td><code>CIDR: netip.Prefix</code>, <code>Type: "IPv4"/"IPv6"</code></td>
+</tr>
+<tr>
+<td><code>ASNs []int</code></td>
+<td><code>network.AutonomousSystem</code></td>
+<td><code>Number: asn</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="session-specific-storage">Session-Specific Storage<a class="headerlink" href="#session-specific-storage" title="Permanent link">&para;</a></h2>
+<p>Each session maintains isolated storage in a temporary directory:</p>
+<pre class="mermaid"><code>graph TB
+    Session["Session Object&lt;br/&gt;UUID: {session-id}"]
+    OutputDir["Output Directory&lt;br/&gt;config.OutputDirectory()"]
+    TmpDir["Temporary Directory&lt;br/&gt;/tmp/session-{UUID}"]
+
+    CacheFile["cache.db&lt;br/&gt;Session Cache"]
+    QueueFile["queue.db&lt;br/&gt;Work Queue"]
+
+    GraphFile["assetdb.db&lt;br/&gt;Graph Database&lt;br/&gt;(SQLite only)"]
+
+    Session --&gt; OutputDir
+    OutputDir --&gt; TmpDir
+    OutputDir --&gt; GraphFile
+
+    TmpDir --&gt; CacheFile
+    TmpDir --&gt; QueueFile
+
+    Cleanup["Session Terminated"]
+    Cleanup --&gt;|"os.RemoveAll(tmpdir)"| TmpDir
+    Cleanup --&gt;|"Kept permanently"| GraphFile</code></pre>
+<p><strong>Directory structure:</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>{OutputDir}/
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── assetdb.db              # Persistent graph database (SQLite)
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>└── session-{UUID}/         # Temporary session directory
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    ├── cache.db            # Session cache (deleted on exit)
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    └── queue.db            # Work queue (deleted on exit)
+</span></code></pre></div>
+<hr />
+<h2 id="asset-types-and-properties">Asset Types and Properties<a class="headerlink" href="#asset-types-and-properties" title="Permanent link">&para;</a></h2>
+<h3 id="asset-type-hierarchy">Asset Type Hierarchy<a class="headerlink" href="#asset-type-hierarchy" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TD
+    Asset["oam.Asset Interface&lt;br/&gt;AssetType() string&lt;br/&gt;Key() string"]
+
+    subgraph "DNS Assets (oamdns)"
+        FQDN["FQDN&lt;br/&gt;Name: string"]
+    end
+
+    subgraph "Network Assets (oamnet)"
+        IPAddress["IPAddress&lt;br/&gt;Address: netip.Addr&lt;br/&gt;Type: string"]
+        Netblock["Netblock&lt;br/&gt;CIDR: netip.Prefix&lt;br/&gt;Type: string"]
+        AutonomousSystem["AutonomousSystem&lt;br/&gt;Number: int"]
+    end
+
+    subgraph "Organization Assets"
+        Organization["Organization&lt;br/&gt;Name: string&lt;br/&gt;Industry: string"]
+    end
+
+    subgraph "Service Assets"
+        Service["Service&lt;br/&gt;Port: int&lt;br/&gt;Protocol: string"]
+    end
+
+    subgraph "Contact Assets"
+        Contact["Contact&lt;br/&gt;Type: string&lt;br/&gt;Value: string"]
+        Location["Location&lt;br/&gt;Address: string"]
+    end
+
+    Asset --&gt; FQDN
+    Asset --&gt; IPAddress
+    Asset --&gt; Netblock
+    Asset --&gt; AutonomousSystem
+    Asset --&gt; Organization
+    Asset --&gt; Service
+    Asset --&gt; Contact
+    Asset --&gt; Location</code></pre>
+<h3 id="property-attachment-model">Property Attachment Model<a class="headerlink" href="#property-attachment-model" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    Entity["dbt.Entity&lt;br/&gt;(Asset Wrapper)&lt;br/&gt;ID, Asset, CreatedAt"]
+
+    subgraph "Entity Properties"
+        Prop1["DNSRecordProperty&lt;br/&gt;RRType, TTL, Data"]
+        Prop2["SourceProperty&lt;br/&gt;Source, Confidence"]
+        Prop3["Custom Properties"]
+    end
+
+    Entity --&gt;|"CreateEntityProperty()"| Prop1
+    Entity --&gt;|"CreateEntityProperty()"| Prop2
+    Entity --&gt;|"CreateEntityProperty()"| Prop3
+
+    Edge["dbt.Edge&lt;br/&gt;(Relationship)&lt;br/&gt;FromEntity, ToEntity"]
+
+    subgraph "Edge Properties"
+        EdgeProp1["SourceProperty&lt;br/&gt;Source, Confidence"]
+        EdgeProp2["Custom Properties"]
+    end
+
+    Edge --&gt;|"CreateEdgeProperty()"| EdgeProp1
+    Edge --&gt;|"CreateEdgeProperty()"| EdgeProp2</code></pre>
+<h3 id="dnsrecordproperty">DNSRecordProperty<a class="headerlink" href="#dnsrecordproperty" title="Permanent link">&para;</a></h3>
+<p>The <code>DNSRecordProperty</code> attaches DNS record information to FQDN entities.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PropertyName</code></td>
+<td><code>string</code></td>
+<td>Always <code>"dns_record"</code></td>
+</tr>
+<tr>
+<td><code>Header.RRType</code></td>
+<td><code>int</code></td>
+<td>DNS record type (1=A, 5=CNAME, 15=MX, 16=TXT, 28=AAAA…)</td>
+</tr>
+<tr>
+<td><code>Header.Class</code></td>
+<td><code>int</code></td>
+<td>DNS class (typically 1 for IN)</td>
+</tr>
+<tr>
+<td><code>Header.TTL</code></td>
+<td><code>int</code></td>
+<td>Time to live in seconds</td>
+</tr>
+<tr>
+<td><code>Data</code></td>
+<td><code>string</code></td>
+<td>Record-specific data</td>
+</tr>
+</tbody>
+</table>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">session</span><span class="p">.</span><span class="nx">Cache</span><span class="p">().</span><span class="nx">CreateEntityProperty</span><span class="p">(</span><span class="nx">fqdn</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">oamdns</span><span class="p">.</span><span class="nx">DNSRecordProperty</span><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nx">PropertyName</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;dns_record&quot;</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nx">Header</span><span class="p">:</span><span class="w"> </span><span class="nx">oamdns</span><span class="p">.</span><span class="nx">RRHeader</span><span class="p">{</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="nx">RRType</span><span class="p">:</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="nx">dns</span><span class="p">.</span><span class="nx">TypeTXT</span><span class="p">),</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="nx">Class</span><span class="p">:</span><span class="w">  </span><span class="nb">int</span><span class="p">(</span><span class="nx">record</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Class</span><span class="p">),</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">        </span><span class="nx">TTL</span><span class="p">:</span><span class="w">    </span><span class="nb">int</span><span class="p">(</span><span class="nx">record</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Ttl</span><span class="p">),</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="p">},</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="nx">Data</span><span class="p">:</span><span class="w"> </span><span class="nx">txtValue</span><span class="p">,</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">})</span>
+</span></code></pre></div>
+<h3 id="asset-to-entity-conversion">Asset to Entity Conversion<a class="headerlink" href="#asset-to-entity-conversion" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Plugin as "DNS Plugin"
+    participant Cache as "session.Cache()"
+    participant DB as "Graph Database"
+
+    Plugin-&gt;&gt;Plugin: Create OAM Asset&lt;br/&gt;e.g., oamdns.FQDN{Name: "example.com"}
+    Plugin-&gt;&gt;Cache: CreateAsset(asset)
+    Cache-&gt;&gt;DB: Check if asset exists
+    alt Asset exists
+        DB--&gt;&gt;Cache: Return existing entity
+    else New asset
+        DB-&gt;&gt;DB: Create new entity&lt;br/&gt;Assign ID, timestamp
+        DB--&gt;&gt;Cache: Return new entity
+    end
+    Cache--&gt;&gt;Plugin: Return dbt.Entity
+
+    Plugin-&gt;&gt;Cache: CreateEntityProperty(entity, property)
+    Cache-&gt;&gt;DB: Attach property to entity
+    DB--&gt;&gt;Cache: Success
+
+    Plugin-&gt;&gt;Plugin: Dispatch event with entity</code></pre>
+<h3 id="dns-plugin-asset-flow">DNS Plugin Asset Flow<a class="headerlink" href="#dns-plugin-asset-flow" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TD
+    Start["Event with FQDN Entity"]
+
+    Start --&gt; Extract["Extract Asset from Entity&lt;br/&gt;fqdn := entity.Asset.(*oamdns.FQDN)"]
+    Extract --&gt; Query["DNS Query&lt;br/&gt;PerformQuery(fqdn.Name, TypeA)"]
+
+    Query --&gt; CreateIP["Create IPAddress Asset&lt;br/&gt;oamnet.IPAddress{Address, Type}"]
+    CreateIP --&gt; StoreIP["Store as Entity&lt;br/&gt;session.Cache().CreateAsset(ip)"]
+
+    StoreIP --&gt; CreateEdge["Create DNS Record Edge&lt;br/&gt;oamdns.BasicDNSRelation"]
+    CreateEdge --&gt; AddProp["Add SourceProperty to Edge"]
+
+    AddProp --&gt; Dispatch["Dispatch Event with IP Entity"]</code></pre>
+<h3 id="asset-type-summary">Asset Type Summary<a class="headerlink" href="#asset-type-summary" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Asset Type</th>
+<th>Package</th>
+<th>Key Structure</th>
+<th>Primary Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FQDN</code></td>
+<td><code>oamdns</code></td>
+<td>Domain name</td>
+<td>DNS enumeration, subdomain discovery</td>
+</tr>
+<tr>
+<td><code>IPAddress</code></td>
+<td><code>oamnet</code></td>
+<td>IP address string</td>
+<td>Network infrastructure mapping</td>
+</tr>
+<tr>
+<td><code>Netblock</code></td>
+<td><code>oamnet</code></td>
+<td>CIDR notation</td>
+<td>Network range definition</td>
+</tr>
+<tr>
+<td><code>AutonomousSystem</code></td>
+<td><code>oamnet</code></td>
+<td>ASN</td>
+<td>BGP/network ownership</td>
+</tr>
+<tr>
+<td><code>Organization</code></td>
+<td><code>oam</code></td>
+<td>Organization name</td>
+<td>Entity attribution and enrichment</td>
+</tr>
+<tr>
+<td><code>Service</code></td>
+<td><code>oam</code></td>
+<td>Service identifier</td>
+<td>Active service discovery</td>
+</tr>
+<tr>
+<td><code>Contact</code></td>
+<td><code>oam</code></td>
+<td>Contact value</td>
+<td>WHOIS/organization contacts</td>
+</tr>
+<tr>
+<td><code>Location</code></td>
+<td><code>oam</code></td>
+<td>Address</td>
+<td>Physical location data</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="relationships-and-edges">Relationships and Edges<a class="headerlink" href="#relationships-and-edges" title="Permanent link">&para;</a></h2>
+<h3 id="edge-structure">Edge Structure<a class="headerlink" href="#edge-structure" title="Permanent link">&para;</a></h3>
+<p>Edges are represented by the <code>dbt.Edge</code> struct with three required components:</p>
+<ul>
+<li><strong>Relation</strong> — An object implementing <code>oam.Relation</code> that defines the relationship type</li>
+<li><strong>FromEntity</strong> — The source entity of the directed edge</li>
+<li><strong>ToEntity</strong> — The destination entity of the directed edge</li>
+</ul>
+<h3 id="edge-creation-pattern">Edge Creation Pattern<a class="headerlink" href="#edge-creation-pattern" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    Plugin["Plugin Handler"]
+    CreateEdge["cache.CreateEdge()"]
+    EdgeProperty["cache.CreateEdgeProperty()"]
+    SourceProp["SourceProperty"]
+
+    Plugin --&gt; CreateEdge
+    CreateEdge --&gt; EdgeProperty
+    EdgeProperty --&gt; SourceProp
+
+    SourceProp -.-&gt;|"Tracks confidence&lt;br/&gt;and origin"| Edge["dbt.Edge"]
+    CreateEdge -.-&gt;|"Returns"| Edge</code></pre>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nx">edge</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">Session</span><span class="p">.</span><span class="nx">Cache</span><span class="p">().</span><span class="nx">CreateEdge</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">dbt</span><span class="p">.</span><span class="nx">Edge</span><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nx">Relation</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">oamdns</span><span class="p">.</span><span class="nx">BasicDNSRelation</span><span class="p">{</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="nx">Name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;dns_record&quot;</span><span class="p">,</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">        </span><span class="nx">Header</span><span class="p">:</span><span class="w"> </span><span class="nx">oamdns</span><span class="p">.</span><span class="nx">RRHeader</span><span class="p">{</span><span class="nx">RRType</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nx">Class</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nx">TTL</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="p">},</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="p">},</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nx">FromEntity</span><span class="p">:</span><span class="w"> </span><span class="nx">fqdn</span><span class="p">,</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="nx">ToEntity</span><span class="p">:</span><span class="w">   </span><span class="nx">ipEntity</span><span class="p">,</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">})</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">edge</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="nx">e</span><span class="p">.</span><span class="nx">Session</span><span class="p">.</span><span class="nx">Cache</span><span class="p">().</span><span class="nx">CreateEdgeProperty</span><span class="p">(</span><span class="nx">edge</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">general</span><span class="p">.</span><span class="nx">SourceProperty</span><span class="p">{</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">        </span><span class="nx">Source</span><span class="p">:</span><span class="w">     </span><span class="s">&quot;DNS&quot;</span><span class="p">,</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">        </span><span class="nx">Confidence</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">    </span><span class="p">})</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="dns-relations">DNS Relations<a class="headerlink" href="#dns-relations" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    FQDN1["FQDN Entity&lt;br/&gt;example.com"]
+    FQDN2["FQDN Entity&lt;br/&gt;www.example.com"]
+    IP["IPAddress Entity&lt;br/&gt;192.0.2.1"]
+    CNAME["FQDN Entity&lt;br/&gt;cdn.provider.com"]
+
+    FQDN1 --&gt;|"BasicDNSRelation&lt;br/&gt;dns_record&lt;br/&gt;RRType: A(1)"| IP
+    FQDN2 --&gt;|"BasicDNSRelation&lt;br/&gt;dns_record&lt;br/&gt;RRType: CNAME(5)"| CNAME</code></pre>
+<pre class="mermaid"><code>graph LR
+    FQDN["FQDN Entity&lt;br/&gt;example.com"]
+    MX1["FQDN Entity&lt;br/&gt;mail1.example.com"]
+    MX2["FQDN Entity&lt;br/&gt;mail2.example.com"]
+
+    FQDN --&gt;|"PrefDNSRelation&lt;br/&gt;dns_record&lt;br/&gt;RRType: MX(15)&lt;br/&gt;Preference: 10"| MX1
+    FQDN --&gt;|"PrefDNSRelation&lt;br/&gt;dns_record&lt;br/&gt;RRType: MX(15)&lt;br/&gt;Preference: 20"| MX2</code></pre>
+<h3 id="identity-relations">Identity Relations<a class="headerlink" href="#identity-relations" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    Org["Organization Entity&lt;br/&gt;Google LLC"]
+    LEI["Identifier Entity&lt;br/&gt;LEI:549300GZSUFD98NHH337"]
+    Email["Identifier Entity&lt;br/&gt;email:admin@example.com"]
+    AviID["Identifier Entity&lt;br/&gt;aviato_company:abc123"]
+
+    Org --&gt;|"SimpleRelation&lt;br/&gt;id"| LEI
+    Org --&gt;|"SimpleRelation&lt;br/&gt;id"| Email
+    Org --&gt;|"SimpleRelation&lt;br/&gt;id"| AviID</code></pre>
+<h3 id="organizational-relations">Organizational Relations<a class="headerlink" href="#organizational-relations" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    Parent["Organization&lt;br/&gt;Alphabet Inc."]
+    Child1["Organization&lt;br/&gt;Google LLC"]
+    Child2["Organization&lt;br/&gt;Waymo LLC"]
+
+    Parent --&gt;|"SimpleRelation&lt;br/&gt;subsidiary"| Child1
+    Parent --&gt;|"SimpleRelation&lt;br/&gt;subsidiary"| Child2</code></pre>
+<h3 id="location-relations">Location Relations<a class="headerlink" href="#location-relations" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    Org["Organization&lt;br/&gt;ACME Corp"]
+    Legal["Location&lt;br/&gt;123 Legal St&lt;br/&gt;New York, NY"]
+    HQ["Location&lt;br/&gt;456 HQ Ave&lt;br/&gt;San Francisco, CA"]
+    Other["Location&lt;br/&gt;789 Office Rd&lt;br/&gt;Austin, TX"]
+
+    Org --&gt;|"SimpleRelation&lt;br/&gt;legal_address"| Legal
+    Org --&gt;|"SimpleRelation&lt;br/&gt;hq_address"| HQ
+    Org --&gt;|"SimpleRelation&lt;br/&gt;location"| Other</code></pre>
+<h3 id="network-relations">Network Relations<a class="headerlink" href="#network-relations" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    FQDN["FQDN Entity&lt;br/&gt;web.example.com"]
+    IP["IPAddress Entity&lt;br/&gt;192.0.2.1"]
+    Service1["Service Entity&lt;br/&gt;HTTP on :443"]
+    Service2["Service Entity&lt;br/&gt;SSH on :22"]
+
+    FQDN --&gt;|"PortRelation&lt;br/&gt;port: 443&lt;br/&gt;protocol: tcp"| Service1
+    IP --&gt;|"PortRelation&lt;br/&gt;port: 22&lt;br/&gt;protocol: tcp"| Service2</code></pre>
+<pre class="mermaid"><code>graph LR
+    IP["IPAddress Entity&lt;br/&gt;192.0.2.1"]
+    PTR["FQDN Entity&lt;br/&gt;1.2.0.192.in-addr.arpa"]
+    Target["FQDN Entity&lt;br/&gt;mail.example.com"]
+
+    IP --&gt;|"SimpleRelation&lt;br/&gt;ptr_record"| PTR
+    PTR --&gt;|"BasicDNSRelation&lt;br/&gt;dns_record&lt;br/&gt;RRType: PTR(12)"| Target</code></pre>
+<h3 id="domain-hierarchy-node-relation">Domain Hierarchy (node relation)<a class="headerlink" href="#domain-hierarchy-node-relation" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    Apex["FQDN Entity&lt;br/&gt;example.com"]
+    Sub1["FQDN Entity&lt;br/&gt;www.example.com"]
+    Sub2["FQDN Entity&lt;br/&gt;mail.example.com"]
+    Sub3["FQDN Entity&lt;br/&gt;api.subdomain.example.com"]
+    Sub4["FQDN Entity&lt;br/&gt;subdomain.example.com"]
+
+    Apex --&gt;|"SimpleRelation&lt;br/&gt;node"| Sub1
+    Apex --&gt;|"SimpleRelation&lt;br/&gt;node"| Sub2
+    Apex --&gt;|"SimpleRelation&lt;br/&gt;node"| Sub4
+    Sub4 --&gt;|"SimpleRelation&lt;br/&gt;node"| Sub3</code></pre>
+<h3 id="contact-relations">Contact Relations<a class="headerlink" href="#contact-relations" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    DomRec["DomainRecord&lt;br/&gt;example.com"]
+    Contact["ContactRecord&lt;br/&gt;Registrant Info"]
+    Person["Person&lt;br/&gt;John Doe"]
+    Org["Organization&lt;br/&gt;Example Corp"]
+    Loc["Location&lt;br/&gt;123 Main St"]
+    Email["Identifier&lt;br/&gt;email:admin@example.com"]
+    Phone["Phone&lt;br/&gt;+1-555-1234"]
+
+    DomRec --&gt;|"SimpleRelation&lt;br/&gt;registrant_contact"| Contact
+    Contact --&gt;|"SimpleRelation&lt;br/&gt;person"| Person
+    Contact --&gt;|"SimpleRelation&lt;br/&gt;organization"| Org
+    Contact --&gt;|"SimpleRelation&lt;br/&gt;location"| Loc
+    Contact --&gt;|"SimpleRelation&lt;br/&gt;id"| Email
+    Contact --&gt;|"SimpleRelation&lt;br/&gt;phone"| Phone</code></pre>
+<p>Contact relation types include: <code>registrant_contact</code>, <code>admin_contact</code>, <code>technical_contact</code>, <code>billing_contact</code>, <code>abuse_contact</code>, <code>subject_contact</code>, <code>issuer_contact</code>.</p>
+<h3 id="certificate-relations">Certificate Relations<a class="headerlink" href="#certificate-relations" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    Cert["TLSCertificate&lt;br/&gt;Serial: ABC123"]
+    CN["FQDN Entity&lt;br/&gt;*.example.com"]
+    SAN1["FQDN Entity&lt;br/&gt;www.example.com"]
+    SAN2["FQDN Entity&lt;br/&gt;api.example.com"]
+    IP["IPAddress Entity&lt;br/&gt;192.0.2.1"]
+    Email["Identifier&lt;br/&gt;email:admin@example.com"]
+    URL["URL Entity&lt;br/&gt;http://ocsp.ca.com"]
+    Service["Service Entity&lt;br/&gt;HTTPS on :443"]
+
+    Cert --&gt;|"SimpleRelation&lt;br/&gt;common_name"| CN
+    Cert --&gt;|"SimpleRelation&lt;br/&gt;san_dns_name"| SAN1
+    Cert --&gt;|"SimpleRelation&lt;br/&gt;san_dns_name"| SAN2
+    Cert --&gt;|"SimpleRelation&lt;br/&gt;san_ip_address"| IP
+    Cert --&gt;|"SimpleRelation&lt;br/&gt;san_email_address"| Email
+    Cert --&gt;|"SimpleRelation&lt;br/&gt;ocsp_server"| URL
+    Service --&gt;|"SimpleRelation&lt;br/&gt;certificate"| Cert</code></pre>
+<h3 id="financial-relations">Financial Relations<a class="headerlink" href="#financial-relations" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    Investor["Organization&lt;br/&gt;VC Fund"]
+    SeedAcct["Account&lt;br/&gt;Seed Round A"]
+    Transfer["FundsTransfer&lt;br/&gt;$5M USD"]
+    OrgAcct["Account&lt;br/&gt;Startup Checking"]
+    Org["Organization&lt;br/&gt;Startup Inc."]
+
+    Investor --&gt;|"SimpleRelation&lt;br/&gt;account"| SeedAcct
+    Transfer --&gt;|"SimpleRelation&lt;br/&gt;sender"| SeedAcct
+    Transfer --&gt;|"SimpleRelation&lt;br/&gt;recipient"| OrgAcct
+    Org --&gt;|"SimpleRelation&lt;br/&gt;account"| OrgAcct</code></pre>
+<h3 id="domain-registration-relations">Domain Registration Relations<a class="headerlink" href="#domain-registration-relations" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    DomRec["DomainRecord&lt;br/&gt;example.com"]
+    NS1["FQDN&lt;br/&gt;ns1.nameserver.com"]
+    NS2["FQDN&lt;br/&gt;ns2.nameserver.com"]
+    WHOIS["FQDN&lt;br/&gt;whois.registry.com"]
+
+    DomRec --&gt;|"SimpleRelation&lt;br/&gt;name_server"| NS1
+    DomRec --&gt;|"SimpleRelation&lt;br/&gt;name_server"| NS2
+    DomRec --&gt;|"SimpleRelation&lt;br/&gt;whois_server"| WHOIS</code></pre>
+<h3 id="source-attribution">Source Attribution<a class="headerlink" href="#source-attribution" title="Permanent link">&para;</a></h3>
+<p>Every edge should have a <code>SourceProperty</code> attached to track which plugin discovered the relationship and with what confidence:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kd">type</span><span class="w"> </span><span class="nx">SourceProperty</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nx">Source</span><span class="p">:</span><span class="w">     </span><span class="kt">string</span><span class="w">  </span><span class="c1">// Plugin/source name</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nx">Confidence</span><span class="p">:</span><span class="w"> </span><span class="kt">int</span><span class="w">     </span><span class="c1">// 0-100 confidence score</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">}</span>
+</span></code></pre></div>
+<pre class="mermaid"><code>graph TD
+    Handler["Plugin Handler"]
+    CreateAssets["Create Assets"]
+    CreateEdge["Create Edge"]
+    AttachSource["Attach SourceProperty"]
+
+    Handler --&gt; CreateAssets
+    CreateAssets --&gt; CreateEdge
+    CreateEdge --&gt; AttachSource
+
+    AttachSource -.-&gt;|"Tracks:&lt;br/&gt;• Plugin name&lt;br/&gt;• Confidence&lt;br/&gt;• Timestamp"| EdgeTags["Edge Tags"]</code></pre>
+<hr />
+<h2 id="graph-database-and-querying">Graph Database and Querying<a class="headerlink" href="#graph-database-and-querying" title="Permanent link">&para;</a></h2>
+<h3 id="storage-architecture-overview">Storage Architecture Overview<a class="headerlink" href="#storage-architecture-overview" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    subgraph "Session-Specific Storage (Temporary)"
+        Cache["Cache Repository&lt;br/&gt;(SQLite)&lt;br/&gt;cache.db"]
+        Queue["Queue Database&lt;br/&gt;(SQLite + GORM)&lt;br/&gt;queue.db"]
+    end
+
+    subgraph "Persistent Storage (Configurable)"
+        PersistentDB["Persistent Repository&lt;br/&gt;SQLite: assetdb.db&lt;br/&gt;Postgres: Network DB&lt;br/&gt;Neo4j: Network DB"]
+    end
+
+    subgraph "Engine Components"
+        Plugin["Plugins"]
+        Dispatcher["Dispatcher"]
+    end
+
+    Plugin --&gt;|"CreateAsset()"| Cache
+    Cache --&gt;|"Flush every 1 min"| PersistentDB
+
+    Dispatcher --&gt;|"Append(entity)"| Queue
+    Queue --&gt;|"Next(type, num)"| Dispatcher
+    Dispatcher --&gt;|"Processed(entity)"| Queue
+
+    Cache -.-&gt;|"Shares entity IDs"| Queue
+
+    style Cache fill:#f9f9f9
+    style Queue fill:#f9f9f9
+    style PersistentDB fill:#e8e8e8</code></pre>
+<h3 id="database-connection-flow">Database Connection Flow<a class="headerlink" href="#database-connection-flow" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TD
+    Session["Session Creation&lt;br/&gt;CreateSession(cfg)"]
+
+    Session --&gt; SelectDBMS["selectDBMS()&lt;br/&gt;Parse cfg.GraphDBs"]
+
+    SelectDBMS --&gt; CheckType{"Database Type?"}
+
+    CheckType --&gt;|"postgres"| Postgres["DSN:&lt;br/&gt;host=X port=Y user=Z&lt;br/&gt;password=W dbname=N&lt;br/&gt;Type: sqlrepo.Postgres"]
+    CheckType --&gt;|"sqlite/sqlite3"| SQLite["DSN:&lt;br/&gt;&amp;lt;dir&amp;gt;/assetdb.db&lt;br/&gt;?_pragma=busy_timeout(30000)&lt;br/&gt;&amp;amp;_pragma=journal_mode(WAL)&lt;br/&gt;Type: sqlrepo.SQLite"]
+    CheckType --&gt;|"neo4j/bolt"| Neo4j["DSN: db.URL&lt;br/&gt;Type: neo4j.Neo4j"]
+
+    Postgres --&gt; InitDB["assetdb.New(dbtype, dsn)"]
+    SQLite --&gt; InitDB
+    Neo4j --&gt; InitDB
+
+    InitDB --&gt; AssignDB["s.db = store"]
+
+    AssignDB --&gt; CreateTmp["createTemporaryDir()&lt;br/&gt;&amp;lt;outdir&amp;gt;/session-&amp;lt;uuid&amp;gt;"]
+
+    CreateTmp --&gt; CreateCache["createFileCacheRepo()&lt;br/&gt;&amp;lt;tmpdir&amp;gt;/cache.db"]
+
+    CreateCache --&gt; NewCache["cache.New(c, s.db, 1min)"]
+
+    NewCache --&gt; CreateQueue["newSessionQueue(s)&lt;br/&gt;&amp;lt;tmpdir&amp;gt;/queue.db"]
+
+    style InitDB fill:#f9f9f9
+    style NewCache fill:#f9f9f9
+    style CreateQueue fill:#f9f9f9</code></pre>
+<h3 id="queue-and-dispatcher-workflow">Queue and Dispatcher Workflow<a class="headerlink" href="#queue-and-dispatcher-workflow" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Plugin
+    participant Dispatcher
+    participant SessionQueue
+    participant QueueDB
+    participant Cache
+
+    Plugin-&gt;&gt;Dispatcher: DispatchEvent(event)
+    Dispatcher-&gt;&gt;SessionQueue: Has(entity)
+    SessionQueue-&gt;&gt;QueueDB: Has(entity.ID)
+    QueueDB--&gt;&gt;Dispatcher: false
+
+    Dispatcher-&gt;&gt;SessionQueue: Append(entity)
+    SessionQueue-&gt;&gt;QueueDB: Append(type, ID)
+
+    Note over Dispatcher: Every 1 second
+    Dispatcher-&gt;&gt;SessionQueue: Next(type, 500)
+    SessionQueue-&gt;&gt;QueueDB: Next(type, 500)
+    QueueDB--&gt;&gt;SessionQueue: [entity_ids]
+    SessionQueue-&gt;&gt;Cache: FindEntityById(id)
+    Cache--&gt;&gt;SessionQueue: entity
+    SessionQueue--&gt;&gt;Dispatcher: [entities]
+
+    Dispatcher-&gt;&gt;Pipeline: Process(entity)
+    Pipeline--&gt;&gt;Dispatcher: Completed
+
+    Dispatcher-&gt;&gt;SessionQueue: Processed(entity)
+    SessionQueue-&gt;&gt;QueueDB: Processed(entity.ID)</code></pre>
+<h3 id="triple-based-graph-traversal">Triple-Based Graph Traversal<a class="headerlink" href="#triple-based-graph-traversal" title="Permanent link">&para;</a></h3>
+<p>Amass uses <strong>triple-based queries</strong> to traverse the graph database. A triple is a pattern <code>(subject, predicate, object)</code> describing a relationship traversal:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>fqdn -&gt; dns_record -&gt; ipaddr
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>ipaddr -&gt; netblock_contains -&gt; netblock
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>netblock -&gt; asn_announcement -&gt; as
+</span></code></pre></div>
+<p>The <code>oam_assoc</code> command-line tool performs graph traversal using these triples:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>oam_assoc<span class="w"> </span>-t1<span class="w"> </span><span class="s2">&quot;fqdn -&gt; dns_record -&gt; ipaddr&quot;</span><span class="w"> </span>-t2<span class="w"> </span><span class="s2">&quot;ipaddr -&gt; netblock_contains -&gt; netblock&quot;</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1"># or load from file</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>oam_assoc<span class="w"> </span>-tf<span class="w"> </span>triples_file.txt
+</span></code></pre></div>
+<pre class="mermaid"><code>graph TD
+    CLI["oam_assoc CLI&lt;br/&gt;CLIWorkflow()"]
+
+    CLI --&gt; ParseArgs["Parse Arguments&lt;br/&gt;-t1...-t10 or -tf"]
+
+    ParseArgs --&gt; LoadFile{"Triple File&lt;br/&gt;Provided?"}
+
+    LoadFile --&gt;|"Yes"| ReadFile["GetListFromFile()&lt;br/&gt;Parse up to 10 triples"]
+    LoadFile --&gt;|"No"| ValidateTriples["Validate CLI triples"]
+
+    ReadFile --&gt; ValidateTriples
+
+    ValidateTriples --&gt; OpenDB["OpenGraphDatabase(cfg)&lt;br/&gt;Connect to asset-db"]
+
+    OpenDB --&gt; ParseTriples["Loop: triples.ParseTriple(tstr)&lt;br/&gt;Build []*triples.Triple"]
+
+    ParseTriples --&gt; Extract["triples.Extract(db, tris)&lt;br/&gt;Execute graph traversal"]
+
+    Extract --&gt; Results["Results map"]
+
+    Results --&gt; JSON["json.MarshalIndent(results)&lt;br/&gt;Pretty JSON output"]
+
+    JSON --&gt; Output["Print to stdout"]
+
+    style Extract fill:#f9f9f9
+    style OpenDB fill:#f9f9f9</code></pre>
+<h3 id="oam_subs-subdomain-query-flow">oam_subs: Subdomain Query Flow<a class="headerlink" href="#oam_subs-subdomain-query-flow" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TD
+    Start["oam_subs -d domain.com"]
+
+    Start --&gt; GetDomain["FindEntitiesByContent()&lt;br/&gt;FQDN{Name: domain.com}"]
+
+    GetDomain --&gt; FindSubdomains["FindByFQDNScope(db, entity)&lt;br/&gt;Recursive subdomain discovery"]
+
+    FindSubdomains --&gt; BuildList["Build list of FQDN names"]
+
+    BuildList --&gt; GetAddrs["NamesToAddrs(db, time, names)&lt;br/&gt;Resolve FQDNs to IP addresses"]
+
+    GetAddrs --&gt; ASNLookup["ASNCache.AddrSearch(ip)&lt;br/&gt;Get ASN/netblock info"]
+
+    ASNLookup --&gt; Format["Format output with&lt;br/&gt;names, IPs, ASNs"]
+
+    Format --&gt; Print["Print summary table"]
+
+    style FindSubdomains fill:#f9f9f9
+    style GetAddrs fill:#f9f9f9
+    style ASNLookup fill:#f9f9f9</code></pre>
+<h3 id="oam_track-time-based-filtering">oam_track: Time-Based Filtering<a class="headerlink" href="#oam_track-time-based-filtering" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TD
+    Start["oam_track -d domain.com&lt;br/&gt;-since '01/02 15:04:05 2006 MST'"]
+
+    Start --&gt; ParseTime["time.Parse(TimeFormat, args.Since)"]
+
+    ParseTime --&gt; FindDomains["FindEntitiesByContent()&lt;br/&gt;with since filter"]
+
+    FindDomains --&gt; GetScope["FindByFQDNScope(db, entity, since)"]
+
+    GetScope --&gt; FilterAssets{"Filter assets where&lt;br/&gt;CreatedAt &gt;= since&lt;br/&gt;AND LastSeen &gt;= since"}
+
+    FilterAssets --&gt; NewAssets["Collect new asset names"]
+
+    NewAssets --&gt; Output["Print to stdout"]
+
+    style FilterAssets fill:#f9f9f9</code></pre>
+<div class="admonition tip">
+<p class="admonition-title">Auto-timestamp selection</p>
+<p>If no <code>since</code> parameter is provided, <code>oam_track</code> automatically uses the most recent asset's <code>LastSeen</code> timestamp, truncated to midnight.</p>
+</div>
+<h3 id="oam_viz-graph-data-extraction">oam_viz: Graph Data Extraction<a class="headerlink" href="#oam_viz-graph-data-extraction" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TD
+    Start["oam_viz -d domain.com&lt;br/&gt;-d3 / -dot / -gexf"]
+
+    Start --&gt; OpenDB["OpenGraphDatabase(cfg)"]
+
+    OpenDB --&gt; Extract["VizData(domains, start, db)&lt;br/&gt;Extract nodes and edges"]
+
+    Extract --&gt; BuildNodes["Build Node list:&lt;br/&gt;- FQDNs&lt;br/&gt;- IP addresses&lt;br/&gt;- Netblocks&lt;br/&gt;- ASNs"]
+
+    BuildNodes --&gt; BuildEdges["Build Edge list:&lt;br/&gt;- dns_record&lt;br/&gt;- netblock_contains&lt;br/&gt;- asn_announcement"]
+
+    BuildEdges --&gt; Format{"Output Format?"}
+
+    Format --&gt;|"D3"| D3["WriteD3Data()&lt;br/&gt;HTML + JavaScript"]
+    Format --&gt;|"DOT"| DOT["WriteDOTData()&lt;br/&gt;Graphviz format"]
+    Format --&gt;|"GEXF"| GEXF["WriteGEXFData()&lt;br/&gt;Gephi XML format"]
+
+    D3 --&gt; Save["Save to file"]
+    DOT --&gt; Save
+    GEXF --&gt; Save
+
+    style Extract fill:#f9f9f9</code></pre>
+<hr />
+<h2 id="database-connection-strings">Database Connection Strings<a class="headerlink" href="#database-connection-strings" title="Permanent link">&para;</a></h2>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">SQLite (Default)</label><label for="__tabbed_1_2">PostgreSQL</label><label for="__tabbed_1_3">Neo4j</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>{path}/assetdb.db?_pragma=busy_timeout(30000)&amp;_pragma=journal_mode(WAL)
+</span></code></pre></div>
+<p><strong>Pragma options:</strong>
+- <code>busy_timeout(30000)</code> — Wait 30 seconds when database is locked
+- <code>journal_mode(WAL)</code> — Write-Ahead Logging for better concurrency</p>
+</div>
+<div class="tabbed-block">
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>host={host} port={port} user={user} password={password} dbname={dbname}
+</span></code></pre></div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AMASS_DB_USER</span><span class="o">=</span><span class="s2">&quot;amass&quot;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AMASS_DB_PASSWORD</span><span class="o">=</span><span class="s2">&quot;secret&quot;</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AMASS_DB_HOST</span><span class="o">=</span><span class="s2">&quot;localhost&quot;</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AMASS_DB_PORT</span><span class="o">=</span><span class="s2">&quot;5432&quot;</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AMASS_DB_NAME</span><span class="o">=</span><span class="s2">&quot;assetdb&quot;</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>neo4j+s://{host}:{port}
+</span></code></pre></div>
+<p><strong>Supported schemes:</strong> <code>neo4j</code>, <code>neo4j+s</code>, <code>neo4j+sec</code>, <code>bolt</code>, <code>bolt+s</code>, <code>bolt+sec</code></p>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Standardized Assets</strong></td>
+<td>OAM specification ensures consistent asset types across all plugins</td>
+</tr>
+<tr>
+<td><strong>Three-Tier Storage</strong></td>
+<td>Work queue for scheduling, cache for performance, graph DB for persistence</td>
+</tr>
+<tr>
+<td><strong>Session Isolation</strong></td>
+<td>Each enumeration session has dedicated temporary storage</td>
+</tr>
+<tr>
+<td><strong>Flexible Backends</strong></td>
+<td>SQLite for standalone use; PostgreSQL/Neo4j for production deployments</td>
+</tr>
+<tr>
+<td><strong>Entity Wrapping</strong></td>
+<td><code>dbt.Entity</code> provides metadata layer over OAM assets</td>
+</tr>
+<tr>
+<td><strong>Efficient Lifecycle</strong></td>
+<td>Assets flow: discovery → cache → queue → pipeline → persistent storage</td>
+</tr>
+<tr>
+<td><strong>Graph Traversal</strong></td>
+<td>Triple-based queries via <code>oam_assoc</code>; direct repository API for tools</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-circle-arrow-up" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4M12 16V8"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../network-mapping/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Network Mapping">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Network Mapping
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../plugins/" class="md-footer__link md-footer__link--next" aria-label="Next: Overview">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Overview
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2017-2026 Jeff Foley &mdash; Licensed under Apache 2.0
+
+    </div>
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/owasp-amass" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/owasp-amass/amass-docker-compose" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M349.9 236.3h-66.1v-59.4h66.1zm0-204.3h-66.1v60.7h66.1zm78.2 144.8H362v59.4h66.1zm-156.3-72.1h-66.1v60.1h66.1zm78.1 0h-66.1v60.1h66.1zm276.8 100c-14.4-9.7-47.6-13.2-73.1-8.4-3.3-24-16.7-44.9-41.1-63.7l-14-9.3-9.3 14c-18.4 27.8-23.4 73.6-3.7 103.8-8.7 4.7-25.8 11.1-48.4 10.7H2.4c-8.7 50.8 5.8 116.8 44 162.1 37.1 43.9 92.7 66.2 165.4 66.2 157.4 0 273.9-72.5 328.4-204.2 21.4.4 67.6.1 91.3-45.2 1.5-2.5 6.6-13.2 8.5-17.1zm-511.1-27.9h-66v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1zm78.1 0h-66.1v59.4h66.1zm-78.1-72.1h-66.1v60.1h66.1z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://discord.gg/HNePVyX3cp" target="_blank" rel="noopener" title="discord.gg" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+    
+    
+      
+    
+    
+    
+      
+      
+    
+    <a href="https://infosec.exchange/@amass" target="_blank" rel="noopener me" title="infosec.exchange" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M433 179.1c0-97.2-63.7-125.7-63.7-125.7-62.5-28.7-228.6-28.4-290.5 0 0 0-63.7 28.5-63.7 125.7 0 115.7-6.6 259.4 105.6 289.1 40.5 10.7 75.3 13 103.3 11.4 50.8-2.8 79.3-18.1 79.3-18.1l-1.7-36.9s-36.3 11.4-77.1 10.1c-40.4-1.4-83-4.4-89.6-54-.6-4.6-.9-9.3-.9-13.9 85.6 20.9 158.7 9.1 178.7 6.7 56.1-6.7 105-41.3 111.2-72.9 9.8-49.8 9-121.5 9-121.5zm-75.1 125.2h-46.6V190.1c0-49.7-64-51.6-64 6.9v62.5H201V197c0-58.5-64-56.6-64-6.9v114.2H90.3c0-122.1-5.2-147.9 18.4-175 25.9-28.9 79.8-30.8 103.8 6.1l11.6 19.5 11.6-19.5c24.1-37.1 78.1-34.8 103.8-6.1 23.7 27.3 18.4 53 18.4 175"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://x.com/owaspamass/" target="_blank" rel="noopener" title="x.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M357.2 48h70.6L273.6 224.2 455 464H313L201.7 318.6 74.5 464H3.8l164.9-188.5L-5.2 48h145.6l100.5 132.9zm-24.8 373.8h39.1L119.1 88h-42z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["announce.dismiss","content.code.annotate","content.code.copy","content.code.select","content.footnote.tooltips","content.tabs.link","content.tooltips","navigation.footer","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.path","navigation.sections","navigation.tabs","navigation.top","navigation.tracking","search.highlight","toc.follow"],"search":"../../assets/javascripts/workers/search.e2d2d235.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.16f8adc2.min.js"></script>
+      
+    
+  </body>
+</html>

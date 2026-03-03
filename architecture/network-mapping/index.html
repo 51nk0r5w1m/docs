@@ -15,10 +15,10 @@
         <link rel="canonical" href="https://51nk0r5w1m.github.io/docs/architecture/network-mapping/">
       
       
-        <link rel="prev" href="../data-flow/">
+        <link rel="prev" href="../dns-caching/">
       
       
-        <link rel="next" href="../../configuration/">
+        <link rel="next" href="../data-model/">
       
       
         
@@ -285,6 +285,25 @@
     
     
       <li class="md-tabs__item">
+        <a href="../../plugins/" class="md-tabs__link">
+          
+  
+  Plugins
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
         <a href="../../configuration/" class="md-tabs__link">
           
   
@@ -339,14 +358,36 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../../contributing/contributing/" class="md-tabs__link">
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../deployment/" class="md-tabs__link">
+          
+  
+  Deployment
+
+        </a>
+      </li>
+    
+  
+
+      
         
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../contributing/contributing/" class="md-tabs__link">
+          
   
   Contributing
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -728,6 +769,16 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -792,14 +843,70 @@
   
   
     <li class="md-nav__item">
-      <a href="../plugins/" class="md-nav__link">
+      <a href="../engine-core/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Plugins
+    Engine Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event-dispatcher/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Dispatcher
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugin-registry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin Registry
   
 
     
@@ -848,6 +955,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../data-flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../dns-system/" class="md-nav__link">
         
   
@@ -876,14 +1011,42 @@
   
   
     <li class="md-nav__item">
-      <a href="../data-flow/" class="md-nav__link">
+      <a href="../dns-wildcard/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Data Flow
+    DNS Wildcard Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dns-caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Caching
   
 
     
@@ -1209,10 +1372,326 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#technical-deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Technical Deep Dive
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Technical Deep Dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#event-driven-processing-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event-Driven Processing Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complete-event-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete Event Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handler-priority-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handler Priority System
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asset-pipeline-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asset Pipeline Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transformation-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transformation Matching
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oam-asset-type-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OAM Asset Type Hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-queue-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session Queue Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../plugins/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/dns-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/api-integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Integrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/service-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/enrichment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enrichment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1255,7 +1734,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -1277,14 +1756,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1389,7 +1868,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -1411,14 +1890,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1512,6 +1991,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1525,7 +2008,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -1547,14 +2030,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1634,7 +2117,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_2" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -1656,14 +2139,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_8_2" id="__nav_8_2_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7_2">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2307,7 +2790,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -2329,14 +2812,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_8_3" id="__nav_8_3_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7_3">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2530,7 +3013,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_4" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -2552,14 +3035,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_7_4" id="__nav_7_4_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_8_4" id="__nav_8_4_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7_4">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2691,6 +3174,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/use-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Use Cases & Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2700,6 +3239,198 @@
     
       
       
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../deployment/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deployment/docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deployment/config-best-practices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration Best Practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
   
   
   
@@ -2721,6 +3452,42 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2994,6 +3761,100 @@
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#technical-deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Technical Deep Dive
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Technical Deep Dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#event-driven-processing-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event-Driven Processing Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complete-event-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete Event Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handler-priority-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handler Priority System
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asset-pipeline-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asset Pipeline Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transformation-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transformation Matching
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oam-asset-type-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OAM Asset Type Hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-queue-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session Queue Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3365,6 +4226,235 @@
 <p class="admonition-title">Legal Considerations</p>
 <p>WHOIS queries and network reconnaissance may be subject to terms of service and legal restrictions. Ensure proper authorization before scanning.</p>
 </div>
+<h2 id="technical-deep-dive">Technical Deep Dive<a class="headerlink" href="#technical-deep-dive" title="Permanent link">&para;</a></h2>
+<h3 id="event-driven-processing-model">Event-Driven Processing Model<a class="headerlink" href="#event-driven-processing-model" title="Permanent link">&para;</a></h3>
+<p>Every network asset discovery generates an <strong>Event</strong> — the fundamental unit of work that flows through the Amass engine.</p>
+<pre class="mermaid"><code>graph LR
+    subgraph "Event Structure"
+        Event["et.Event"]
+        Event --&gt; Name["Name: string&lt;br/&gt;'FQDN - example.com'"]
+        Event --&gt; Entity["Entity: *dbt.Entity&lt;br/&gt;(wraps OAM Asset)"]
+        Event --&gt; Meta["Meta: interface{}&lt;br/&gt;(optional metadata)"]
+        Event --&gt; Dispatcher["Dispatcher: et.Dispatcher"]
+        Event --&gt; Session["Session: et.Session"]
+    end
+
+    subgraph "Event Processing Wrapper"
+        EDE["et.EventDataElement"]
+        EDE --&gt; EventRef["Event: *et.Event"]
+        EDE --&gt; Error["Error: error"]
+        EDE --&gt; Queue["Queue: chan *EventDataElement"]
+    end
+
+    Event -.wrapped in.-&gt; EDE</code></pre>
+<h3 id="complete-event-flow">Complete Event Flow<a class="headerlink" href="#complete-event-flow" title="Permanent link">&para;</a></h3>
+<p>This diagram shows how a discovered network asset travels from creation through pipeline processing to completion:</p>
+<pre class="mermaid"><code>graph TB
+    subgraph "1. Event Creation"
+        Input["User Input / Plugin Discovery"]
+        Input --&gt; CreateEvent["Create et.Event"]
+        CreateEvent --&gt; Event["Event{&lt;br/&gt;Name, Entity,&lt;br/&gt;Session, Dispatcher}"]
+    end
+
+    subgraph "2. Dispatch &amp; Queue"
+        Event --&gt; Dispatch["dispatcher.DispatchEvent()"]
+        Dispatch --&gt; Validate{"Validate&lt;br/&gt;Event"}
+        Validate --&gt; |Valid| CheckDup{"Already&lt;br/&gt;in Queue?"}
+        CheckDup --&gt; |No| QAppend["session.Queue().Append()"]
+        QAppend --&gt; QDB[("queue.db&lt;br/&gt;SQLite")]
+        QDB --&gt; WaitFill["Wait for&lt;br/&gt;fillPipelineQueues()"]
+    end
+
+    subgraph "3. Pipeline Processing"
+        WaitFill --&gt; GetNext["session.Queue().Next()"]
+        GetNext --&gt; Wrap["Wrap in&lt;br/&gt;EventDataElement"]
+        Wrap --&gt; APQueue["AssetPipeline.Queue"]
+        APQueue --&gt; Pipeline["Pipeline Execution"]
+
+        Pipeline --&gt; P1["Priority 1&lt;br/&gt;Handlers"]
+        P1 --&gt; P2["Priority 2&lt;br/&gt;Handlers"]
+        P2 --&gt; Pn["Priority N&lt;br/&gt;Handlers"]
+    end
+
+    subgraph "4. Handler Processing"
+        Pn --&gt; Handler["Handler.Callback()"]
+        Handler --&gt; CheckTrans["Check&lt;br/&gt;Transformations"]
+        CheckTrans --&gt; |Allowed| Execute["Execute Logic"]
+        Execute --&gt; NewEvents["Generate&lt;br/&gt;New Events?"]
+        NewEvents --&gt; |Yes| Dispatch
+    end
+
+    subgraph "5. Completion"
+        Pn --&gt; Sink["Pipeline Sink"]
+        Sink --&gt; Complete["Completion Callback"]
+        Complete --&gt; UpdateStats["Increment&lt;br/&gt;WorkItemsCompleted"]
+        Complete --&gt; Mark["Mark Processed&lt;br/&gt;in Queue"]
+    end
+
+    CheckDup --&gt; |Yes| Skip["Skip: Duplicate"]
+    Validate --&gt; |Invalid| Reject["Reject"]</code></pre>
+<p>Key properties of this model:</p>
+<ol>
+<li>Events can generate new events recursively (discovery cascade)</li>
+<li>The session queue prevents duplicate processing</li>
+<li>Pipelines execute handlers in strict priority order</li>
+<li>Transformations filter which handlers execute for a given asset</li>
+<li>Completion callbacks track overall progress statistics</li>
+</ol>
+<h3 id="handler-priority-system">Handler Priority System<a class="headerlink" href="#handler-priority-system" title="Permanent link">&para;</a></h3>
+<p>Handlers registered by plugins execute in <strong>priority order</strong> from 1 (highest) to 9 (lowest). For network infrastructure mapping, this ordering ensures DNS resolution completes before IP enrichment, and IP enrichment completes before service probing:</p>
+<pre class="mermaid"><code>graph LR
+    subgraph "Priority Levels"
+        P1["Priority 1&lt;br/&gt;DNS TXT Records&lt;br/&gt;(Org Discovery)"]
+        P2["Priority 2&lt;br/&gt;DNS CNAME&lt;br/&gt;(Alias Resolution)"]
+        P3["Priority 3&lt;br/&gt;DNS A/AAAA&lt;br/&gt;(IP Discovery)"]
+        P4["Priority 4&lt;br/&gt;DNS NS/MX/SRV&lt;br/&gt;(Subdomain Enum)"]
+        P5["Priority 5&lt;br/&gt;DNS Apex&lt;br/&gt;(Domain Hierarchy)"]
+        P6["Priority 6&lt;br/&gt;Company Search&lt;br/&gt;(API Queries)"]
+        P7["Priority 7&lt;br/&gt;Company Enrich&lt;br/&gt;(Funding/Employees)"]
+        P8["Priority 8&lt;br/&gt;DNS Reverse&lt;br/&gt;(PTR Lookups)"]
+        P9["Priority 9&lt;br/&gt;Service Discovery&lt;br/&gt;(HTTP/TLS Probes)"]
+    end
+
+    P1 --&gt; P2 --&gt; P3 --&gt; P4 --&gt; P5 --&gt; P6 --&gt; P7 --&gt; P8 --&gt; P9</code></pre>
+<p>DNS TXT records at priority 1 may reveal organization identifiers, enabling CNAME resolution (priority 2) which yields IP addresses (priority 3), ultimately enabling service discovery (priority 9).</p>
+<h3 id="asset-pipeline-structure">Asset Pipeline Structure<a class="headerlink" href="#asset-pipeline-structure" title="Permanent link">&para;</a></h3>
+<p>For each OAM asset type, the registry constructs a pipeline of all registered handlers for that type, ordered by priority:</p>
+<pre class="mermaid"><code>graph TB
+    subgraph "Asset Pipeline for oam.FQDN"
+        Input["PipelineQueue&lt;br/&gt;et.PipelineQueue"]
+
+        Input --&gt; Stage1["Priority 1 Stage&lt;br/&gt;DNS TXT Handler"]
+        Stage1 --&gt; Stage2["Priority 2 Stage&lt;br/&gt;DNS CNAME Handler"]
+        Stage2 --&gt; Stage3["Priority 3 Stage&lt;br/&gt;DNS A/AAAA Handler"]
+        Stage3 --&gt; Stage4["Priority 4 Stage&lt;br/&gt;DNS NS/MX/SRV Handler"]
+        Stage4 --&gt; Stage5["Priority 5 Stage&lt;br/&gt;DNS Apex Handler"]
+
+        Stage5 --&gt; Sink["Sink&lt;br/&gt;Completion Callback"]
+    end
+
+    subgraph "Stage Types"
+        FIFO["FIFO&lt;br/&gt;(MaxInstances = 0)"]
+        FixedPool["FixedPool&lt;br/&gt;(MaxInstances &gt; 0)"]
+        Parallel["Parallel&lt;br/&gt;(Multiple handlers&lt;br/&gt;same priority)"]
+    end</code></pre>
+<table>
+<thead>
+<tr>
+<th>Stage Type</th>
+<th>When Used</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FIFO</code></td>
+<td>Single handler, <code>MaxInstances = 0</code></td>
+<td>Serial processing, unlimited goroutines</td>
+</tr>
+<tr>
+<td><code>FixedPool</code></td>
+<td>Single handler, <code>MaxInstances &gt; 0</code></td>
+<td>Concurrent processing, limited pool</td>
+</tr>
+<tr>
+<td><code>Parallel</code></td>
+<td>Multiple handlers, same priority</td>
+<td>All handlers run concurrently</td>
+</tr>
+</tbody>
+</table>
+<h3 id="transformation-matching">Transformation Matching<a class="headerlink" href="#transformation-matching" title="Permanent link">&para;</a></h3>
+<p>Transformation rules in <code>config.yaml</code> control which plugins are permitted to process which asset types. This is evaluated for every handler execution:</p>
+<pre class="mermaid"><code>flowchart TD
+    Start["Handler Execution"]
+    Start --&gt; HasTrans{"Transformations&lt;br/&gt;defined for&lt;br/&gt;asset type?"}
+
+    HasTrans --&gt; |No| Execute["Execute Handler"]
+
+    HasTrans --&gt; |Yes| AllExclude{"Is plugin in&lt;br/&gt;'all' exclude list?"}
+    AllExclude --&gt; |Yes| Skip["Skip Handler"]
+
+    AllExclude --&gt; |No| PluginMatch{"Is plugin&lt;br/&gt;explicitly&lt;br/&gt;listed in 'to'?"}
+    PluginMatch --&gt; |Yes| Execute
+
+    PluginMatch --&gt; |No| TransMatch{"Does plugin produce&lt;br/&gt;transformation&lt;br/&gt;in config?"}
+    TransMatch --&gt; |Yes| Execute
+    TransMatch --&gt; |No| Skip</code></pre>
+<p>Example transformation configuration:</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">transformations</span><span class="p">:</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">FQDN</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">exclude</span><span class="p">:</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dnsSubs</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">IPAddress</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dnsReverse</span>
+</span></code></pre></div>
+<h3 id="oam-asset-type-hierarchy">OAM Asset Type Hierarchy<a class="headerlink" href="#oam-asset-type-hierarchy" title="Permanent link">&para;</a></h3>
+<p>Network assets discovered during mapping are represented using the Open Asset Model (OAM). The full hierarchy of asset types recognized by the engine:</p>
+<pre class="mermaid"><code>graph TB
+    subgraph "Network Assets"
+        FQDN["oam.FQDN&lt;br/&gt;oamdns.FQDN{Name}"]
+        IP["oam.IPAddress&lt;br/&gt;oamnet.IPAddress{Address, Type}"]
+        Netblock["oam.Netblock&lt;br/&gt;oamnet.Netblock{CIDR, Type}"]
+        ASN["oam.AutonomousSystem&lt;br/&gt;oamnet.AutonomousSystem{Number}"]
+    end
+
+    subgraph "Organizational Assets"
+        Org["oam.Organization&lt;br/&gt;org.Organization{Name}"]
+        Contact["oam.ContactRecord&lt;br/&gt;contact.ContactRecord"]
+        Person["oam.Person&lt;br/&gt;people.Person{Name}"]
+        Location["oam.Location&lt;br/&gt;contact.Location{Address}"]
+    end
+
+    subgraph "Service Assets"
+        Service["oam.Service&lt;br/&gt;platform.Service{Port, Protocol}"]
+        TLS["oam.TLSCertificate&lt;br/&gt;oamcert.TLSCertificate"]
+        URL["oam.URL&lt;br/&gt;url.URL{Raw}"]
+    end
+
+    subgraph "Registration Assets"
+        Domain["oam.DomainRecord&lt;br/&gt;oamreg.DomainRecord"]
+        IPNet["oam.IPNetRecord&lt;br/&gt;oamreg.IPNetRecord"]
+        Autnum["oam.AutnumRecord&lt;br/&gt;oamreg.AutnumRecord"]
+    end</code></pre>
+<h3 id="session-queue-schema">Session Queue Schema<a class="headerlink" href="#session-queue-schema" title="Permanent link">&para;</a></h3>
+<p>Each enumeration session tracks work items in a dedicated SQLite-backed queue, preventing duplicate processing of discovered assets:</p>
+<pre class="mermaid"><code>erDiagram
+    Element {
+        uint64 ID PK
+        time CreatedAt
+        time UpdatedAt
+        string Type "oam.AssetType"
+        string EntityID "dbt.Entity.ID"
+        bool Processed
+    }</code></pre>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Has(e)</code></td>
+<td>Check if entity is already queued</td>
+</tr>
+<tr>
+<td><code>Append(e)</code></td>
+<td>Add entity to queue</td>
+</tr>
+<tr>
+<td><code>Next(atype, num)</code></td>
+<td>Get next batch of unprocessed entities</td>
+</tr>
+<tr>
+<td><code>Processed(e)</code></td>
+<td>Mark entity as processed</td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -3404,7 +4494,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../data-flow/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Data Flow">
+          <a href="../dns-caching/" class="md-footer__link md-footer__link--prev" aria-label="Previous: DNS Caching">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></svg>
@@ -3414,20 +4504,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Data Flow
+                DNS Caching
               </div>
             </div>
           </a>
         
         
           
-          <a href="../../configuration/" class="md-footer__link md-footer__link--next" aria-label="Next: Configuration">
+          <a href="../data-model/" class="md-footer__link md-footer__link--next" aria-label="Next: Data Model">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Configuration
+                Data Model
               </div>
             </div>
             <div class="md-footer__button md-icon">

@@ -15,10 +15,10 @@
         <link rel="canonical" href="https://51nk0r5w1m.github.io/docs/architecture/data-flow/">
       
       
-        <link rel="prev" href="../dns-system/">
+        <link rel="prev" href="../sessions/">
       
       
-        <link rel="next" href="../network-mapping/">
+        <link rel="next" href="../dns-system/">
       
       
         
@@ -285,6 +285,25 @@
     
     
       <li class="md-tabs__item">
+        <a href="../../plugins/" class="md-tabs__link">
+          
+  
+  Plugins
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
         <a href="../../configuration/" class="md-tabs__link">
           
   
@@ -339,14 +358,36 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../../contributing/contributing/" class="md-tabs__link">
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../deployment/" class="md-tabs__link">
+          
+  
+  Deployment
+
+        </a>
+      </li>
+    
+  
+
+      
         
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../contributing/contributing/" class="md-tabs__link">
+          
   
   Contributing
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -728,6 +769,16 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -792,14 +843,70 @@
   
   
     <li class="md-nav__item">
-      <a href="../plugins/" class="md-nav__link">
+      <a href="../engine-core/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Plugins
+    Engine Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event-dispatcher/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Dispatcher
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugin-registry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin Registry
   
 
     
@@ -828,34 +935,6 @@
     
   
     Sessions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../dns-system/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DNS System
   
 
     
@@ -1165,10 +1244,199 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#technical-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Technical Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Technical Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#end-to-end-data-flow-internal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        End-to-End Data Flow (Internal)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#safe-dispatch-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Safe Dispatch Logic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#priority-based-pipeline-construction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Priority-Based Pipeline Construction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handler-execution-and-transformation-filtering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handler Execution and Transformation Filtering
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cache-staging-and-persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cache Staging and Persistence
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cascading-discovery-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cascading Discovery Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#event-completion-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event Completion Tracking
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fqdn-to-ip-full-sequence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FQDN to IP: Full Sequence
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dns-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dns-wildcard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Wildcard Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dns-caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1189,6 +1457,228 @@
     
   
     Network Mapping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../plugins/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/dns-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/api-integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Integrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/service-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/enrichment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enrichment
   
 
     
@@ -1239,7 +1729,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -1261,14 +1751,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1373,7 +1863,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -1395,14 +1885,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1496,6 +1986,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1509,7 +2003,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -1531,14 +2025,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1618,7 +2112,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_2" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -1640,14 +2134,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_8_2" id="__nav_8_2_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7_2">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2291,7 +2785,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -2313,14 +2807,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_8_3" id="__nav_8_3_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7_3">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2514,7 +3008,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_4" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -2536,14 +3030,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_7_4" id="__nav_7_4_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_8_4" id="__nav_8_4_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7_4">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2675,6 +3169,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/use-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Use Cases & Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2684,6 +3234,198 @@
     
       
       
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../deployment/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deployment/docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deployment/config-best-practices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration Best Practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
   
   
   
@@ -2705,6 +3447,42 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2954,6 +3732,111 @@
     <span class="md-ellipsis">
       
         Optimization Tips
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#technical-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Technical Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Technical Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#end-to-end-data-flow-internal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        End-to-End Data Flow (Internal)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#safe-dispatch-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Safe Dispatch Logic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#priority-based-pipeline-construction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Priority-Based Pipeline Construction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handler-execution-and-transformation-filtering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handler Execution and Transformation Filtering
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cache-staging-and-persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cache Staging and Persistence
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cascading-discovery-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cascading Discovery Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#event-completion-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event Completion Tracking
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fqdn-to-ip-full-sequence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FQDN to IP: Full Sequence
       
     </span>
   </a>
@@ -3460,6 +4343,258 @@
 <li>Set appropriate <code>-timeout</code> to bound enumeration time</li>
 </ul>
 </div>
+<h2 id="technical-reference">Technical Reference<a class="headerlink" href="#technical-reference" title="Permanent link">&para;</a></h2>
+<p>The following diagrams detail the internal pipeline mechanics sourced from the engine codebase.</p>
+<h3 id="end-to-end-data-flow-internal">End-to-End Data Flow (Internal)<a class="headerlink" href="#end-to-end-data-flow-internal" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    subgraph "Input Layer"
+        GraphQL["GraphQL API&lt;br/&gt;CreateAsset mutation"]
+        CLI["CLI Input&lt;br/&gt;Domain/IP/CIDR"]
+    end
+
+    subgraph "Event Creation"
+        Event["et.Event&lt;br/&gt;{Name, Entity, Session}"]
+        Entity["dbt.Entity&lt;br/&gt;wraps oam.Asset"]
+    end
+
+    subgraph "Dispatcher"
+        Dispatch["Dispatcher.DispatchEvent()"]
+        SafeDispatch["safeDispatch()"]
+        AppendPipeline["appendToPipeline()"]
+    end
+
+    subgraph "Session Queue"
+        QueueDB["QueueDB (SQLite)&lt;br/&gt;queue.db in tmpdir"]
+        QueueAppend["Append(entity)"]
+        QueueNext["Next(atype, num)"]
+    end
+
+    subgraph "Pipeline System"
+        FillQueues["fillPipelineQueues()"]
+        AssetPipeline["AssetPipeline&lt;br/&gt;{Pipeline, Queue}"]
+        PriorityStages["Priority 1-9 Stages"]
+    end
+
+    subgraph "Handler Execution"
+        HandlerTask["handlerTask()"]
+        Callback["Handler.Callback(event)&lt;br/&gt;Plugin-specific"]
+    end
+
+    subgraph "Data Storage"
+        Cache["Cache&lt;br/&gt;cache.db (SQLite)"]
+        CreateAsset["Cache.CreateAsset()&lt;br/&gt;Creates dbt.Entity"]
+        CreateEdge["Cache.CreateEdge()&lt;br/&gt;Relationships"]
+        DB["Persistent DB&lt;br/&gt;(Postgres/SQLite/Neo4j)"]
+    end
+
+    subgraph "Event Completion"
+        CompletedCallback["completedCallback()"]
+        Stats["SessionStats&lt;br/&gt;WorkItemsCompleted++"]
+    end
+
+    GraphQL --&gt; Event
+    CLI --&gt; Event
+    Event --&gt; Entity
+    Entity --&gt; Dispatch
+
+    Dispatch --&gt; SafeDispatch
+    SafeDispatch --&gt; QueueAppend
+    SafeDispatch --&gt; AppendPipeline
+
+    QueueAppend --&gt; QueueDB
+    QueueDB --&gt; QueueNext
+    QueueNext --&gt; FillQueues
+
+    FillQueues --&gt; AssetPipeline
+    AssetPipeline --&gt; PriorityStages
+    PriorityStages --&gt; HandlerTask
+    HandlerTask --&gt; Callback
+
+    Callback --&gt; CreateAsset
+    Callback --&gt; CreateEdge
+    CreateAsset --&gt; Cache
+    CreateEdge --&gt; Cache
+
+    Cache --&gt; DB
+
+    Callback --&gt; Dispatch
+
+    HandlerTask --&gt; CompletedCallback
+    CompletedCallback --&gt; Stats</code></pre>
+<h3 id="safe-dispatch-logic">Safe Dispatch Logic<a class="headerlink" href="#safe-dispatch-logic" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TD
+    Start["safeDispatch(event)"]
+    CheckPipeline{"GetPipeline(assetType)&lt;br/&gt;exists?"}
+    CheckQueued{"session.Queue().Has(entity)&lt;br/&gt;already queued?"}
+    Append["session.Queue().Append(entity)"]
+    IncrementStats["stats.WorkItemsTotal++"]
+    CheckMeta{"event.Meta != nil?"}
+    AppendToPipeline["appendToPipeline(event)"]
+    End["Return"]
+
+    Start --&gt; CheckPipeline
+    CheckPipeline --&gt;|No pipeline| End
+    CheckPipeline --&gt;|Pipeline exists| CheckQueued
+    CheckQueued --&gt;|Already queued| End
+    CheckQueued --&gt;|Not queued| Append
+    Append --&gt; IncrementStats
+    IncrementStats --&gt; CheckMeta
+    CheckMeta --&gt;|No meta| End
+    CheckMeta --&gt;|Has meta| AppendToPipeline
+    AppendToPipeline --&gt; End</code></pre>
+<h3 id="priority-based-pipeline-construction">Priority-Based Pipeline Construction<a class="headerlink" href="#priority-based-pipeline-construction" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    subgraph "Pipeline Construction"
+        BuildPipelines["BuildPipelines()"]
+        BuildAssetPipeline["buildAssetPipeline(atype)"]
+        AssetPipeline["AssetPipeline&lt;br/&gt;{Pipeline, Queue}"]
+    end
+
+    subgraph "Stage Creation"
+        Priority1["Priority 1 Stage&lt;br/&gt;DNS-TXT"]
+        Priority2["Priority 2 Stage&lt;br/&gt;DNS-CNAME"]
+        Priority3["Priority 3 Stage&lt;br/&gt;DNS-IP"]
+        Priority4["Priority 4 Stage&lt;br/&gt;DNS-Subs"]
+        Priority5["Priority 5 Stage&lt;br/&gt;DNS-Apex"]
+        Priorities6to9["Priorities 6-9&lt;br/&gt;API/Enrichment"]
+    end
+
+    BuildPipelines --&gt; BuildAssetPipeline
+    BuildAssetPipeline --&gt; Priority1
+    Priority1 --&gt; Priority2
+    Priority2 --&gt; Priority3
+    Priority3 --&gt; Priority4
+    Priority4 --&gt; Priority5
+    Priority5 --&gt; Priorities6to9
+    Priorities6to9 --&gt; AssetPipeline</code></pre>
+<h3 id="handler-execution-and-transformation-filtering">Handler Execution and Transformation Filtering<a class="headerlink" href="#handler-execution-and-transformation-filtering" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TD
+    Start["handlerTask() receives EventDataElement"]
+    CheckDone{"ctx.Done() or&lt;br/&gt;session.Done()?"}
+    GetTransforms["transformationsByType(config, assetType)"]
+    CheckExcludes{"allExcludesPlugin()?"}
+    CheckMatch{"Plugin matches transformation&lt;br/&gt;or transform.To?"}
+    ExecuteCallback["handler.Callback(event)"]
+    ReturnData["Return EventDataElement"]
+    SkipHandler["Skip handler execution"]
+
+    Start --&gt; CheckDone
+    CheckDone --&gt;|Terminated| ReturnData
+    CheckDone --&gt;|Active| GetTransforms
+    GetTransforms --&gt; CheckExcludes
+    CheckExcludes --&gt;|Excluded| SkipHandler
+    CheckExcludes --&gt;|Not excluded| CheckMatch
+    CheckMatch --&gt;|Match| ExecuteCallback
+    CheckMatch --&gt;|No match| SkipHandler
+    ExecuteCallback --&gt; ReturnData
+    SkipHandler --&gt; ReturnData</code></pre>
+<h3 id="cache-staging-and-persistence">Cache Staging and Persistence<a class="headerlink" href="#cache-staging-and-persistence" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    subgraph "Handler Processing"
+        Handler["Plugin Handler&lt;br/&gt;e.g., dnsCNAME.store()"]
+    end
+
+    subgraph "Cache Layer - cache.db (SQLite)"
+        CreateAsset["session.Cache().CreateAsset(asset)"]
+        CreateEdge["session.Cache().CreateEdge(edge)"]
+        CreateProperty["session.Cache().CreateEdgeProperty(prop)"]
+    end
+
+    subgraph "Persistent Storage"
+        SyncTimer["Periodic Sync&lt;br/&gt;(1 minute interval)"]
+        PersistentDB["Persistent DB&lt;br/&gt;(Postgres/Neo4j/SQLite)"]
+    end
+
+    Handler --&gt; CreateAsset
+    Handler --&gt; CreateEdge
+    CreateEdge --&gt; CreateProperty
+
+    CreateAsset --&gt; SyncTimer
+    CreateEdge --&gt; SyncTimer
+    CreateProperty --&gt; SyncTimer
+
+    SyncTimer --&gt; PersistentDB</code></pre>
+<h3 id="cascading-discovery-pattern">Cascading Discovery Pattern<a class="headerlink" href="#cascading-discovery-pattern" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    Input["User Input: example.com"]
+    FQDN1["FQDN Event&lt;br/&gt;example.com"]
+
+    subgraph "First Cascade"
+        TXT["DNS-TXT Handler&lt;br/&gt;Discovers: google-site-verification"]
+        CNAME["DNS-CNAME Handler&lt;br/&gt;Discovers: alias.example.com"]
+        IP["DNS-IP Handler&lt;br/&gt;Discovers: 192.0.2.1"]
+        Subs["DNS-Subs Handler&lt;br/&gt;Discovers: ns1.example.com"]
+    end
+
+    subgraph "Second Cascade"
+        FQDN2["FQDN Event&lt;br/&gt;alias.example.com"]
+        FQDN3["FQDN Event&lt;br/&gt;ns1.example.com"]
+        IPEvent["IPAddress Event&lt;br/&gt;192.0.2.1"]
+    end
+
+    subgraph "Third Cascade"
+        IP2["DNS-IP Handler&lt;br/&gt;Discovers: 192.0.2.2"]
+        Reverse["DNS-Reverse Handler&lt;br/&gt;Discovers: server.example.com"]
+        Sweep["IP Sweep&lt;br/&gt;Discovers: 192.0.2.0/24"]
+    end
+
+    Input --&gt; FQDN1
+    FQDN1 --&gt; TXT
+    FQDN1 --&gt; CNAME
+    FQDN1 --&gt; IP
+    FQDN1 --&gt; Subs
+
+    CNAME --&gt; FQDN2
+    Subs --&gt; FQDN3
+    IP --&gt; IPEvent
+
+    FQDN2 --&gt; IP2
+    IPEvent --&gt; Reverse
+    IPEvent --&gt; Sweep</code></pre>
+<h3 id="event-completion-tracking">Event Completion Tracking<a class="headerlink" href="#event-completion-tracking" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    SinkFunc["Pipeline Sink&lt;br/&gt;makeSink()"]
+    CChannel["Completion Channel&lt;br/&gt;dispatcher.cchan"]
+    CompletedCallback["completedCallback()"]
+    Stats["SessionStats&lt;br/&gt;WorkItemsCompleted++"]
+
+    SinkFunc --&gt; CChannel
+    CChannel --&gt; CompletedCallback
+    CompletedCallback --&gt; Stats</code></pre>
+<h3 id="fqdn-to-ip-full-sequence">FQDN to IP: Full Sequence<a class="headerlink" href="#fqdn-to-ip-full-sequence" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant User
+    participant GraphQL as GraphQL API
+    participant Disp as Dispatcher
+    participant Queue as SessionQueue
+    participant Pipeline as FQDN Pipeline
+    participant IP_Handler as DNS-IP Handler
+    participant Cache
+    participant IPPipeline as IPAddress Pipeline
+    participant Rev_Handler as DNS-Reverse Handler
+
+    User-&gt;&gt;GraphQL: CreateAsset(example.com)
+    GraphQL-&gt;&gt;Cache: CreateAsset(FQDN)
+    GraphQL-&gt;&gt;Disp: DispatchEvent(FQDN event)
+    Disp-&gt;&gt;Queue: Append(FQDN entity)
+    Disp-&gt;&gt;Pipeline: append to FQDN pipeline queue
+
+    Pipeline-&gt;&gt;IP_Handler: Execute priority 3 handler
+    IP_Handler-&gt;&gt;IP_Handler: PerformQuery(A/AAAA)
+    IP_Handler-&gt;&gt;Cache: CreateAsset(IPAddress: 192.0.2.1)
+    IP_Handler-&gt;&gt;Cache: CreateEdge(FQDN-&gt;IPAddress)
+    IP_Handler-&gt;&gt;Disp: DispatchEvent(IPAddress event)
+
+    Disp-&gt;&gt;Queue: Append(IPAddress entity)
+    Disp-&gt;&gt;IPPipeline: append to IPAddress pipeline queue
+
+    IPPipeline-&gt;&gt;Rev_Handler: Execute priority 8 handler
+    Rev_Handler-&gt;&gt;Rev_Handler: PerformQuery(PTR)
+    Rev_Handler-&gt;&gt;Cache: CreateAsset(FQDN: server.example.com)
+    Rev_Handler-&gt;&gt;Cache: CreateEdge(PTR relationship)
+    Rev_Handler-&gt;&gt;Disp: DispatchEvent(new FQDN event)
+
+    Note over Disp: Cascading continues...</code></pre>
 
 
 
@@ -3499,7 +4634,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../dns-system/" class="md-footer__link md-footer__link--prev" aria-label="Previous: DNS System">
+          <a href="../sessions/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Sessions">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></svg>
@@ -3509,20 +4644,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                DNS System
+                Sessions
               </div>
             </div>
           </a>
         
         
           
-          <a href="../network-mapping/" class="md-footer__link md-footer__link--next" aria-label="Next: Network Mapping">
+          <a href="../dns-system/" class="md-footer__link md-footer__link--next" aria-label="Next: DNS System">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Network Mapping
+                DNS System
               </div>
             </div>
             <div class="md-footer__button md-icon">

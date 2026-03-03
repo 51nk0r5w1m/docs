@@ -31,19 +31,49 @@
         <loc>https://51nk0r5w1m.github.io/docs/architecture/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/architecture/plugins/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/architecture/engine-core/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/architecture/event-dispatcher/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/architecture/plugin-registry/</loc>
       </url>
       <url>
         <loc>https://51nk0r5w1m.github.io/docs/architecture/sessions/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/architecture/dns-system/</loc>
-      </url>
-      <url>
         <loc>https://51nk0r5w1m.github.io/docs/architecture/data-flow/</loc>
       </url>
       <url>
+        <loc>https://51nk0r5w1m.github.io/docs/architecture/dns-system/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/architecture/dns-wildcard/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/architecture/dns-caching/</loc>
+      </url>
+      <url>
         <loc>https://51nk0r5w1m.github.io/docs/architecture/network-mapping/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/architecture/data-model/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/plugins/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/plugins/dns-discovery/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/plugins/api-integrations/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/plugins/service-discovery/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/plugins/enrichment/</loc>
       </url>
       <url>
         <loc>https://51nk0r5w1m.github.io/docs/configuration/</loc>
@@ -166,6 +196,24 @@
         <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/properties/vuln_property/</loc>
       </url>
       <url>
+        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/implementation/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/use-cases/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/deployment/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/deployment/docker/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/deployment/config-best-practices/</loc>
+      </url>
+      <url>
         <loc>https://51nk0r5w1m.github.io/docs/contributing/contributing/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/contributing/development/</loc>
       </url>
 </urlset>

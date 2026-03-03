@@ -15,10 +15,10 @@
         <link rel="canonical" href="https://51nk0r5w1m.github.io/docs/architecture/sessions/">
       
       
-        <link rel="prev" href="../plugins/">
+        <link rel="prev" href="../plugin-registry/">
       
       
-        <link rel="next" href="../dns-system/">
+        <link rel="next" href="../data-flow/">
       
       
         
@@ -285,6 +285,25 @@
     
     
       <li class="md-tabs__item">
+        <a href="../../plugins/" class="md-tabs__link">
+          
+  
+  Plugins
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
         <a href="../../configuration/" class="md-tabs__link">
           
   
@@ -339,14 +358,36 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../../contributing/contributing/" class="md-tabs__link">
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../deployment/" class="md-tabs__link">
+          
+  
+  Deployment
+
+        </a>
+      </li>
+    
+  
+
+      
         
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../contributing/contributing/" class="md-tabs__link">
+          
   
   Contributing
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -728,6 +769,16 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -792,14 +843,70 @@
   
   
     <li class="md-nav__item">
-      <a href="../plugins/" class="md-nav__link">
+      <a href="../engine-core/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Plugins
+    Engine Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event-dispatcher/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Dispatcher
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugin-registry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin Registry
   
 
     
@@ -1109,6 +1216,100 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#technical-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Technical Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Technical Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#session-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-creation-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session Creation Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database Selection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-manager" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session Manager
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-termination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session Termination
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#queue-operations-detail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Queue Operations Detail
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graphql-clientserver-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GraphQL Client/Server Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1123,34 +1324,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../dns-system/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DNS System
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -1191,6 +1364,90 @@
   
   
     <li class="md-nav__item">
+      <a href="../dns-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dns-wildcard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Wildcard Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dns-caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../network-mapping/" class="md-nav__link">
         
   
@@ -1199,6 +1456,228 @@
     
   
     Network Mapping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../plugins/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/dns-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/api-integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Integrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/service-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/enrichment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enrichment
   
 
     
@@ -1249,7 +1728,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -1271,14 +1750,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1383,7 +1862,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -1405,14 +1884,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1506,6 +1985,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1519,7 +2002,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -1541,14 +2024,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1628,7 +2111,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_2" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -1650,14 +2133,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_8_2" id="__nav_8_2_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7_2">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2301,7 +2784,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -2323,14 +2806,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_8_3" id="__nav_8_3_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7_3">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2524,7 +3007,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_4" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -2546,14 +3029,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_7_4" id="__nav_7_4_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_8_4" id="__nav_8_4_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7_4">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2685,6 +3168,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/use-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Use Cases & Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2694,6 +3233,198 @@
     
       
       
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../deployment/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deployment/docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deployment/config-best-practices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration Best Practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
   
   
   
@@ -2715,6 +3446,42 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2971,6 +3738,100 @@
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#technical-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Technical Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Technical Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#session-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-creation-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session Creation Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database Selection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-manager" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session Manager
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-termination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session Termination
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#queue-operations-detail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Queue Operations Detail
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graphql-clientserver-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GraphQL Client/Server Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3364,6 +4225,323 @@
 </span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="p">}</span>
 </span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">}</span>
 </span></code></pre></div>
+<h2 id="technical-reference">Technical Reference<a class="headerlink" href="#technical-reference" title="Permanent link">&para;</a></h2>
+<h3 id="session-object">Session Object<a class="headerlink" href="#session-object" title="Permanent link">&para;</a></h3>
+<p>The <code>Session</code> struct represents the state of an active engine enumeration. Each session is uniquely identified by a UUID and contains all necessary components to execute an independent enumeration operation.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>uuid.UUID</code></td>
+<td>Unique identifier for the session</td>
+</tr>
+<tr>
+<td><code>log</code></td>
+<td><code>*slog.Logger</code></td>
+<td>Structured JSON logger for session events</td>
+</tr>
+<tr>
+<td><code>ps</code></td>
+<td><code>*pubsub.Logger</code></td>
+<td>Publish-subscribe logger for GraphQL subscriptions</td>
+</tr>
+<tr>
+<td><code>cfg</code></td>
+<td><code>*config.Config</code></td>
+<td>Session configuration including scope and transformations</td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td><code>*scope.Scope</code></td>
+<td>Determines which assets are in-scope for enumeration</td>
+</tr>
+<tr>
+<td><code>db</code></td>
+<td><code>repository.Repository</code></td>
+<td>Primary database connection (SQLite, Postgres, or Neo4j)</td>
+</tr>
+<tr>
+<td><code>cache</code></td>
+<td><code>*cache.Cache</code></td>
+<td>Two-tier cache with temporary and persistent storage</td>
+</tr>
+<tr>
+<td><code>queue</code></td>
+<td><code>*sessionQueue</code></td>
+<td>Work queue backed by SQLite database</td>
+</tr>
+<tr>
+<td><code>ranger</code></td>
+<td><code>cidranger.Ranger</code></td>
+<td>CIDR range manager for IP address matching</td>
+</tr>
+<tr>
+<td><code>tmpdir</code></td>
+<td><code>string</code></td>
+<td>Temporary directory for session-specific files</td>
+</tr>
+<tr>
+<td><code>stats</code></td>
+<td><code>*et.SessionStats</code></td>
+<td>Work item counters (completed vs total)</td>
+</tr>
+<tr>
+<td><code>done</code></td>
+<td><code>chan struct{}</code></td>
+<td>Signals session termination</td>
+</tr>
+<tr>
+<td><code>finished</code></td>
+<td><code>bool</code></td>
+<td>Indicates if session has been terminated</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Session Component Architecture</strong></p>
+<pre class="mermaid"><code>graph TB
+    subgraph Session["Session (session.go)"]
+        ID["id: uuid.UUID"]
+        Config["cfg: *config.Config"]
+        Scope["scope: *scope.Scope"]
+        Logger["log: *slog.Logger"]
+        PubSub["ps: *pubsub.Logger"]
+        Stats["stats: *SessionStats"]
+        Done["done: chan struct{}"]
+    end
+
+    subgraph Storage["Storage Layer"]
+        DB["db: repository.Repository&lt;br/&gt;(SQLite/Postgres/Neo4j)"]
+        Cache["cache: *cache.Cache&lt;br/&gt;(2-tier: temp + persistent)"]
+        Queue["queue: *sessionQueue&lt;br/&gt;(SQLite work queue)"]
+        TmpDir["tmpdir: string&lt;br/&gt;(session-UUID/)"]
+    end
+
+    subgraph Network["Network Utilities"]
+        Ranger["ranger: cidranger.Ranger&lt;br/&gt;(CIDR matching)"]
+    end
+
+    Session --&gt; Storage
+    Session --&gt; Network
+
+    Queue --&gt; QueueDB["QueueDB&lt;br/&gt;queue.db (SQLite)"]
+    Cache --&gt; CacheDB["Cache DB&lt;br/&gt;cache.db (SQLite)"]
+    TmpDir --&gt; QueueDB
+    TmpDir --&gt; CacheDB</code></pre>
+<h3 id="session-creation-flow">Session Creation Flow<a class="headerlink" href="#session-creation-flow" title="Permanent link">&para;</a></h3>
+<p>Sessions are created via the <code>CreateSession</code> function, which performs the following initialization sequence:</p>
+<ol>
+<li><strong>Configuration Validation</strong>: Uses provided config or creates default</li>
+<li><strong>Session Object Creation</strong>: Generates UUID, initializes scope, ranger, and stats</li>
+<li><strong>Database Setup</strong>: Determines primary database from config and establishes connection</li>
+<li><strong>Temporary Directory</strong>: Creates <code>session-{UUID}</code> directory in output path</li>
+<li><strong>Cache Initialization</strong>: Creates file-based cache repository with 1-minute TTL</li>
+<li><strong>Queue Creation</strong>: Initializes SQLite-backed work queue</li>
+</ol>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Client
+    participant CreateSession
+    participant Session
+    participant DB as "Database"
+    participant FS as "Filesystem"
+    participant Cache
+    participant Queue
+
+    Client-&gt;&gt;CreateSession: CreateSession(cfg)
+    CreateSession-&gt;&gt;Session: new Session{id: uuid.New()}
+    CreateSession-&gt;&gt;Session: setupDB()
+    Session-&gt;&gt;DB: selectDBMS() + assetdb.New()
+    DB--&gt;&gt;Session: repository.Repository
+    CreateSession-&gt;&gt;FS: os.MkdirTemp("session-{UUID}")
+    FS--&gt;&gt;Session: tmpdir path
+    CreateSession-&gt;&gt;Cache: cache.New(fileRepo, db, 1min)
+    Cache--&gt;&gt;Session: *cache.Cache
+    CreateSession-&gt;&gt;Queue: newSessionQueue(session)
+    Queue--&gt;&gt;Session: *sessionQueue
+    CreateSession--&gt;&gt;Client: Session</code></pre>
+<h3 id="database-selection">Database Selection<a class="headerlink" href="#database-selection" title="Permanent link">&para;</a></h3>
+<p>The <code>selectDBMS</code> method determines which database to use based on the <code>GraphDBs</code> configuration. If no primary database is specified, SQLite is used by default.</p>
+<table>
+<thead>
+<tr>
+<th>System</th>
+<th>DSN Format</th>
+<th>Default Pragmas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SQLite</strong></td>
+<td><code>{output_dir}/assetdb.db?_pragma=...</code></td>
+<td><code>busy_timeout(30000)</code>, <code>journal_mode(WAL)</code></td>
+</tr>
+<tr>
+<td><strong>Postgres</strong></td>
+<td><code>host={host} port={port} user={user} password={pass} dbname={db}</code></td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Neo4j</strong></td>
+<td><code>{url}</code> (<code>bolt://</code> or <code>neo4j://</code>)</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<h3 id="session-manager">Session Manager<a class="headerlink" href="#session-manager" title="Permanent link">&para;</a></h3>
+<p>The <code>manager</code> struct is a singleton that manages the lifecycle of all active sessions. It provides thread-safe operations using a <code>sync.RWMutex</code> and maintains a map of session UUIDs to Session objects.</p>
+<pre class="mermaid"><code>graph TB
+    subgraph Manager["manager (manager.go)"]
+        RWMutex["sync.RWMutex"]
+        Logger["logger: *slog.Logger"]
+        Sessions["sessions: map[uuid.UUID]et.Session"]
+    end
+
+    subgraph Operations["Operations"]
+        New["NewSession(cfg)&lt;br/&gt;→ CreateSession + AddSession"]
+        Add["AddSession(s)&lt;br/&gt;→ Lock + append to map"]
+        Cancel["CancelSession(id)&lt;br/&gt;→ Kill + cleanup"]
+        Get["GetSession(id)&lt;br/&gt;→ RLock + lookup"]
+        GetAll["GetSessions()&lt;br/&gt;→ RLock + collect all"]
+        Shutdown["Shutdown()&lt;br/&gt;→ CancelSession for all"]
+    end
+
+    subgraph Session1["Session 1"]
+        S1ID["UUID: abc-123"]
+        S1Queue["Queue"]
+        S1Cache["Cache"]
+        S1DB["DB"]
+    end
+
+    subgraph Session2["Session 2"]
+        S2ID["UUID: def-456"]
+        S2Queue["Queue"]
+        S2Cache["Cache"]
+        S2DB["DB"]
+    end
+
+    Manager --&gt; Operations
+    Sessions --&gt; Session1
+    Sessions --&gt; Session2</code></pre>
+<h3 id="session-termination">Session Termination<a class="headerlink" href="#session-termination" title="Permanent link">&para;</a></h3>
+<p>The <code>CancelSession</code> method performs graceful termination:</p>
+<ol>
+<li><strong>Signal Termination</strong>: Calls <code>s.Kill()</code> to close the <code>done</code> channel</li>
+<li><strong>Wait for Completion</strong>: Polls session stats every 500ms until all work items are completed</li>
+<li><strong>Cleanup Resources</strong>: Closes queue DB, cache, nullifies CIDR ranger, removes temp directory, closes primary DB</li>
+<li><strong>Remove from Map</strong>: Deletes the session from the manager's map</li>
+</ol>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Manager
+    participant Session
+    participant Stats
+    participant Queue
+    participant Cache
+    participant DB
+    participant FS
+
+    Manager-&gt;&gt;Session: Kill()
+    Session-&gt;&gt;Session: close(done)
+    Session-&gt;&gt;Session: finished = true
+
+    loop Every 500ms
+        Manager-&gt;&gt;Stats: Lock() + check completed vs total
+        alt completed &gt;= total
+            Stats--&gt;&gt;Manager: Exit loop
+        end
+    end
+
+    Manager-&gt;&gt;Queue: Close()
+    Manager-&gt;&gt;Cache: Close()
+    Manager-&gt;&gt;Session: ranger = nil
+    Manager-&gt;&gt;FS: os.RemoveAll(tmpdir)
+    Manager-&gt;&gt;DB: Close()
+    Manager-&gt;&gt;Manager: delete(sessions, id)</code></pre>
+<h3 id="queue-operations-detail">Queue Operations Detail<a class="headerlink" href="#queue-operations-detail" title="Permanent link">&para;</a></h3>
+<p><strong>Work Queue Flow</strong></p>
+<pre class="mermaid"><code>graph LR
+    subgraph Dispatcher["Dispatcher"]
+        DispatchEvent["DispatchEvent(e)"]
+    end
+
+    subgraph SessionQueue["sessionQueue"]
+        Has["Has(e) → db.Has(e.ID)"]
+        Append["Append(e) → db.Append(type, id)"]
+        Next["Next(type, num) → db.Next()&lt;br/&gt;+ cache.FindEntityById()"]
+        Processed["Processed(e) → db.Processed(id)"]
+    end
+
+    subgraph QueueDB["QueueDB (SQLite)"]
+        Insert["INSERT Element&lt;br/&gt;{Type, EntityID, Processed=false}"]
+        Select["SELECT * WHERE&lt;br/&gt;etype=? AND processed=false&lt;br/&gt;ORDER BY created_at LIMIT ?"]
+        Update["UPDATE processed=true&lt;br/&gt;WHERE entity_id=?"]
+    end
+
+    subgraph Cache["Session Cache"]
+        Find["FindEntityById(id)&lt;br/&gt;→ *dbt.Entity"]
+    end
+
+    DispatchEvent --&gt;|"1. Check duplicate"| Has
+    Has --&gt; QueueDB
+    DispatchEvent --&gt;|"2. Schedule"| Append
+    Append --&gt; Insert
+
+    Dispatcher --&gt;|"3. Fill pipelines"| Next
+    Next --&gt; Select
+    Next --&gt; Find
+
+    Dispatcher --&gt;|"4. Mark done"| Processed
+    Processed --&gt; Update</code></pre>
+<h3 id="graphql-clientserver-architecture">GraphQL Client/Server Architecture<a class="headerlink" href="#graphql-clientserver-architecture" title="Permanent link">&para;</a></h3>
+<p>Sessions are exposed via a GraphQL API that enables remote enumeration control. The API follows a client-server architecture where <code>amass enum</code> acts as a client and <code>amass engine</code> runs the server.</p>
+<pre class="mermaid"><code>graph TB
+    subgraph Client["Client (client.go)"]
+        CreateSess["CreateSession(cfg)&lt;br/&gt;→ createSessionFromJson mutation"]
+        CreateAsset["CreateAsset(asset, token)&lt;br/&gt;→ createAsset mutation"]
+        TermSess["TerminateSession(token)&lt;br/&gt;→ terminateSession mutation"]
+        GetStats["SessionStats(token)&lt;br/&gt;→ sessionStats query"]
+        Subscribe["Subscribe(token)&lt;br/&gt;→ logMessages subscription"]
+    end
+
+    subgraph Server["Server Resolvers (schema.resolvers.go)"]
+        ResolvCreate["CreateSessionFromJSON&lt;br/&gt;(input.config)"]
+        ResolvAsset["CreateAsset&lt;br/&gt;(input.sessionToken, data)"]
+        ResolvTerm["TerminateSession&lt;br/&gt;(sessionToken)"]
+        ResolvStats["SessionStats&lt;br/&gt;(sessionToken)"]
+        ResolvLogs["LogMessages&lt;br/&gt;(sessionToken)"]
+    end
+
+    subgraph SessionMgr["SessionManager"]
+        NewSession["NewSession(cfg)"]
+        GetSession["GetSession(token)"]
+        CancelSession["CancelSession(token)"]
+    end
+
+    subgraph DispatcherNode["Dispatcher"]
+        DispatchEvent["DispatchEvent(event)"]
+    end
+
+    CreateSess --&gt;|HTTP POST| ResolvCreate
+    ResolvCreate --&gt; NewSession
+    NewSession --&gt;|Return token| Client
+
+    CreateAsset --&gt;|HTTP POST| ResolvAsset
+    ResolvAsset --&gt; GetSession
+    ResolvAsset --&gt; DispatchEvent
+
+    TermSess --&gt;|HTTP POST| ResolvTerm
+    ResolvTerm --&gt; CancelSession
+
+    GetStats --&gt;|HTTP POST| ResolvStats
+    ResolvStats --&gt; GetSession
+
+    Subscribe --&gt;|WebSocket| ResolvLogs
+    ResolvLogs --&gt; GetSession</code></pre>
 <h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
 <div class="admonition tip">
 <p class="admonition-title">Session Management</p>
@@ -3417,7 +4595,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../plugins/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Plugins">
+          <a href="../plugin-registry/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Plugin Registry">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></svg>
@@ -3427,20 +4605,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Plugins
+                Plugin Registry
               </div>
             </div>
           </a>
         
         
           
-          <a href="../dns-system/" class="md-footer__link md-footer__link--next" aria-label="Next: DNS System">
+          <a href="../data-flow/" class="md-footer__link md-footer__link--next" aria-label="Next: Data Flow">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                DNS System
+                Data Flow
               </div>
             </div>
             <div class="md-footer__button md-icon">
