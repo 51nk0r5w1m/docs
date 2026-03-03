@@ -12,7 +12,6 @@ site_author = "OWASP Amass Contributors"
 
 repo_name = "OWASP Amass"
 repo_url = "https://github.com/owasp-amass/amass"
-remote_branch = "gh-pages"
 
 copyright = """
 Copyright &copy; 2017-2026 Jeff Foley &mdash; Licensed under Apache 2.0
