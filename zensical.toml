@@ -21,6 +21,24 @@ extra_css = ["stylesheets/extra.css"]
 
 nav = [
   { "Home" = "index.md" },
+  { "Installation" = "installation.md" },
+  { "CLI Reference" = [
+    { "Overview" = "cli/index.md" },
+    { "enum" = "cli/enum.md" },
+    { "engine" = "cli/engine.md" },
+    { "subs" = "cli/subs.md" },
+    { "assoc" = "cli/assoc.md" },
+    { "track" = "cli/track.md" },
+    { "viz" = "cli/viz.md" },
+  ]},
+  { "Architecture" = [
+    { "Overview" = "architecture/index.md" },
+    { "Plugins" = "architecture/plugins.md" },
+    { "Sessions" = "architecture/sessions.md" },
+    { "DNS System" = "architecture/dns-system.md" },
+    { "Data Flow" = "architecture/data-flow.md" },
+    { "Network Mapping" = "architecture/network-mapping.md" },
+  ]},
   { "Configuration" = [
     { "Configuration" = "configuration/index.md" },
     { "Data Sources" = "configuration/data_sources.md" },
@@ -73,9 +91,6 @@ nav = [
       { "VulnProperty" = "open_asset_model/properties/vuln_property.md" },
     ]},
   ]},
-  { "Data Sources" = "data_sources/data_sources.md" },
-  { "Dashboards" = "dashboards/dashboards.md" },
-  { "Changelog" = "changelog/changelog.md" },
   { "Contributing" = "contributing/contributing.md" },
 ]
 
