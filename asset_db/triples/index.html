@@ -18,7 +18,7 @@
         <link rel="prev" href="../postgres/">
       
       
-        <link rel="next" href="../../open_asset_model/">
+        <link rel="next" href="../getting-started/">
       
       
         
@@ -180,7 +180,7 @@
     
     <div class="md-header__source">
       
-        <a href="https://github.com/owasp-amass/amass" title="Go to repository" class="md-source" data-md-component="source">
+        <a href="https://github.com/51nk0r5w1m/docs" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
@@ -423,7 +423,7 @@
   </label>
   
     <div class="md-nav__source">
-      <a href="https://github.com/owasp-amass/amass" title="Go to repository" class="md-source" data-md-component="source">
+      <a href="https://github.com/51nk0r5w1m/docs" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
@@ -1465,6 +1465,14 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1750,10 +1758,1550 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#neo4j-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neo4j Repository
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#purpose-and-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Purpose and Scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repository-implementation-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repository Implementation Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connection-and-initialization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection and Initialization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Connection and Initialization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dsn-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DSN Format
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connection-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entity-to-node-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity-to-Node Mapping
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Entity-to-Node Mapping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#node-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Node Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-asset-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Asset Types
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cypher-query-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cypher Query Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cypher Query Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entity-creation-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Creation Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-retrieval-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Retrieval Patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-update-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Update Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-deletion-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Deletion Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#duplicate-prevention-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Duplicate Prevention Strategy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#time-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Time Handling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Time Handling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conversion-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conversion Functions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#property-extraction-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property Extraction Pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Property Extraction Pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#context-and-timeout-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Context and Timeout Management
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#database-specific-query-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database-Specific Query Execution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#neo4j-entity-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neo4j Entity Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overview-of-entity-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview of Entity Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-creation-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Creation Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Entity Creation Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#createentity-process-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CreateEntity Process Diagram
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-implementation-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Implementation Details
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#query-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Query Operations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Query Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#findentitybyid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FindEntityById
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#findentitiesbycontent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FindEntitiesByContent
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#findentitiesbytype" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FindEntitiesByType
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deleteentity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DeleteEntity
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#node-to-entity-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Node to Entity Conversion
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Node to Entity Conversion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conversion-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conversion Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nodetoentity-dispatcher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        nodeToEntity Dispatcher
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-asset-types_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Asset Types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-extraction-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property Extraction Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Property Extraction Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#string-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        String Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#numeric-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Numeric Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#network-address-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Network Address Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#array-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Array Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#duplicate-prevention-mechanism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Duplicate Prevention Mechanism
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Duplicate Prevention Mechanism">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#duplicate-detection-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Duplicate Detection Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uniqueness-guarantees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Uniqueness Guarantees
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unique-id-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unique ID Generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Coverage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neo4j-edge-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neo4j Edge Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edge-data-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Data Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edge-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Creation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Edge Creation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#validation-and-creation-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation and Creation Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#input-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Input Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oam-taxonomy-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OAM Taxonomy Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cypher-query-construction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cypher Query Construction
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#duplicate-edge-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Duplicate Edge Handling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Duplicate Edge Handling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#duplicate-detection-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Duplicate Detection Logic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timestamp-update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timestamp Update
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edge-retrieval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Retrieval
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Edge Retrieval">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#find-edge-by-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Find Edge By ID
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edge-traversal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Traversal
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Edge Traversal">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#incoming-edges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Incoming Edges
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outgoing-edges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outgoing Edges
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#traversal-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Traversal Patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edge-deletion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Deletion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Conversion
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Conversion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#relationship-to-edge-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relationship to Edge Conversion
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance Considerations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#indexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Indexes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#query-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Query Optimization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neo4j-tag-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neo4j Tag Management
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#purpose-and-scope_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Purpose and Scope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tag-data-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tag Data Model
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tag Data Model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#core-tag-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Tag Types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neo4j-node-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neo4j Node Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-tag-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Tag Operations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Entity Tag Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tag-creation-with-duplicate-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tag Creation with Duplicate Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#finding-tags-by-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding Tags by ID
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#content-based-tag-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content-Based Tag Search
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#retrieving-all-entity-tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retrieving All Entity Tags
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tag-deletion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tag Deletion
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edge-tag-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Tag Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-extraction-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property Extraction System
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Property Extraction System">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#converting-neo4j-nodes-to-tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Converting Neo4j Nodes to Tags
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-type-handlers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property Type Handlers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#time-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Time Management
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Time Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#timestamp-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timestamp Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#duplicate-detection-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Duplicate Detection Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Duplicate Detection Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#content-matching-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content Matching Logic
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-coverage_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Coverage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neo4j-schema-and-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neo4j Schema and Constraints
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schema-initialization-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema Initialization Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Schema Initialization Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initialization-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Initialization Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#core-schema-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Schema Components
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core Schema Components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entity-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Nodes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entitytag-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EntityTag Nodes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edgetag-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EdgeTag Nodes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#constraint-implementation-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constraint Implementation Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Constraint Implementation Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#executequery-helper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        executeQuery Helper
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#content-specific-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content-Specific Constraints
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Content-Specific Constraints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#asset-type-constraint-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asset Type Constraint Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#additional-content-indexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Additional Content Indexes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schema-to-code-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema-to-Code Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#constraint-enforcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constraint Enforcement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#index-types-and-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Index Types and Performance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Index Types and Performance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#index-usage-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Index Usage Patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database Creation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-extraction-from-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property Extraction from Nodes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-property-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-Property Constraints
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Multi-Property Constraints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phone-number-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phone Number Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autnumrecord-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AutnumRecord Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -3446,6 +4994,1434 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#neo4j-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neo4j Repository
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#purpose-and-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Purpose and Scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repository-implementation-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repository Implementation Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connection-and-initialization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection and Initialization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Connection and Initialization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dsn-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DSN Format
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connection-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entity-to-node-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity-to-Node Mapping
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Entity-to-Node Mapping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#node-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Node Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-asset-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Asset Types
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cypher-query-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cypher Query Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cypher Query Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entity-creation-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Creation Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-retrieval-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Retrieval Patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-update-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Update Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-deletion-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Deletion Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#duplicate-prevention-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Duplicate Prevention Strategy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#time-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Time Handling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Time Handling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conversion-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conversion Functions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#property-extraction-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property Extraction Pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Property Extraction Pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#context-and-timeout-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Context and Timeout Management
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#database-specific-query-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database-Specific Query Execution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#neo4j-entity-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neo4j Entity Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overview-of-entity-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview of Entity Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-creation-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Creation Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Entity Creation Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#createentity-process-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CreateEntity Process Diagram
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-implementation-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Implementation Details
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#query-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Query Operations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Query Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#findentitybyid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FindEntityById
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#findentitiesbycontent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FindEntitiesByContent
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#findentitiesbytype" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FindEntitiesByType
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deleteentity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DeleteEntity
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#node-to-entity-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Node to Entity Conversion
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Node to Entity Conversion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conversion-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conversion Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nodetoentity-dispatcher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        nodeToEntity Dispatcher
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-asset-types_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Asset Types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-extraction-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property Extraction Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Property Extraction Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#string-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        String Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#numeric-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Numeric Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#network-address-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Network Address Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#array-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Array Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#duplicate-prevention-mechanism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Duplicate Prevention Mechanism
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Duplicate Prevention Mechanism">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#duplicate-detection-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Duplicate Detection Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uniqueness-guarantees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Uniqueness Guarantees
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unique-id-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unique ID Generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Coverage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neo4j-edge-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neo4j Edge Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edge-data-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Data Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edge-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Creation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Edge Creation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#validation-and-creation-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation and Creation Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#input-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Input Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oam-taxonomy-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OAM Taxonomy Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cypher-query-construction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cypher Query Construction
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#duplicate-edge-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Duplicate Edge Handling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Duplicate Edge Handling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#duplicate-detection-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Duplicate Detection Logic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timestamp-update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timestamp Update
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edge-retrieval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Retrieval
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Edge Retrieval">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#find-edge-by-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Find Edge By ID
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edge-traversal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Traversal
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Edge Traversal">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#incoming-edges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Incoming Edges
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outgoing-edges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outgoing Edges
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#traversal-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Traversal Patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edge-deletion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Deletion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Conversion
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Conversion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#relationship-to-edge-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relationship to Edge Conversion
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance Considerations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#indexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Indexes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#query-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Query Optimization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neo4j-tag-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neo4j Tag Management
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#purpose-and-scope_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Purpose and Scope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tag-data-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tag Data Model
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tag Data Model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#core-tag-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Tag Types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neo4j-node-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neo4j Node Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-tag-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Tag Operations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Entity Tag Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tag-creation-with-duplicate-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tag Creation with Duplicate Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#finding-tags-by-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding Tags by ID
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#content-based-tag-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content-Based Tag Search
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#retrieving-all-entity-tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retrieving All Entity Tags
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tag-deletion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tag Deletion
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edge-tag-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Tag Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-extraction-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property Extraction System
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Property Extraction System">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#converting-neo4j-nodes-to-tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Converting Neo4j Nodes to Tags
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-type-handlers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property Type Handlers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#time-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Time Management
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Time Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#timestamp-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timestamp Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#duplicate-detection-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Duplicate Detection Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Duplicate Detection Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#content-matching-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content Matching Logic
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-coverage_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Coverage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neo4j-schema-and-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neo4j Schema and Constraints
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schema-initialization-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema Initialization Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Schema Initialization Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initialization-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Initialization Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#core-schema-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Schema Components
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core Schema Components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entity-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Nodes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entitytag-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EntityTag Nodes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edgetag-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EdgeTag Nodes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#constraint-implementation-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constraint Implementation Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Constraint Implementation Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#executequery-helper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        executeQuery Helper
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#content-specific-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content-Specific Constraints
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Content-Specific Constraints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#asset-type-constraint-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asset Type Constraint Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#additional-content-indexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Additional Content Indexes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schema-to-code-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema-to-Code Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#constraint-enforcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constraint Enforcement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#index-types-and-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Index Types and Performance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Index Types and Performance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#index-usage-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Index Usage Patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database Creation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-extraction-from-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property Extraction from Nodes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-property-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-Property Constraints
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Multi-Property Constraints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phone-number-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phone Number Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autnumrecord-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AutnumRecord Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3509,6 +6485,19 @@
                 
                   
   
+    <a href="https://github.com/51nk0r5w1m/docs/edit/main/docs/asset_db/triples.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-file-pen" viewBox="0 0 24 24"><path d="M12.659 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v9.34"/><path d="M14 2v5a1 1 0 0 0 1 1h5M10.378 12.622a1 1 0 0 1 3 3.003L8.36 20.637a2 2 0 0 1-.854.506l-2.867.837a.5.5 0 0 1-.62-.62l.836-2.869a2 2 0 0 1 .506-.853z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/51nk0r5w1m/docs/raw/main/docs/asset_db/triples.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-file-code-2" viewBox="0 0 24 24"><path d="M4 12.15V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.706.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2h-3.35"/><path d="M14 2v5a1 1 0 0 0 1 1h5M5 16l-3 3 3 3M9 22l3-3-3-3"/></svg>
+    </a>
   
 
 
@@ -3598,6 +6587,2240 @@
 <li><a href=".././">Asset Database</a></li>
 <li><a href=".././postgres/">Setting Up PostgreSQL</a></li>
 </ul>
+<h2 id="neo4j-repository">Neo4j Repository<a class="headerlink" href="#neo4j-repository" title="Permanent link">&para;</a></h2>
+<h2 id="purpose-and-scope">Purpose and Scope<a class="headerlink" href="#purpose-and-scope" title="Permanent link">&para;</a></h2>
+<p>The Neo4j Repository provides a graph database implementation of the Repository interface, enabling asset storage and retrieval using Neo4j's native graph data model. This implementation leverages Neo4j's Cypher query language and graph traversal capabilities to efficiently manage entities, edges, and their associated tags.</p>
+<p>This page covers the Neo4j repository architecture, connection management, data model mapping, and query patterns. For detailed operation-level documentation, see:
+- Entity operations: <a href=".././triples/#neo4j-entity-operations">Neo4j Entity Operations</a>
+- Edge operations: <a href=".././triples/#neo4j-edge-operations">Neo4j Edge Operations</a>
+- Tag operations: <a href=".././triples/#neo4j-tag-management">Neo4j Tag Management</a>
+- Schema and constraints: <a href=".././triples/#neo4j-schema-and-constraints">Neo4j Schema and Constraints</a></p>
+<p>For SQL-based implementations, see <a href=".././postgres/#sql-repository-implementation">SQL Repository</a>.</p>
+<hr />
+<h2 id="repository-implementation-structure">Repository Implementation Structure<a class="headerlink" href="#repository-implementation-structure" title="Permanent link">&para;</a></h2>
+<p>The <code>neoRepository</code> struct implements the <code>Repository</code> interface using the Neo4j Go Driver. It maintains a driver connection and database name for all operations.</p>
+<pre class="mermaid"><code>graph TB
+    subgraph "Repository Interface Layer"
+        RepoInterface["repository.Repository&lt;br/&gt;Interface"]
+    end
+
+    subgraph "Neo4j Implementation"
+        NeoRepo["neoRepository struct&lt;br/&gt;repository/neo4j/db.go"]
+        Driver["db: neo4jdb.DriverWithContext&lt;br/&gt;Neo4j Go Driver v5"]
+        DBName["dbname: string&lt;br/&gt;Target database name"]
+    end
+
+    subgraph "Core Operations"
+        EntityOps["Entity Operations&lt;br/&gt;CreateEntity, FindEntityById&lt;br/&gt;FindEntitiesByContent&lt;br/&gt;FindEntitiesByType, DeleteEntity"]
+        EdgeOps["Edge Operations&lt;br/&gt;CreateEdge, FindEdgeById&lt;br/&gt;IncomingEdges, OutgoingEdges&lt;br/&gt;DeleteEdge"]
+        TagOps["Tag Operations&lt;br/&gt;CreateEntityTag, GetEntityTags&lt;br/&gt;CreateEdgeTag, GetEdgeTags"]
+    end
+
+    subgraph "Extraction Layer"
+        ExtractEntity["nodeToEntity()&lt;br/&gt;extract_entity.go"]
+        ExtractTags["nodeToEntityTag()&lt;br/&gt;nodeToEdgeTag()&lt;br/&gt;extract_tags.go"]
+        ExtractProp["nodeToProperty()&lt;br/&gt;extract_property.go"]
+    end
+
+    subgraph "Neo4j Database"
+        Nodes["Nodes:&lt;br/&gt;Entity + AssetType labels&lt;br/&gt;EntityTag, EdgeTag"]
+        Rels["Relationships:&lt;br/&gt;Typed edges between entities"]
+    end
+
+    RepoInterface -.-&gt;|"implements"| NeoRepo
+    NeoRepo --&gt; Driver
+    NeoRepo --&gt; DBName
+
+    NeoRepo --&gt; EntityOps
+    NeoRepo --&gt; EdgeOps
+    NeoRepo --&gt; TagOps
+
+    EntityOps --&gt; ExtractEntity
+    TagOps --&gt; ExtractTags
+    ExtractTags --&gt; ExtractProp
+    ExtractEntity --&gt; ExtractProp
+
+    EntityOps -.-&gt;|"neo4jdb.ExecuteQuery()"| Nodes
+    EdgeOps -.-&gt;|"neo4jdb.ExecuteQuery()"| Rels
+    TagOps -.-&gt;|"neo4jdb.ExecuteQuery()"| Nodes</code></pre>
+<hr />
+<h2 id="connection-and-initialization">Connection and Initialization<a class="headerlink" href="#connection-and-initialization" title="Permanent link">&para;</a></h2>
+<p>The <code>New()</code> function creates a <code>neoRepository</code> instance by parsing the DSN, establishing a driver connection, and verifying connectivity.</p>
+<h3 id="dsn-format">DSN Format<a class="headerlink" href="#dsn-format" title="Permanent link">&para;</a></h3>
+<p>The DSN format is: <code>neo4j://[username:password@]host[:port]/database</code></p>
+<h3 id="connection-configuration">Connection Configuration<a class="headerlink" href="#connection-configuration" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MaxConnectionPoolSize</code></td>
+<td>20</td>
+<td>Maximum concurrent connections</td>
+</tr>
+<tr>
+<td><code>MaxConnectionLifetime</code></td>
+<td>1 hour</td>
+<td>Connection lifetime before refresh</td>
+</tr>
+<tr>
+<td><code>ConnectionLivenessCheckTimeout</code></td>
+<td>10 minutes</td>
+<td>Timeout for liveness checks</td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Client
+    participant New["New() function&lt;br/&gt;db.go:27-59"]
+    participant URLParse["url.Parse()&lt;br/&gt;DSN parsing"]
+    participant Driver["neo4jdb.NewDriverWithContext()&lt;br/&gt;Driver creation"]
+    participant Verify["driver.VerifyConnectivity()&lt;br/&gt;Connection test"]
+    participant Repo["neoRepository"]
+
+    Client-&gt;&gt;New: New(dbtype, dsn)
+    New-&gt;&gt;URLParse: Parse DSN
+    URLParse--&gt;&gt;New: URL components
+    New-&gt;&gt;New: Extract auth credentials
+    New-&gt;&gt;New: Extract database name from path
+    New-&gt;&gt;Driver: Create driver with config
+    Driver--&gt;&gt;New: neo4jdb.DriverWithContext
+    New-&gt;&gt;Verify: Test connectivity (5s timeout)
+    alt Connection successful
+        Verify--&gt;&gt;New: nil error
+        New-&gt;&gt;Repo: Create neoRepository
+        Repo--&gt;&gt;Client: Return repository
+    else Connection failed
+        Verify--&gt;&gt;New: error
+        New--&gt;&gt;Client: Return error
+    end</code></pre>
+<hr />
+<h2 id="entity-to-node-mapping">Entity-to-Node Mapping<a class="headerlink" href="#entity-to-node-mapping" title="Permanent link">&para;</a></h2>
+<p>Entities are stored as Neo4j nodes with dual labels: a base <code>Entity</code> label and an asset-specific type label (e.g., <code>FQDN</code>, <code>IPAddress</code>, <code>Organization</code>). All asset properties are flattened into node properties.</p>
+<h3 id="node-structure">Node Structure<a class="headerlink" href="#node-structure" title="Permanent link">&para;</a></h3>
+<p>Each entity node contains:
+- <strong>entity_id</strong>: Unique identifier (constrained)
+- <strong>etype</strong>: Asset type string
+- <strong>created_at</strong>: Creation timestamp (LocalDateTime)
+- <strong>updated_at</strong>: Last seen timestamp (LocalDateTime)
+- <strong>Asset-specific properties</strong>: Flattened from OAM asset structure</p>
+<pre class="mermaid"><code>graph LR
+    subgraph "types.Entity Struct"
+        Entity["Entity&lt;br/&gt;ID: string&lt;br/&gt;CreatedAt: time.Time&lt;br/&gt;LastSeen: time.Time&lt;br/&gt;Asset: oam.Asset"]
+        Asset["oam.Asset&lt;br/&gt;e.g., dns.FQDN,&lt;br/&gt;network.IPAddress,&lt;br/&gt;org.Organization"]
+    end
+
+    subgraph "Neo4j Node"
+        Node["Node&lt;br/&gt;Labels: Entity + AssetType&lt;br/&gt;Properties: Flattened"]
+        Props["entity_id: string&lt;br/&gt;etype: string&lt;br/&gt;created_at: LocalDateTime&lt;br/&gt;updated_at: LocalDateTime&lt;br/&gt;+ asset-specific fields"]
+    end
+
+    subgraph "Conversion Functions"
+        ToProps["entityPropsMap()&lt;br/&gt;Flatten entity to map"]
+        ToEntity["nodeToEntity()&lt;br/&gt;extract_entity.go:29-111"]
+        TypeSwitch["Asset type switch&lt;br/&gt;nodeToFQDN()&lt;br/&gt;nodeToIPAddress()&lt;br/&gt;nodeToOrganization()&lt;br/&gt;etc."]
+    end
+
+    Entity --&gt; Asset
+    Entity --&gt;|"Create"| ToProps
+    ToProps --&gt; Node
+    Node --&gt;|"Read"| ToEntity
+    ToEntity --&gt; TypeSwitch
+    TypeSwitch --&gt; Entity
+    Node --&gt; Props</code></pre>
+<h3 id="supported-asset-types">Supported Asset Types<a class="headerlink" href="#supported-asset-types" title="Permanent link">&para;</a></h3>
+<p>The <code>nodeToEntity()</code> function supports conversion for all OAM asset types:</p>
+<table>
+<thead>
+<tr>
+<th>Asset Type</th>
+<th>Converter Function</th>
+<th>Unique Key Property</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Account</code></td>
+<td><code>nodeToAccount()</code></td>
+<td><code>unique_id</code></td>
+</tr>
+<tr>
+<td><code>AutnumRecord</code></td>
+<td><code>nodeToAutnumRecord()</code></td>
+<td><code>handle</code>, <code>number</code></td>
+</tr>
+<tr>
+<td><code>AutonomousSystem</code></td>
+<td><code>nodeToAutonomousSystem()</code></td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td><code>ContactRecord</code></td>
+<td><code>nodeToContactRecord()</code></td>
+<td><code>discovered_at</code></td>
+</tr>
+<tr>
+<td><code>DomainRecord</code></td>
+<td><code>nodeToDomainRecord()</code></td>
+<td><code>domain</code></td>
+</tr>
+<tr>
+<td><code>File</code></td>
+<td><code>nodeToFile()</code></td>
+<td><code>url</code></td>
+</tr>
+<tr>
+<td><code>FQDN</code></td>
+<td><code>nodeToFQDN()</code></td>
+<td><code>name</code></td>
+</tr>
+<tr>
+<td><code>FundsTransfer</code></td>
+<td><code>nodeToFundsTransfer()</code></td>
+<td><code>unique_id</code></td>
+</tr>
+<tr>
+<td><code>Identifier</code></td>
+<td><code>nodeToIdentifier()</code></td>
+<td><code>unique_id</code></td>
+</tr>
+<tr>
+<td><code>IPAddress</code></td>
+<td><code>nodeToIPAddress()</code></td>
+<td><code>address</code></td>
+</tr>
+<tr>
+<td><code>IPNetRecord</code></td>
+<td><code>nodeToIPNetRecord()</code></td>
+<td><code>handle</code></td>
+</tr>
+<tr>
+<td><code>Location</code></td>
+<td><code>nodeToLocation()</code></td>
+<td><code>address</code></td>
+</tr>
+<tr>
+<td><code>Netblock</code></td>
+<td><code>nodeToNetblock()</code></td>
+<td><code>cidr</code></td>
+</tr>
+<tr>
+<td><code>Organization</code></td>
+<td><code>nodeToOrganization()</code></td>
+<td><code>unique_id</code></td>
+</tr>
+<tr>
+<td><code>Person</code></td>
+<td><code>nodeToPerson()</code></td>
+<td><code>unique_id</code></td>
+</tr>
+<tr>
+<td><code>Phone</code></td>
+<td><code>nodeToPhone()</code></td>
+<td><code>e164</code>, <code>raw</code></td>
+</tr>
+<tr>
+<td><code>Product</code></td>
+<td><code>nodeToProduct()</code></td>
+<td><code>unique_id</code></td>
+</tr>
+<tr>
+<td><code>ProductRelease</code></td>
+<td><code>nodeToProductRelease()</code></td>
+<td><code>name</code></td>
+</tr>
+<tr>
+<td><code>Service</code></td>
+<td><code>nodeToService()</code></td>
+<td><code>unique_id</code></td>
+</tr>
+<tr>
+<td><code>TLSCertificate</code></td>
+<td><code>nodeToTLSCertificate()</code></td>
+<td><code>serial_number</code></td>
+</tr>
+<tr>
+<td><code>URL</code></td>
+<td><code>nodeToURL()</code></td>
+<td><code>url</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="cypher-query-patterns">Cypher Query Patterns<a class="headerlink" href="#cypher-query-patterns" title="Permanent link">&para;</a></h2>
+<p>The Neo4j repository uses standardized Cypher query patterns for consistency and performance.</p>
+<h3 id="entity-creation-pattern">Entity Creation Pattern<a class="headerlink" href="#entity-creation-pattern" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>CREATE (a:Entity:{AssetType} $props) RETURN a
+</span></code></pre></div>
+<p>Example for FQDN:
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Entity</span><span class="p">:</span><span class="n">FQDN</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="n">entity_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;uuid-here&quot;</span><span class="p">,</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="n">etype</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;FQDN&quot;</span><span class="p">,</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="n">created_at</span><span class="p">:</span><span class="w"> </span><span class="n">localdatetime</span><span class="p">(),</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">  </span><span class="n">updated_at</span><span class="p">:</span><span class="w"> </span><span class="n">localdatetime</span><span class="p">(),</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">  </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;example.com&quot;</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="p">})</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">a</span>
+</span></code></pre></div></p>
+<h3 id="entity-retrieval-patterns">Entity Retrieval Patterns<a class="headerlink" href="#entity-retrieval-patterns" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Cypher Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>By ID</td>
+<td><code>MATCH (a:Entity {entity_id: $eid}) RETURN a</code></td>
+</tr>
+<tr>
+<td>By Content</td>
+<td><code>MATCH (a:{AssetType} {key: value}) RETURN a</code></td>
+</tr>
+<tr>
+<td>By Type</td>
+<td><code>MATCH (a:{AssetType}) RETURN a</code></td>
+</tr>
+<tr>
+<td>By Type + Since</td>
+<td><code>MATCH (a:{AssetType}) WHERE a.updated_at &gt;= localDateTime($since) RETURN a</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="entity-update-pattern">Entity Update Pattern<a class="headerlink" href="#entity-update-pattern" title="Permanent link">&para;</a></h3>
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Entity</span><span class="w"> </span><span class="p">{</span><span class="n">entity_id</span><span class="p">:</span><span class="w"> </span><span class="err">$</span><span class="n">eid</span><span class="p">})</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">SET</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="err">$</span><span class="n">props</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">a</span>
+</span></code></pre></div>
+<h3 id="entity-deletion-pattern">Entity Deletion Pattern<a class="headerlink" href="#entity-deletion-pattern" title="Permanent link">&para;</a></h3>
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">Entity</span><span class="w"> </span><span class="p">{</span><span class="n">entity_id</span><span class="p">:</span><span class="w"> </span><span class="err">$</span><span class="n">eid</span><span class="p">})</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">DETACH</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="n">n</span>
+</span></code></pre></div>
+<p>The <code>DETACH DELETE</code> ensures all relationships are removed before node deletion.</p>
+<hr />
+<h2 id="duplicate-prevention-strategy">Duplicate Prevention Strategy<a class="headerlink" href="#duplicate-prevention-strategy" title="Permanent link">&para;</a></h2>
+<p>The repository prevents duplicate entities by checking for existing entities before creation. When a duplicate is detected, the existing entity's <code>updated_at</code> timestamp is refreshed rather than creating a new node.</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Client
+    participant CreateEntity["CreateEntity()&lt;br/&gt;entity.go:23-124"]
+    participant FindContent["FindEntitiesByContent()"]
+    participant UpdateNode["MATCH + SET query"]
+    participant CreateNode["CREATE query"]
+    participant ExtractNode["nodeToEntity()"]
+
+    Client-&gt;&gt;CreateEntity: CreateEntity(input)
+    CreateEntity-&gt;&gt;FindContent: Check for existing entity
+    alt Entity exists
+        FindContent--&gt;&gt;CreateEntity: Existing entity found
+        CreateEntity-&gt;&gt;CreateEntity: Validate asset type match
+        CreateEntity-&gt;&gt;UpdateNode: Update existing node timestamp
+        UpdateNode--&gt;&gt;CreateEntity: Updated node
+        CreateEntity-&gt;&gt;ExtractNode: Convert to Entity
+        ExtractNode--&gt;&gt;Client: Return existing entity
+    else Entity not found
+        FindContent--&gt;&gt;CreateEntity: No entity found
+        CreateEntity-&gt;&gt;CreateEntity: Generate UUID if needed
+        CreateEntity-&gt;&gt;CreateEntity: Set timestamps
+        CreateEntity-&gt;&gt;CreateNode: CREATE new node
+        CreateNode--&gt;&gt;CreateEntity: New node
+        CreateEntity-&gt;&gt;ExtractNode: Convert to Entity
+        ExtractNode--&gt;&gt;Client: Return new entity
+    end</code></pre>
+<hr />
+<h2 id="time-handling">Time Handling<a class="headerlink" href="#time-handling" title="Permanent link">&para;</a></h2>
+<p>Neo4j uses <code>LocalDateTime</code> for timestamp storage, which doesn't include timezone information. The repository converts between Go's <code>time.Time</code> and Neo4j's <code>LocalDateTime</code> format.</p>
+<h3 id="conversion-functions">Conversion Functions<a class="headerlink" href="#conversion-functions" title="Permanent link">&para;</a></h3>
+<p><strong>Go Time to Neo4j Format:</strong>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kd">func</span><span class="w"> </span><span class="nx">timeToNeo4jTime</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">)</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">Format</span><span class="p">(</span><span class="s">&quot;2006-01-02T15:04:05&quot;</span><span class="p">)</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="p">}</span>
+</span></code></pre></div></p>
+<p><strong>Neo4j Format to Go Time:</strong>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kd">func</span><span class="w"> </span><span class="nx">neo4jTimeToTime</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="nx">neo4jdb</span><span class="p">.</span><span class="nx">LocalDateTime</span><span class="p">)</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Date</span><span class="p">(</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">        </span><span class="nx">t</span><span class="p">.</span><span class="nx">Year</span><span class="p">(),</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Month</span><span class="p">(</span><span class="nx">t</span><span class="p">.</span><span class="nx">Month</span><span class="p">()),</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">Day</span><span class="p">(),</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">        </span><span class="nx">t</span><span class="p">.</span><span class="nx">Hour</span><span class="p">(),</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">Minute</span><span class="p">(),</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">Second</span><span class="p">(),</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">        </span><span class="nx">t</span><span class="p">.</span><span class="nx">Nanosecond</span><span class="p">(),</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">UTC</span><span class="p">,</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">    </span><span class="p">)</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="p">}</span>
+</span></code></pre></div></p>
+<p>All timestamps are stored and compared in UTC.</p>
+<hr />
+<h2 id="property-extraction-pipeline">Property Extraction Pipeline<a class="headerlink" href="#property-extraction-pipeline" title="Permanent link">&para;</a></h2>
+<p>The property extraction pipeline converts Neo4j node properties back into typed Go structures. This is a multi-stage process that handles different property types.</p>
+<pre class="mermaid"><code>graph TD
+    subgraph "Entry Point"
+        NodeToEntity["nodeToEntity()&lt;br/&gt;extract_entity.go:29"]
+    end
+
+    subgraph "Asset Type Dispatch"
+        TypeSwitch["switch on oam.AssetType&lt;br/&gt;Cases for 21 asset types"]
+    end
+
+    subgraph "Asset Converters"
+        FQDN["nodeToFQDN()&lt;br/&gt;line 337"]
+        IPAddr["nodeToIPAddress()&lt;br/&gt;line 446"]
+        Org["nodeToOrganization()&lt;br/&gt;line 670"]
+        Cert["nodeToTLSCertificate()&lt;br/&gt;line 901"]
+        Other["... 17 more converters"]
+    end
+
+    subgraph "Property Extraction"
+        GetProp["neo4jdb.GetProperty[T]()&lt;br/&gt;Type-safe extraction"]
+        ParseIP["netip.ParseAddr()&lt;br/&gt;netip.ParsePrefix()"]
+        TypeConv["Type conversions&lt;br/&gt;int64 -&gt; int&lt;br/&gt;[]interface{} -&gt; []string"]
+    end
+
+    subgraph "Result"
+        EntityStruct["types.Entity&lt;br/&gt;with typed Asset"]
+    end
+
+    NodeToEntity --&gt; TypeSwitch
+    TypeSwitch --&gt; FQDN
+    TypeSwitch --&gt; IPAddr
+    TypeSwitch --&gt; Org
+    TypeSwitch --&gt; Cert
+    TypeSwitch --&gt; Other
+
+    FQDN --&gt; GetProp
+    IPAddr --&gt; GetProp
+    Org --&gt; GetProp
+    Cert --&gt; GetProp
+
+    IPAddr --&gt; ParseIP
+
+    GetProp --&gt; TypeConv
+    TypeConv --&gt; EntityStruct</code></pre>
+<h3 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h3>
+<p>Each property extraction uses <code>neo4jdb.GetProperty[T]()</code> which returns an error if:
+- The property doesn't exist on the node
+- The property type doesn't match the expected type <code>T</code></p>
+<p>All errors are propagated up the call stack, ensuring that malformed data is never silently ignored.</p>
+<hr />
+<h2 id="context-and-timeout-management">Context and Timeout Management<a class="headerlink" href="#context-and-timeout-management" title="Permanent link">&para;</a></h2>
+<p>All Neo4j operations use context-based timeouts for reliability. The standard timeout is 30 seconds for query execution.</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">cancel</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">context</span><span class="p">.</span><span class="nx">WithTimeout</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">Background</span><span class="p">(),</span><span class="w"> </span><span class="mi">30</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">defer</span><span class="w"> </span><span class="nx">cancel</span><span class="p">()</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="nx">result</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">neo4jdb</span><span class="p">.</span><span class="nx">ExecuteQuery</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">neo</span><span class="p">.</span><span class="nx">db</span><span class="p">,</span><span class="w"> </span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">params</span><span class="p">,</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span><span class="nx">neo4jdb</span><span class="p">.</span><span class="nx">EagerResultTransformer</span><span class="p">,</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">    </span><span class="nx">neo4jdb</span><span class="p">.</span><span class="nx">ExecuteQueryWithDatabase</span><span class="p">(</span><span class="nx">neo</span><span class="p">.</span><span class="nx">dbname</span><span class="p">))</span>
+</span></code></pre></div>
+<p>This pattern ensures:
+- Operations don't hang indefinitely
+- Resources are properly released via <code>defer cancel()</code>
+- Database-specific queries are routed correctly via <code>ExecuteQueryWithDatabase()</code></p>
+<hr />
+<h2 id="database-specific-query-execution">Database-Specific Query Execution<a class="headerlink" href="#database-specific-query-execution" title="Permanent link">&para;</a></h2>
+<p>All queries specify the target database using <code>neo4jdb.ExecuteQueryWithDatabase(neo.dbname)</code>. This allows multi-database Neo4j deployments where different databases serve different purposes.</p>
+<p>The database name is extracted from the DSN path during initialization:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nx">dbname</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">strings</span><span class="p">.</span><span class="nx">TrimPrefix</span><span class="p">(</span><span class="nx">u</span><span class="p">.</span><span class="nx">Path</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<p>For example, DSN <code>neo4j://localhost:7687/assetdb</code> results in <code>dbname = "assetdb"</code>.</p>
+<hr />
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<p>The Neo4j Repository implementation provides:</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Connection Management</strong></td>
+<td>Neo4j Go Driver v5 with connection pooling</td>
+</tr>
+<tr>
+<td><strong>Data Model</strong></td>
+<td>Dual-labeled nodes (Entity + AssetType) with flattened properties</td>
+</tr>
+<tr>
+<td><strong>Query Language</strong></td>
+<td>Cypher with parameterized queries</td>
+</tr>
+<tr>
+<td><strong>Duplicate Prevention</strong></td>
+<td>Content-based lookup before creation</td>
+</tr>
+<tr>
+<td><strong>Type Safety</strong></td>
+<td>Type-safe property extraction with error handling</td>
+</tr>
+<tr>
+<td><strong>Timeout Management</strong></td>
+<td>30-second context-based timeouts</td>
+</tr>
+<tr>
+<td><strong>Asset Type Support</strong></td>
+<td>All 21 OAM asset types</td>
+</tr>
+<tr>
+<td><strong>Schema Management</strong></td>
+<td>Constraints and indexes for performance (see <a href=".././triples/#neo4j-schema-and-constraints">Neo4j Schema and Constraints</a>)</td>
+</tr>
+</tbody>
+</table>
+<p>The implementation leverages Neo4j's native graph capabilities while maintaining compatibility with the unified Repository interface, enabling seamless database backend switching.</p>
+<h3 id="neo4j-entity-operations">Neo4j Entity Operations<a class="headerlink" href="#neo4j-entity-operations" title="Permanent link">&para;</a></h3>
+<p>This document describes entity management operations in the Neo4j graph database repository implementation. It covers creating, querying, updating, and deleting entity nodes, as well as the conversion between Neo4j nodes and the application's <code>types.Entity</code> structures.</p>
+<p>For information about edge (relationship) operations, see <a href=".././triples/#neo4j-edge-operations">Neo4j Edge Operations</a>. For tag management, see <a href=".././triples/#neo4j-tag-management">Neo4j Tag Management</a>. For schema constraints and indexes, see <a href=".././triples/#neo4j-schema-and-constraints">Neo4j Schema and Constraints</a>.</p>
+<hr />
+<h3 id="overview-of-entity-operations">Overview of Entity Operations<a class="headerlink" href="#overview-of-entity-operations" title="Permanent link">&para;</a></h3>
+<p>The <code>neoRepository</code> provides five core entity operations that interact with Neo4j nodes labeled as <code>:Entity</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Create</td>
+<td><code>CreateEntity(*types.Entity)</code></td>
+<td>Creates a new entity node or updates existing if duplicate detected</td>
+</tr>
+<tr>
+<td>Create Asset</td>
+<td><code>CreateAsset(oam.Asset)</code></td>
+<td>Convenience wrapper for creating entity from asset</td>
+</tr>
+<tr>
+<td>Find by ID</td>
+<td><code>FindEntityById(string)</code></td>
+<td>Retrieves entity by unique entity_id</td>
+</tr>
+<tr>
+<td>Find by Content</td>
+<td><code>FindEntitiesByContent(oam.Asset, time.Time)</code></td>
+<td>Searches for entities matching asset content</td>
+</tr>
+<tr>
+<td>Find by Type</td>
+<td><code>FindEntitiesByType(oam.AssetType, time.Time)</code></td>
+<td>Retrieves all entities of a specific asset type</td>
+</tr>
+<tr>
+<td>Delete</td>
+<td><code>DeleteEntity(string)</code></td>
+<td>Removes entity node and its relationships</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="entity-creation-flow">Entity Creation Flow<a class="headerlink" href="#entity-creation-flow" title="Permanent link">&para;</a></h3>
+<p>The <code>CreateEntity</code> method implements a duplicate-prevention mechanism by first checking if an entity with matching content already exists.</p>
+<h4 id="createentity-process-diagram">CreateEntity Process Diagram<a class="headerlink" href="#createentity-process-diagram" title="Permanent link">&para;</a></h4>
+<pre class="mermaid"><code>flowchart TD
+    Start["CreateEntity(input *types.Entity)"] --&gt; ValidateInput["Validate input != nil"]
+    ValidateInput --&gt; CheckDuplicate["FindEntitiesByContent(input.Asset, time.Time{})"]
+
+    CheckDuplicate --&gt;|"Found existing"| UpdateExisting["Update existing entity"]
+    CheckDuplicate --&gt;|"Not found"| CreateNew["Create new entity"]
+
+    UpdateExisting --&gt; BuildUpdateQuery["queryNodeByAssetKey('a', asset)&lt;br/&gt;Build MATCH query"]
+    BuildUpdateQuery --&gt; SetLastSeen["Set e.LastSeen = time.Now()"]
+    SetLastSeen --&gt; EntityPropsMap["entityPropsMap(e)"]
+    EntityPropsMap --&gt; ExecuteUpdate["ExecuteQuery:&lt;br/&gt;MATCH + SET a = $props"]
+    ExecuteUpdate --&gt; ExtractNode1["Extract neo4jdb.Node from result"]
+    ExtractNode1 --&gt; NodeToEntity1["nodeToEntity(node)"]
+
+    CreateNew --&gt; AssignID["Generate unique ID if empty:&lt;br/&gt;uniqueEntityID()"]
+    AssignID --&gt; SetTimestamps["Set CreatedAt and LastSeen"]
+    SetTimestamps --&gt; EntityPropsMap2["entityPropsMap(input)"]
+    EntityPropsMap2 --&gt; ExecuteCreate["ExecuteQuery:&lt;br/&gt;CREATE (a:Entity:AssetType $props)"]
+    ExecuteCreate --&gt; ExtractNode2["Extract neo4jdb.Node from result"]
+    ExtractNode2 --&gt; NodeToEntity2["nodeToEntity(node)"]
+
+    NodeToEntity1 --&gt; Return["Return *types.Entity"]
+    NodeToEntity2 --&gt; Return</code></pre>
+<h4 id="key-implementation-details">Key Implementation Details<a class="headerlink" href="#key-implementation-details" title="Permanent link">&para;</a></h4>
+<p>The <code>CreateEntity</code> method performs the following steps:</p>
+<ol>
+<li><strong>Duplicate Detection</strong> : Calls <code>FindEntitiesByContent</code> to check if an entity with the same asset content exists</li>
+<li><strong>Update Path</strong> : If duplicate found:</li>
+<li>Validates asset types match </li>
+<li>Builds Cypher <code>MATCH</code> query using <code>queryNodeByAssetKey</code> </li>
+<li>Updates <code>LastSeen</code> timestamp </li>
+<li>Executes <code>SET</code> query to update node properties </li>
+<li><strong>Create Path</strong> : If new entity:</li>
+<li>Generates unique ID using <code>uniqueEntityID()</code> </li>
+<li>Sets <code>CreatedAt</code> and <code>LastSeen</code> timestamps </li>
+<li>Executes <code>CREATE</code> query with entity type label </li>
+</ol>
+<p>The method uses <code>neo4jdb.ExecuteQuery</code> with a 30-second timeout context .</p>
+<hr />
+<h3 id="query-operations">Query Operations<a class="headerlink" href="#query-operations" title="Permanent link">&para;</a></h3>
+<h4 id="findentitybyid">FindEntityById<a class="headerlink" href="#findentitybyid" title="Permanent link">&para;</a></h4>
+<p>Retrieves a single entity by its unique <code>entity_id</code> property:</p>
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">Entity</span><span class="w"> </span><span class="p">{</span><span class="n">entity_id</span><span class="p">:</span><span class="w"> </span><span class="err">$</span><span class="n">eid</span><span class="p">})</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">a</span>
+</span></code></pre></div>
+<p><strong>Implementation:</strong> </p>
+<h4 id="findentitiesbycontent">FindEntitiesByContent<a class="headerlink" href="#findentitiesbycontent" title="Permanent link">&para;</a></h4>
+<p>Searches for entities matching specific asset content. Constructs a <code>MATCH</code> query using <code>queryNodeByAssetKey</code> to match on asset-specific properties:</p>
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">AssetType</span><span class="w"> </span><span class="p">{</span><span class="n">key_property</span><span class="p">:</span><span class="w"> </span><span class="n">value</span><span class="p">})</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">updated_at</span><span class="w"> </span><span class="p">&gt;=</span><span class="w"> </span><span class="n">localDateTime</span><span class="p">(</span><span class="s">&#39;...&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">a</span>
+</span></code></pre></div>
+<p>The <code>since</code> parameter filters entities by their <code>updated_at</code> timestamp. If <code>since.IsZero()</code>, no time filter is applied .</p>
+<p><strong>Implementation:</strong> </p>
+<h4 id="findentitiesbytype">FindEntitiesByType<a class="headerlink" href="#findentitiesbytype" title="Permanent link">&para;</a></h4>
+<p>Retrieves all entities of a specific asset type using the asset type as a node label:</p>
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">FQDN</span><span class="p">)</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">updated_at</span><span class="w"> </span><span class="p">&gt;=</span><span class="w"> </span><span class="n">localDateTime</span><span class="p">(</span><span class="s">&#39;...&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">a</span>
+</span></code></pre></div>
+<p>Returns a slice of <code>[]*types.Entity</code> by iterating through all matching records .</p>
+<p><strong>Implementation:</strong> </p>
+<h4 id="deleteentity">DeleteEntity<a class="headerlink" href="#deleteentity" title="Permanent link">&para;</a></h4>
+<p>Removes an entity and all its relationships using <code>DETACH DELETE</code>:</p>
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">Entity</span><span class="w"> </span><span class="p">{</span><span class="n">entity_id</span><span class="p">:</span><span class="w"> </span><span class="err">$</span><span class="n">eid</span><span class="p">})</span><span class="w"> </span><span class="n">DETACH</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="n">n</span>
+</span></code></pre></div>
+<p>The <code>DETACH</code> clause ensures all incoming and outgoing relationships are deleted first .</p>
+<p><strong>Implementation:</strong> </p>
+<hr />
+<h3 id="node-to-entity-conversion">Node to Entity Conversion<a class="headerlink" href="#node-to-entity-conversion" title="Permanent link">&para;</a></h3>
+<h4 id="conversion-architecture">Conversion Architecture<a class="headerlink" href="#conversion-architecture" title="Permanent link">&para;</a></h4>
+<pre class="mermaid"><code>flowchart LR
+    Node["neo4jdb.Node&lt;br/&gt;(from query result)"] --&gt; NodeToEntity["nodeToEntity(node)"]
+
+    NodeToEntity --&gt; ExtractCommon["Extract common properties:&lt;br/&gt;- entity_id&lt;br/&gt;- created_at&lt;br/&gt;- updated_at&lt;br/&gt;- etype"]
+
+    ExtractCommon --&gt; TypeSwitch["Switch on oam.AssetType"]
+
+    TypeSwitch --&gt; Account["nodeToAccount()"]
+    TypeSwitch --&gt; FQDN["nodeToFQDN()"]
+    TypeSwitch --&gt; IPAddress["nodeToIPAddress()"]
+    TypeSwitch --&gt; Organization["nodeToOrganization()"]
+    TypeSwitch --&gt; OtherTypes["... (20+ other types)"]
+
+    Account --&gt; BuildEntity["Construct types.Entity:&lt;br/&gt;- ID&lt;br/&gt;- CreatedAt&lt;br/&gt;- LastSeen&lt;br/&gt;- Asset"]
+    FQDN --&gt; BuildEntity
+    IPAddress --&gt; BuildEntity
+    Organization --&gt; BuildEntity
+    OtherTypes --&gt; BuildEntity
+
+    BuildEntity --&gt; Return["Return *types.Entity"]</code></pre>
+<h4 id="nodetoentity-dispatcher">nodeToEntity Dispatcher<a class="headerlink" href="#nodetoentity-dispatcher" title="Permanent link">&para;</a></h4>
+<p>The <code>nodeToEntity</code> function  extracts common entity properties and dispatches to type-specific converters:</p>
+<ol>
+<li><strong>Extract Common Properties:</strong></li>
+<li><code>entity_id</code> (string) </li>
+<li><code>created_at</code> (neo4jdb.LocalDateTime) </li>
+<li><code>updated_at</code> (neo4jdb.LocalDateTime) </li>
+<li>
+<p><code>etype</code> (asset type string) </p>
+</li>
+<li>
+<p><strong>Dispatch by Asset Type:</strong> Uses a switch statement on <code>oam.AssetType</code>  to call the appropriate converter function</p>
+</li>
+<li>
+<p><strong>Construct Entity:</strong> Returns <code>types.Entity</code> with populated fields </p>
+</li>
+</ol>
+<hr />
+<h3 id="supported-asset-types_1">Supported Asset Types<a class="headerlink" href="#supported-asset-types_1" title="Permanent link">&para;</a></h3>
+<p>The following table lists all supported asset types and their conversion functions:</p>
+<table>
+<thead>
+<tr>
+<th>Asset Type</th>
+<th>Converter Function</th>
+<th>Key Properties</th>
+<th>Lines</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Account</code></td>
+<td><code>nodeToAccount</code></td>
+<td>unique_id, account_type, username, account_number, balance, active</td>
+<td><a href="">113-152</a></td>
+</tr>
+<tr>
+<td><code>AutnumRecord</code></td>
+<td><code>nodeToAutnumRecord</code></td>
+<td>raw, number, handle, name, whois_server, created_date, updated_date, status</td>
+<td><a href="">154-211</a></td>
+</tr>
+<tr>
+<td><code>AutonomousSystem</code></td>
+<td><code>nodeToAutonomousSystem</code></td>
+<td>number</td>
+<td><a href="">213-221</a></td>
+</tr>
+<tr>
+<td><code>ContactRecord</code></td>
+<td><code>nodeToContactRecord</code></td>
+<td>discovered_at</td>
+<td><a href="">223-230</a></td>
+</tr>
+<tr>
+<td><code>DomainRecord</code></td>
+<td><code>nodeToDomainRecord</code></td>
+<td>raw, id, domain, punycode, name, extension, whois_server, dates, status, dnssec</td>
+<td><a href="">232-312</a></td>
+</tr>
+<tr>
+<td><code>File</code></td>
+<td><code>nodeToFile</code></td>
+<td>url, name, type</td>
+<td><a href="">314-335</a></td>
+</tr>
+<tr>
+<td><code>FQDN</code></td>
+<td><code>nodeToFQDN</code></td>
+<td>name</td>
+<td><a href="">337-344</a></td>
+</tr>
+<tr>
+<td><code>FundsTransfer</code></td>
+<td><code>nodeToFundsTransfer</code></td>
+<td>unique_id, amount, reference_number, currency, transfer_method, exchange_date, exchange_rate</td>
+<td><a href="">346-391</a></td>
+</tr>
+<tr>
+<td><code>Identifier</code></td>
+<td><code>nodeToIdentifier</code></td>
+<td>unique_id, entity_id, id_type, category, dates, status</td>
+<td><a href="">393-444</a></td>
+</tr>
+<tr>
+<td><code>IPAddress</code></td>
+<td><code>nodeToIPAddress</code></td>
+<td>address (parsed as netip.Addr), type</td>
+<td><a href="">446-466</a></td>
+</tr>
+<tr>
+<td><code>IPNetRecord</code></td>
+<td><code>nodeToIPNetRecord</code></td>
+<td>raw, cidr (netip.Prefix), handle, start/end addresses, type, name, method, country, parent_handle, whois_server, dates, status</td>
+<td><a href="">468-575</a></td>
+</tr>
+<tr>
+<td><code>Location</code></td>
+<td><code>nodeToLocation</code></td>
+<td>address, building, building_number, street_name, unit, po_box, city, locality, province, country, postal_code</td>
+<td><a href="">577-646</a></td>
+</tr>
+<tr>
+<td><code>Netblock</code></td>
+<td><code>nodeToNetblock</code></td>
+<td>cidr (netip.Prefix), type</td>
+<td><a href="">648-668</a></td>
+</tr>
+<tr>
+<td><code>Organization</code></td>
+<td><code>nodeToOrganization</code></td>
+<td>unique_id, name, legal_name, founding_date, industry, active, non_profit, num_of_employees</td>
+<td><a href="">670-722</a></td>
+</tr>
+<tr>
+<td><code>Person</code></td>
+<td><code>nodeToPerson</code></td>
+<td>unique_id, full_name, first_name, middle_name, family_name, birth_date, gender</td>
+<td><a href="">724-769</a></td>
+</tr>
+<tr>
+<td><code>Phone</code></td>
+<td><code>nodeToPhone</code></td>
+<td>type, raw, e164, country_abbrev, country_code, ext</td>
+<td><a href="">771-811</a></td>
+</tr>
+<tr>
+<td><code>Product</code></td>
+<td><code>nodeToProduct</code></td>
+<td>unique_id, product_name, product_type, category, description, country_of_origin</td>
+<td><a href="">813-852</a></td>
+</tr>
+<tr>
+<td><code>ProductRelease</code></td>
+<td><code>nodeToProductRelease</code></td>
+<td>name, release_date</td>
+<td><a href="">854-869</a></td>
+</tr>
+<tr>
+<td><code>Service</code></td>
+<td><code>nodeToService</code></td>
+<td>unique_id, service_type, output, output_length</td>
+<td><a href="">871-899</a></td>
+</tr>
+<tr>
+<td><code>TLSCertificate</code></td>
+<td><code>nodeToTLSCertificate</code></td>
+<td>version, serial_number, subject/issuer common names, not_before/after, key_usage, ext_key_usage, signature/public key algorithms, is_ca, crl_distribution_points, subject/authority key IDs</td>
+<td><a href="">901-1003</a></td>
+</tr>
+<tr>
+<td><code>URL</code></td>
+<td><code>nodeToURL</code></td>
+<td>url, scheme, username, password, host, port, path, options, fragment</td>
+<td><a href="">1005-1063</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="property-extraction-patterns">Property Extraction Patterns<a class="headerlink" href="#property-extraction-patterns" title="Permanent link">&para;</a></h3>
+<h4 id="string-properties">String Properties<a class="headerlink" href="#string-properties" title="Permanent link">&para;</a></h4>
+<p>Most string properties use <code>neo4jdb.GetProperty[string]</code>:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nx">name</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">neo4jdb</span><span class="p">.</span><span class="nx">GetProperty</span><span class="p">[</span><span class="kt">string</span><span class="p">](</span><span class="nx">node</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;name&quot;</span><span class="p">)</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Example:</strong> </p>
+<h4 id="numeric-properties">Numeric Properties<a class="headerlink" href="#numeric-properties" title="Permanent link">&para;</a></h4>
+<p>Integer properties are extracted as <code>int64</code> and converted to <code>int</code>:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nx">num</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">neo4jdb</span><span class="p">.</span><span class="nx">GetProperty</span><span class="p">[</span><span class="kt">int64</span><span class="p">](</span><span class="nx">node</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;number&quot;</span><span class="p">)</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="p">}</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="nx">number</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="nx">num</span><span class="p">)</span>
+</span></code></pre></div>
+<p><strong>Example:</strong> </p>
+<h4 id="network-address-properties">Network Address Properties<a class="headerlink" href="#network-address-properties" title="Permanent link">&para;</a></h4>
+<p>IP addresses and CIDR blocks use <code>netip</code> package types:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nx">ip</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">neo4jdb</span><span class="p">.</span><span class="nx">GetProperty</span><span class="p">[</span><span class="kt">string</span><span class="p">](</span><span class="nx">node</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;address&quot;</span><span class="p">)</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="p">}</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="nx">addr</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">netip</span><span class="p">.</span><span class="nx">ParseAddr</span><span class="p">(</span><span class="nx">ip</span><span class="p">)</span>
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span>
+</span><span id="__span-22-8"><a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Example:</strong> </p>
+<h4 id="array-properties">Array Properties<a class="headerlink" href="#array-properties" title="Permanent link">&para;</a></h4>
+<p>String arrays are extracted as <code>[]interface{}</code> and converted:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nx">list</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">neo4jdb</span><span class="p">.</span><span class="nx">GetProperty</span><span class="p">[[]</span><span class="kd">interface</span><span class="p">{}](</span><span class="nx">node</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;status&quot;</span><span class="p">)</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="p">}</span>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="kd">var</span><span class="w"> </span><span class="nx">status</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span>
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">s</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">list</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="w">    </span><span class="nx">status</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">status</span><span class="p">,</span><span class="w"> </span><span class="nx">s</span><span class="p">.(</span><span class="kt">string</span><span class="p">))</span>
+</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Example:</strong> </p>
+<hr />
+<h3 id="duplicate-prevention-mechanism">Duplicate Prevention Mechanism<a class="headerlink" href="#duplicate-prevention-mechanism" title="Permanent link">&para;</a></h3>
+<h4 id="duplicate-detection-flow">Duplicate Detection Flow<a class="headerlink" href="#duplicate-detection-flow" title="Permanent link">&para;</a></h4>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Client
+    participant CreateEntity
+    participant FindEntitiesByContent
+    participant Neo4j
+
+    Client-&gt;&gt;CreateEntity: CreateEntity(entity)
+    CreateEntity-&gt;&gt;FindEntitiesByContent: Check for duplicate
+    FindEntitiesByContent-&gt;&gt;Neo4j: MATCH by content properties
+
+    alt Entity exists
+        Neo4j--&gt;&gt;FindEntitiesByContent: Return existing entity
+        FindEntitiesByContent--&gt;&gt;CreateEntity: []*types.Entity (len &gt; 0)
+        CreateEntity-&gt;&gt;CreateEntity: Validate asset type matches
+        CreateEntity-&gt;&gt;CreateEntity: Update LastSeen timestamp
+        CreateEntity-&gt;&gt;Neo4j: MATCH + SET update query
+        Neo4j--&gt;&gt;CreateEntity: Updated node
+        CreateEntity-&gt;&gt;CreateEntity: nodeToEntity conversion
+        CreateEntity--&gt;&gt;Client: Return updated entity
+    else Entity does not exist
+        Neo4j--&gt;&gt;FindEntitiesByContent: No results
+        FindEntitiesByContent--&gt;&gt;CreateEntity: Error
+        CreateEntity-&gt;&gt;CreateEntity: Generate unique ID
+        CreateEntity-&gt;&gt;CreateEntity: Set CreatedAt, LastSeen
+        CreateEntity-&gt;&gt;Neo4j: CREATE new entity node
+        Neo4j--&gt;&gt;CreateEntity: New node
+        CreateEntity-&gt;&gt;CreateEntity: nodeToEntity conversion
+        CreateEntity--&gt;&gt;Client: Return new entity
+    end</code></pre>
+<h4 id="uniqueness-guarantees">Uniqueness Guarantees<a class="headerlink" href="#uniqueness-guarantees" title="Permanent link">&para;</a></h4>
+<p>The system prevents duplicates through two mechanisms:</p>
+<ol>
+<li>
+<p><strong>Application-Level Deduplication:</strong> The <code>CreateEntity</code> method checks for existing entities before creating new ones </p>
+</li>
+<li>
+<p><strong>Database Constraints:</strong> Neo4j unique constraints on content properties ensure database-level uniqueness. See schema initialization in  which creates constraints like:</p>
+</li>
+<li><code>FQDN.name</code> must be unique </li>
+<li><code>IPAddress.address</code> must be unique </li>
+<li><code>Organization.unique_id</code> must be unique </li>
+</ol>
+<hr />
+<h3 id="unique-id-generation">Unique ID Generation<a class="headerlink" href="#unique-id-generation" title="Permanent link">&para;</a></h3>
+<p>The <code>uniqueEntityID</code> function generates universally unique identifiers for entities:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">neo</span><span class="w"> </span><span class="o">*</span><span class="nx">neoRepository</span><span class="p">)</span><span class="w"> </span><span class="nx">uniqueEntityID</span><span class="p">()</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w">        </span><span class="nx">id</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">New</span><span class="p">().</span><span class="nx">String</span><span class="p">()</span>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">neo</span><span class="p">.</span><span class="nx">FindEntityById</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nx">id</span>
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-24-8"><a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>This implementation:
+1. Generates a UUID v4 using <code>google/uuid</code> package
+2. Verifies uniqueness by attempting to find an entity with that ID
+3. Loops until a unique ID is found (collision is extremely unlikely with UUID v4)</p>
+<hr />
+<h3 id="test-coverage">Test Coverage<a class="headerlink" href="#test-coverage" title="Permanent link">&para;</a></h3>
+<p>The entity operations are validated through integration tests in . Key test scenarios include:</p>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Coverage</th>
+<th>Lines</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TestCreateEntity</code></td>
+<td>Duplicate prevention, timestamp handling</td>
+<td><a href="">23-67</a></td>
+</tr>
+<tr>
+<td><code>TestFindEntityById</code></td>
+<td>ID-based retrieval</td>
+<td><a href="">69-88</a></td>
+</tr>
+<tr>
+<td><code>TestFindEntitiesByContent</code></td>
+<td>Content-based search, time filtering</td>
+<td><a href="">90-114</a></td>
+</tr>
+<tr>
+<td><code>TestFindEntitiesByType</code></td>
+<td>Type-based queries with time filters</td>
+<td><a href="">116-148</a></td>
+</tr>
+<tr>
+<td><code>TestDeleteEntity</code></td>
+<td>Entity deletion</td>
+<td><a href="">150-163</a></td>
+</tr>
+</tbody>
+</table>
+<p>Tests verify:
+- Duplicate entities are not created 
+- <code>LastSeen</code> timestamps are updated on duplicates 
+- <code>CreatedAt</code> remains unchanged for duplicates 
+- Content-based queries respect <code>since</code> parameter 
+- Type-based queries return multiple entities</p>
+<h3 id="neo4j-edge-operations">Neo4j Edge Operations<a class="headerlink" href="#neo4j-edge-operations" title="Permanent link">&para;</a></h3>
+<p>This document describes the edge (relationship) operations in the Neo4j repository implementation. Edges represent directed relationships between entities in the graph database, enabling traversal and querying of asset connections. For entity-level operations, see <a href=".././triples/#neo4j-entity-operations">Neo4j Entity Operations</a>. For tag management on edges, see <a href=".././triples/#neo4j-tag-management">Neo4j Tag Management</a>.</p>
+<h3 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h3>
+<p>The Neo4j repository stores edges as native graph relationships in Neo4j, using relationship types derived from the Open Asset Model. Each edge connects two entity nodes and includes temporal metadata (creation time, last seen) along with relationship-specific properties.</p>
+<p><strong>Key Features:</strong>
+- Relationship validation against OAM taxonomy
+- Duplicate edge detection and timestamp updates
+- Bidirectional edge traversal (incoming/outgoing)
+- Temporal filtering with <code>since</code> parameter
+- Label-based filtering for relationship types
+- Native Cypher query execution</p>
+<hr />
+<h3 id="edge-data-model">Edge Data Model<a class="headerlink" href="#edge-data-model" title="Permanent link">&para;</a></h3>
+<p>Edges in Neo4j are represented as relationships between entity nodes. The relationship type corresponds to the OAM relation label (e.g., <code>DNS_RECORD</code>, <code>NODE</code>, <code>SIMPLE_RELATION</code>).</p>
+<pre class="mermaid"><code>graph LR
+    subgraph "Graph Structure"
+        FromEntity["(from:Entity)&lt;br/&gt;entity_id: UUID"]
+        ToEntity["(to:Entity)&lt;br/&gt;entity_id: UUID"]
+        Relationship["[r:RELATIONSHIP_TYPE]&lt;br/&gt;edge_id: elementId&lt;br/&gt;created_at: LocalDateTime&lt;br/&gt;updated_at: LocalDateTime&lt;br/&gt;+ relation properties"]
+    end
+
+    FromEntity --&gt;|"relationship type"| Relationship
+    Relationship --&gt; ToEntity
+
+    subgraph "types.Edge Representation"
+        EdgeStruct["types.Edge&lt;br/&gt;ID: string&lt;br/&gt;CreatedAt: time.Time&lt;br/&gt;LastSeen: time.Time&lt;br/&gt;Relation: oam.Relation&lt;br/&gt;FromEntity: *types.Entity&lt;br/&gt;ToEntity: *types.Entity"]
+    end
+
+    Relationship -.-&gt;|"converted to"| EdgeStruct</code></pre>
+<hr />
+<h3 id="edge-creation">Edge Creation<a class="headerlink" href="#edge-creation" title="Permanent link">&para;</a></h3>
+<h4 id="validation-and-creation-flow">Validation and Creation Flow<a class="headerlink" href="#validation-and-creation-flow" title="Permanent link">&para;</a></h4>
+<p>The <code>CreateEdge</code> method performs comprehensive validation before creating relationships in the graph database.</p>
+<pre class="mermaid"><code>flowchart TD
+    Start["CreateEdge(edge *types.Edge)"]
+
+    ValidateInput["Validate Input:&lt;br/&gt;- edge != nil&lt;br/&gt;- Relation != nil&lt;br/&gt;- FromEntity/ToEntity exist&lt;br/&gt;- Assets != nil"]
+
+    ValidateOAM["Validate Against OAM:&lt;br/&gt;oam.ValidRelationship()&lt;br/&gt;Check: FromAssetType -[Label]-&gt; ToAssetType"]
+
+    SetTimestamp["Set LastSeen:&lt;br/&gt;if edge.LastSeen.IsZero()&lt;br/&gt;then time.Now()"]
+
+    CheckDup{"isDuplicateEdge()?&lt;br/&gt;Check existing relationships"}
+
+    UpdateExisting["Update existing edge:&lt;br/&gt;edgeSeen(edge, updated)"]
+
+    ReturnExisting["Return existing edge"]
+
+    SetCreated["Set CreatedAt:&lt;br/&gt;if edge.CreatedAt.IsZero()&lt;br/&gt;then time.Now()"]
+
+    BuildProps["Build properties map:&lt;br/&gt;edgePropsMap(edge)"]
+
+    ExecuteCypher["Execute Cypher:&lt;br/&gt;MATCH (from:Entity {entity_id})&lt;br/&gt;MATCH (to:Entity {entity_id})&lt;br/&gt;CREATE (from)-[r:TYPE props]-&gt;(to)"]
+
+    ConvertResult["Convert relationship to Edge:&lt;br/&gt;relationshipToEdge(rel)"]
+
+    ReturnNew["Return new edge"]
+
+    Error["Return error"]
+
+    Start --&gt; ValidateInput
+    ValidateInput --&gt;|"Valid"| ValidateOAM
+    ValidateInput --&gt;|"Invalid"| Error
+    ValidateOAM --&gt;|"Valid"| SetTimestamp
+    ValidateOAM --&gt;|"Invalid"| Error
+    SetTimestamp --&gt; CheckDup
+    CheckDup --&gt;|"Duplicate"| UpdateExisting
+    UpdateExisting --&gt; ReturnExisting
+    CheckDup --&gt;|"New"| SetCreated
+    SetCreated --&gt; BuildProps
+    BuildProps --&gt; ExecuteCypher
+    ExecuteCypher --&gt;|"Success"| ConvertResult
+    ExecuteCypher --&gt;|"Error"| Error
+    ConvertResult --&gt; ReturnNew</code></pre>
+<h4 id="implementation-details">Implementation Details<a class="headerlink" href="#implementation-details" title="Permanent link">&para;</a></h4>
+<h5 id="input-validation">Input Validation<a class="headerlink" href="#input-validation" title="Permanent link">&para;</a></h5>
+<p>The method first validates all required fields:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>Validation checks (edge.go:24-27):
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>- edge != nil
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>- edge.Relation != nil
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a>- edge.FromEntity != nil &amp;&amp; edge.FromEntity.Asset != nil
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>- edge.ToEntity != nil &amp;&amp; edge.ToEntity.Asset != nil
+</span></code></pre></div>
+<h5 id="oam-taxonomy-validation">OAM Taxonomy Validation<a class="headerlink" href="#oam-taxonomy-validation" title="Permanent link">&para;</a></h5>
+<p>The relationship must be valid according to the Open Asset Model taxonomy:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>oam.ValidRelationship(
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>    edge.FromEntity.Asset.AssetType(),
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>    edge.Relation.Label(),
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>    edge.Relation.RelationType(),
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>    edge.ToEntity.Asset.AssetType()
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>)
+</span></code></pre></div>
+<p>Returns error if invalid: <code>"{FromType} -{Label}-&gt; {ToType} is not valid in the taxonomy"</code></p>
+<h5 id="cypher-query-construction">Cypher Query Construction<a class="headerlink" href="#cypher-query-construction" title="Permanent link">&para;</a></h5>
+<p>The relationship is created using a three-part Cypher query:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>MATCH (from:Entity {entity_id: &#39;{fromID}&#39;})
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>MATCH (to:Entity {entity_id: &#39;{toID}&#39;})
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>CREATE (from)-[r:RELATIONSHIP_TYPE $props]-&gt;(to)
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>RETURN r
+</span></code></pre></div>
+<p>The relationship type is uppercased from the relation label (e.g., <code>dns_record</code> → <code>DNS_RECORD</code>).</p>
+<hr />
+<h3 id="duplicate-edge-handling">Duplicate Edge Handling<a class="headerlink" href="#duplicate-edge-handling" title="Permanent link">&para;</a></h3>
+<h4 id="duplicate-detection-logic">Duplicate Detection Logic<a class="headerlink" href="#duplicate-detection-logic" title="Permanent link">&para;</a></h4>
+<p>The <code>isDuplicateEdge</code> method prevents duplicate relationships between the same entities with identical relation content.</p>
+<pre class="mermaid"><code>flowchart TD
+    Start["isDuplicateEdge(edge, updated)"]
+
+    GetOutgoing["Get outgoing edges:&lt;br/&gt;OutgoingEdges(edge.FromEntity)"]
+
+    IterateEdges["Iterate through outgoing edges"]
+
+    CheckMatch{"Match found?&lt;br/&gt;- ToEntity.ID match&lt;br/&gt;- DeepEqual(Relations)"}
+
+    UpdateTimestamp["Update timestamp:&lt;br/&gt;edgeSeen(out, updated)"]
+
+    FetchEdge["Fetch updated edge:&lt;br/&gt;FindEdgeById(out.ID)"]
+
+    ReturnTrue["Return (edge, true)"]
+
+    ReturnFalse["Return (nil, false)"]
+
+    Start --&gt; GetOutgoing
+    GetOutgoing --&gt; IterateEdges
+    IterateEdges --&gt; CheckMatch
+    CheckMatch --&gt;|"Match"| UpdateTimestamp
+    UpdateTimestamp --&gt; FetchEdge
+    FetchEdge --&gt; ReturnTrue
+    CheckMatch --&gt;|"No match"| IterateEdges
+    IterateEdges --&gt;|"No more edges"| ReturnFalse</code></pre>
+<p><strong>Duplicate Criteria:</strong>
+1. Same <code>ToEntity.ID</code>
+2. <code>reflect.DeepEqual(edge.Relation, out.Relation)</code> returns true</p>
+<h4 id="timestamp-update">Timestamp Update<a class="headerlink" href="#timestamp-update" title="Permanent link">&para;</a></h4>
+<p>When a duplicate is detected, the <code>edgeSeen</code> method updates the <code>updated_at</code> timestamp:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>Cypher query (edge.go:117):
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>MATCH ()-[r]-&gt;() 
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>WHERE elementId(r) = $eid 
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>SET r.updated_at = localDateTime(&#39;{timestamp}&#39;)
+</span></code></pre></div>
+<hr />
+<h3 id="edge-retrieval">Edge Retrieval<a class="headerlink" href="#edge-retrieval" title="Permanent link">&para;</a></h3>
+<h4 id="find-edge-by-id">Find Edge By ID<a class="headerlink" href="#find-edge-by-id" title="Permanent link">&para;</a></h4>
+<p>The <code>FindEdgeById</code> method retrieves a specific edge using its Neo4j element ID:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>MATCH (from:Entity)-[r]-&gt;(to:Entity) 
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>WHERE elementId(r) = $eid 
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>RETURN r, from.entity_id AS fid, to.entity_id AS tid
+</span></code></pre></div>
+<p><strong>Returns:</strong>
+- <code>types.Edge</code> with populated <code>FromEntity.ID</code> and <code>ToEntity.ID</code>
+- Error if edge not found</p>
+<hr />
+<h3 id="edge-traversal">Edge Traversal<a class="headerlink" href="#edge-traversal" title="Permanent link">&para;</a></h3>
+<h4 id="incoming-edges">Incoming Edges<a class="headerlink" href="#incoming-edges" title="Permanent link">&para;</a></h4>
+<p>The <code>IncomingEdges</code> method finds all edges pointing to a specific entity:</p>
+<p><strong>Method Signature:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>IncomingEdges(entity *types.Entity, since time.Time, labels ...string) ([]*types.Edge, error)
+</span></code></pre></div></p>
+<p><strong>Cypher Queries:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Condition</th>
+<th>Query Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No temporal filter</td>
+<td><code>MATCH (:Entity {entity_id: $eid})&lt;-[r]-(from:Entity) RETURN r, from.entity_id AS fid</code></td>
+</tr>
+<tr>
+<td>With <code>since</code> filter</td>
+<td><code>MATCH (:Entity {entity_id: $eid})&lt;-[r]-(from:Entity) WHERE r.updated_at &gt;= localDateTime('{since}') RETURN r, from.entity_id AS fid</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Label Filtering:</strong></p>
+<p>After query execution, results are filtered by relationship type if labels are specified:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>Post-processing (edge.go:214-227):
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>- If labels provided, check each relationship
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>- Compare r.Type against provided labels (case-insensitive)
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>- Only include matching relationships
+</span></code></pre></div>
+<h4 id="outgoing-edges">Outgoing Edges<a class="headerlink" href="#outgoing-edges" title="Permanent link">&para;</a></h4>
+<p>The <code>OutgoingEdges</code> method finds all edges originating from a specific entity:</p>
+<p><strong>Method Signature:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>OutgoingEdges(entity *types.Entity, since time.Time, labels ...string) ([]*types.Edge, error)
+</span></code></pre></div></p>
+<p><strong>Cypher Queries:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Condition</th>
+<th>Query Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No temporal filter</td>
+<td><code>MATCH (:Entity {entity_id: $eid})-[r]-&gt;(to:Entity) RETURN r, to.entity_id AS tid</code></td>
+</tr>
+<tr>
+<td>With <code>since</code> filter</td>
+<td><code>MATCH (:Entity {entity_id: $eid})-[r]-&gt;(to:Entity) WHERE r.updated_at &gt;= localDateTime('{since}') RETURN r, to.entity_id AS tid</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Label Filtering:</strong></p>
+<p>Identical to incoming edges, with post-processing label filtering.</p>
+<h4 id="traversal-patterns">Traversal Patterns<a class="headerlink" href="#traversal-patterns" title="Permanent link">&para;</a></h4>
+<pre class="mermaid"><code>graph TD
+    subgraph "Incoming Edge Traversal"
+        ExtFrom1["(from1:Entity)"]
+        ExtFrom2["(from2:Entity)"]
+        ExtFrom3["(from3:Entity)"]
+        Target["(target:Entity)&lt;br/&gt;{entity_id: 'xyz'}"]
+
+        ExtFrom1 --&gt;|"[r1:TYPE1]"| Target
+        ExtFrom2 --&gt;|"[r2:TYPE2]"| Target
+        ExtFrom3 --&gt;|"[r3:TYPE1]"| Target
+    end
+
+    subgraph "Outgoing Edge Traversal"
+        Source["(source:Entity)&lt;br/&gt;{entity_id: 'abc'}"]
+        ExtTo1["(to1:Entity)"]
+        ExtTo2["(to2:Entity)"]
+        ExtTo3["(to3:Entity)"]
+
+        Source --&gt;|"[r4:TYPE1]"| ExtTo1
+        Source --&gt;|"[r5:TYPE2]"| ExtTo2
+        Source --&gt;|"[r6:TYPE1]"| ExtTo3
+    end
+
+    subgraph "Filter Options"
+        SinceFilter["Temporal Filter:&lt;br/&gt;r.updated_at &gt;= since"]
+        LabelFilter["Label Filter:&lt;br/&gt;r.Type in labels"]
+    end</code></pre>
+<hr />
+<h3 id="edge-deletion">Edge Deletion<a class="headerlink" href="#edge-deletion" title="Permanent link">&para;</a></h3>
+<p>The <code>DeleteEdge</code> method removes a relationship from the graph:</p>
+<p><strong>Cypher Query:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>MATCH ()-[r]-&gt;() 
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>WHERE elementId(r) = $eid 
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>DELETE r
+</span></code></pre></div></p>
+<p><strong>Note:</strong> This only deletes the relationship; entity nodes remain intact.</p>
+<hr />
+<h3 id="data-conversion">Data Conversion<a class="headerlink" href="#data-conversion" title="Permanent link">&para;</a></h3>
+<h4 id="relationship-to-edge-conversion">Relationship to Edge Conversion<a class="headerlink" href="#relationship-to-edge-conversion" title="Permanent link">&para;</a></h4>
+<p>The Neo4j driver returns relationships as <code>neo4jdb.Relationship</code> objects, which must be converted to <code>types.Edge</code>:</p>
+<pre class="mermaid"><code>flowchart LR
+    NeoRel["neo4jdb.Relationship&lt;br/&gt;- ElementId&lt;br/&gt;- Type&lt;br/&gt;- Properties&lt;br/&gt;- StartNodeElementId&lt;br/&gt;- EndNodeElementId"]
+
+    Extract["Extract Properties:&lt;br/&gt;- edge_id (elementId)&lt;br/&gt;- created_at&lt;br/&gt;- updated_at&lt;br/&gt;- relation properties"]
+
+    ConvertRel["Convert Relation:&lt;br/&gt;relationshipPropsToRelation()"]
+
+    BuildEdge["types.Edge&lt;br/&gt;- ID: string&lt;br/&gt;- CreatedAt: time.Time&lt;br/&gt;- LastSeen: time.Time&lt;br/&gt;- Relation: oam.Relation"]
+
+    NeoRel --&gt; Extract
+    Extract --&gt; ConvertRel
+    ConvertRel --&gt; BuildEdge</code></pre>
+<p><strong>Key Functions:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Purpose</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>relationshipToEdge</code></td>
+<td>Converts Neo4j relationship to <code>types.Edge</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>relationshipPropsToRelation</code></td>
+<td>Extracts OAM relation from relationship properties</td>
+<td></td>
+</tr>
+<tr>
+<td><code>edgePropsMap</code></td>
+<td>Creates property map for relationship creation</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h3>
+<p>The Neo4j edge operations include comprehensive integration tests:</p>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Description</th>
+<th>File Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TestCreateEdge</code></td>
+<td>Tests edge creation, validation, and duplicate handling</td>
+<td></td>
+</tr>
+<tr>
+<td><code>TestFindEdgeById</code></td>
+<td>Tests edge retrieval by ID</td>
+<td></td>
+</tr>
+<tr>
+<td><code>TestIncomingEdges</code></td>
+<td>Tests incoming edge traversal and filtering</td>
+<td></td>
+</tr>
+<tr>
+<td><code>TestOutgoingEdges</code></td>
+<td>Tests outgoing edge traversal and filtering</td>
+<td></td>
+</tr>
+<tr>
+<td><code>TestDeleteEdge</code></td>
+<td>Tests edge deletion</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Test Scenarios:</strong>
+- Invalid label validation
+- Duplicate edge detection with timestamp updates
+- Temporal filtering with <code>since</code> parameter
+- Label filtering with multiple relationship types
+- Edge deletion and verification</p>
+<hr />
+<h3 id="error-handling_1">Error Handling<a class="headerlink" href="#error-handling_1" title="Permanent link">&para;</a></h3>
+<p>The edge operations return errors in the following scenarios:</p>
+<table>
+<thead>
+<tr>
+<th>Error Condition</th>
+<th>Error Message</th>
+<th>Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Null inputs</td>
+<td>"failed input validation checks"</td>
+<td><code>CreateEdge</code></td>
+</tr>
+<tr>
+<td>Invalid OAM relationship</td>
+<td>"{FromType} -{Label}-&gt; {ToType} is not valid in the taxonomy"</td>
+<td><code>CreateEdge</code></td>
+</tr>
+<tr>
+<td>No records returned</td>
+<td>"no records returned from the query"</td>
+<td><code>CreateEdge</code></td>
+</tr>
+<tr>
+<td>Nil relationship</td>
+<td>"the record value for the relationship is nil"</td>
+<td><code>CreateEdge</code>, <code>FindEdgeById</code></td>
+</tr>
+<tr>
+<td>Edge not found</td>
+<td>"no edge was found"</td>
+<td><code>FindEdgeById</code></td>
+</tr>
+<tr>
+<td>Zero edges found</td>
+<td>"zero edges found"</td>
+<td><code>IncomingEdges</code>, <code>OutgoingEdges</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="performance-considerations">Performance Considerations<a class="headerlink" href="#performance-considerations" title="Permanent link">&para;</a></h3>
+<h4 id="indexes">Indexes<a class="headerlink" href="#indexes" title="Permanent link">&para;</a></h4>
+<p>The Neo4j schema includes indexes on relationship properties to optimize edge queries:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>Edge-related indexes (schema.go):
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>- CREATE INDEX edgetag_range_index_edge_id 
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>  FOR (n:EdgeTag) ON (n.edge_id)
+</span></code></pre></div>
+<p><strong>Note:</strong> Relationships do not support unique constraints or indexes on their properties in Neo4j. Performance is optimized through:
+1. Entity node indexes on <code>entity_id</code>
+2. Efficient Cypher query patterns
+3. Label filtering in application layer when needed</p>
+<h4 id="query-optimization">Query Optimization<a class="headerlink" href="#query-optimization" title="Permanent link">&para;</a></h4>
+<p><strong>Best Practices:</strong>
+1. Use temporal filtering (<code>since</code> parameter) to limit result sets
+2. Specify relationship labels to reduce post-processing
+3. Index entity nodes for fast relationship endpoint lookups
+4. Leverage Neo4j's native graph traversal algorithms</p>
+<h3 id="neo4j-tag-management">Neo4j Tag Management<a class="headerlink" href="#neo4j-tag-management" title="Permanent link">&para;</a></h3>
+<h3 id="purpose-and-scope_1">Purpose and Scope<a class="headerlink" href="#purpose-and-scope_1" title="Permanent link">&para;</a></h3>
+<p>This document covers tag management operations in the Neo4j repository implementation. Tags are metadata properties attached to entities and edges, implemented as separate nodes in the Neo4j graph database. Tags use the Open Asset Model (OAM) property types to provide structured, type-safe metadata storage.</p>
+<p>For entity and edge operations themselves, see <a href=".././triples/#neo4j-entity-operations">Neo4j Entity Operations</a> and <a href=".././triples/#neo4j-edge-operations">Neo4j Edge Operations</a>. For schema initialization including tag node constraints, see <a href=".././triples/#neo4j-schema-and-constraints">Neo4j Schema and Constraints</a>.</p>
+<hr />
+<h3 id="tag-data-model">Tag Data Model<a class="headerlink" href="#tag-data-model" title="Permanent link">&para;</a></h3>
+<h4 id="core-tag-types">Core Tag Types<a class="headerlink" href="#core-tag-types" title="Permanent link">&para;</a></h4>
+<p>Tags in Neo4j are represented as separate nodes with relationships to their parent entities or edges. The system supports two tag types:</p>
+<table>
+<thead>
+<tr>
+<th>Tag Type</th>
+<th>Purpose</th>
+<th>Parent Relationship</th>
+<th>Node Label Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>EntityTag</code></td>
+<td>Properties attached to entities</td>
+<td>Links to Entity node via <code>entity_id</code></td>
+<td><code>:EntityTag:{PropertyType}</code></td>
+</tr>
+<tr>
+<td><code>EdgeTag</code></td>
+<td>Properties attached to edges</td>
+<td>Links to Edge relationship via <code>edge_id</code></td>
+<td><code>:EdgeTag:{PropertyType}</code></td>
+</tr>
+</tbody>
+</table>
+<p>Both tag types share a common structure defined in the <code>types</code> package:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>EntityTag {
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>  ID        string         // Unique tag identifier (tag_id)
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>  CreatedAt time.Time      // Initial creation timestamp
+</span><span id="__span-35-4"><a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>  LastSeen  time.Time      // Most recent update timestamp
+</span><span id="__span-35-5"><a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a>  Property  oam.Property   // OAM property instance
+</span><span id="__span-35-6"><a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a>  Entity    *types.Entity  // Reference to parent entity
+</span><span id="__span-35-7"><a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a>}
+</span><span id="__span-35-8"><a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a>
+</span><span id="__span-35-9"><a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a>EdgeTag {
+</span><span id="__span-35-10"><a id="__codelineno-35-10" name="__codelineno-35-10" href="#__codelineno-35-10"></a>  ID        string         // Unique tag identifier (tag_id)
+</span><span id="__span-35-11"><a id="__codelineno-35-11" name="__codelineno-35-11" href="#__codelineno-35-11"></a>  CreatedAt time.Time      // Initial creation timestamp
+</span><span id="__span-35-12"><a id="__codelineno-35-12" name="__codelineno-35-12" href="#__codelineno-35-12"></a>  LastSeen  time.Time      // Most recent update timestamp
+</span><span id="__span-35-13"><a id="__codelineno-35-13" name="__codelineno-35-13" href="#__codelineno-35-13"></a>  Property  oam.Property   // OAM property instance
+</span><span id="__span-35-14"><a id="__codelineno-35-14" name="__codelineno-35-14" href="#__codelineno-35-14"></a>  Edge      *types.Edge    // Reference to parent edge
+</span><span id="__span-35-15"><a id="__codelineno-35-15" name="__codelineno-35-15" href="#__codelineno-35-15"></a>}
+</span></code></pre></div>
+<h4 id="neo4j-node-structure">Neo4j Node Structure<a class="headerlink" href="#neo4j-node-structure" title="Permanent link">&para;</a></h4>
+<p>Tags are stored as nodes with multiple labels for efficient querying:</p>
+<pre class="mermaid"><code>graph TB
+    subgraph "EntityTag Node"
+        ET["EntityTag Node&lt;br/&gt;Labels: EntityTag, {PropertyType}&lt;br/&gt;&lt;br/&gt;Properties:&lt;br/&gt;tag_id: UUID&lt;br/&gt;entity_id: string&lt;br/&gt;ttype: PropertyType&lt;br/&gt;created_at: LocalDateTime&lt;br/&gt;updated_at: LocalDateTime&lt;br/&gt;+ property-specific fields"]
+    end
+
+    subgraph "EdgeTag Node"
+        EDT["EdgeTag Node&lt;br/&gt;Labels: EdgeTag, {PropertyType}&lt;br/&gt;&lt;br/&gt;Properties:&lt;br/&gt;tag_id: UUID&lt;br/&gt;edge_id: string&lt;br/&gt;ttype: PropertyType&lt;br/&gt;created_at: LocalDateTime&lt;br/&gt;updated_at: LocalDateTime&lt;br/&gt;+ property-specific fields"]
+    end
+
+    subgraph "Property Types"
+        Simple["SimpleProperty&lt;br/&gt;property_name: string&lt;br/&gt;property_value: string"]
+        DNS["DNSRecordProperty&lt;br/&gt;property_name: string&lt;br/&gt;header_rrtype: int&lt;br/&gt;header_class: int&lt;br/&gt;header_ttl: int&lt;br/&gt;data: string"]
+        Source["SourceProperty&lt;br/&gt;name: string&lt;br/&gt;confidence: int"]
+        Vuln["VulnProperty&lt;br/&gt;vuln_id: string&lt;br/&gt;desc: string&lt;br/&gt;source: string&lt;br/&gt;category: string&lt;br/&gt;enum: string&lt;br/&gt;ref: string"]
+    end
+
+    ET -.-&gt;|"stores one of"| Simple
+    ET -.-&gt;|"stores one of"| DNS
+    ET -.-&gt;|"stores one of"| Source
+    ET -.-&gt;|"stores one of"| Vuln
+
+    EDT -.-&gt;|"stores one of"| Simple
+    EDT -.-&gt;|"stores one of"| DNS
+    EDT -.-&gt;|"stores one of"| Source
+    EDT -.-&gt;|"stores one of"| Vuln</code></pre>
+<p>The dual-label system (<code>:EntityTag:{PropertyType}</code>) enables:
+- Fast filtering by tag type (EntityTag vs EdgeTag)
+- Type-specific queries without scanning all tags
+- Efficient property content matching</p>
+<hr />
+<h3 id="entity-tag-operations">Entity Tag Operations<a class="headerlink" href="#entity-tag-operations" title="Permanent link">&para;</a></h3>
+<h4 id="tag-creation-with-duplicate-handling">Tag Creation with Duplicate Handling<a class="headerlink" href="#tag-creation-with-duplicate-handling" title="Permanent link">&para;</a></h4>
+<p>The <code>CreateEntityTag</code> and <code>CreateEntityProperty</code> functions implement sophisticated duplicate detection and timestamp updating:</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Client
+    participant Neo as "neoRepository"
+    participant DB as "Neo4j Database"
+
+    Client-&gt;&gt;Neo: CreateEntityProperty(entity, property)
+    Neo-&gt;&gt;Neo: Wrap in EntityTag struct
+
+    alt Check for duplicate
+        Neo-&gt;&gt;DB: FindEntityTagsByContent(property)
+
+        alt Tag exists with same content
+            DB--&gt;&gt;Neo: Existing tag found
+            Neo-&gt;&gt;Neo: Update LastSeen timestamp
+            Neo-&gt;&gt;Neo: Build props map from tag
+            Neo-&gt;&gt;DB: MATCH (p:EntityTag) WHERE ...&lt;br/&gt;SET p = $props
+            DB--&gt;&gt;Neo: Updated node
+            Neo-&gt;&gt;Neo: nodeToEntityTag(node)
+            Neo--&gt;&gt;Client: Updated EntityTag
+        else No duplicate found
+            Neo-&gt;&gt;Neo: Generate unique tag_id
+            Neo-&gt;&gt;Neo: Set CreatedAt and LastSeen
+            Neo-&gt;&gt;Neo: Build props map
+            Neo-&gt;&gt;DB: CREATE (p:EntityTag:{PropertyType} $props)
+            DB--&gt;&gt;Neo: New node created
+            Neo-&gt;&gt;Neo: nodeToEntityTag(node)
+            Neo--&gt;&gt;Client: New EntityTag
+        end
+    end</code></pre>
+<p><strong>Key Implementation Details:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Purpose</th>
+<th>Cypher Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CreateEntityTag</code></td>
+<td>Main tag creation</td>
+<td><code>CREATE (p:EntityTag:{PropertyType} $props)</code></td>
+</tr>
+<tr>
+<td><code>CreateEntityProperty</code></td>
+<td>Convenience wrapper</td>
+<td>Delegates to <code>CreateEntityTag</code></td>
+</tr>
+<tr>
+<td><code>uniqueEntityTagID</code></td>
+<td>Generate unique UUID</td>
+<td>Loop until <code>FindEntityTagById</code> fails</td>
+</tr>
+<tr>
+<td><code>entityTagPropsMap</code></td>
+<td>Serialize tag to map</td>
+<td>Flatten Property fields to node properties</td>
+</tr>
+</tbody>
+</table>
+<p>The duplicate detection strategy at  ensures:
+1. Properties with identical content reuse existing tags
+2. <code>LastSeen</code> timestamp is updated on duplicates
+3. Property type must match for updates
+4. <code>CreatedAt</code> remains unchanged for duplicates</p>
+<h4 id="finding-tags-by-id">Finding Tags by ID<a class="headerlink" href="#finding-tags-by-id" title="Permanent link">&para;</a></h4>
+<p><code>FindEntityTagById</code> retrieves a specific tag using its unique identifier:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>Query: MATCH (p:EntityTag {tag_id: $tid}) RETURN p
+</span></code></pre></div>
+<p>The function at :
+1. Executes parameterized Cypher query with 30-second timeout
+2. Returns error if no records found
+3. Extracts node from result record
+4. Calls <code>nodeToEntityTag</code> for property deserialization</p>
+<h4 id="content-based-tag-search">Content-Based Tag Search<a class="headerlink" href="#content-based-tag-search" title="Permanent link">&para;</a></h4>
+<p><code>FindEntityTagsByContent</code> searches for tags matching a specific property value:</p>
+<pre class="mermaid"><code>graph LR
+    Input["oam.Property&lt;br/&gt;+ since timestamp"]
+    Query["queryNodeByPropertyKeyValue()"]
+    Match["MATCH (p:EntityTag:{Type})&lt;br/&gt;WHERE key='value'&lt;br/&gt;AND updated_at &gt;= since"]
+    Results["[]*types.EntityTag"]
+
+    Input --&gt; Query
+    Query --&gt; Match
+    Match --&gt; Results</code></pre>
+<p>The <code>queryNodeByPropertyKeyValue</code> helper function (defined elsewhere in the codebase) constructs type-specific MATCH patterns. For example, a <code>SimpleProperty</code> with <code>name="test"</code> and <code>value="foo"</code> generates:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>MATCH (p:EntityTag:SimpleProperty {property_name: &#39;test&#39;, property_value: &#39;foo&#39;})
+</span></code></pre></div>
+<p>Time filtering is applied when <code>since</code> is non-zero:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>WHERE p.updated_at &gt;= localDateTime(&#39;2025-01-15T10:30:00&#39;)
+</span></code></pre></div></p>
+<h4 id="retrieving-all-entity-tags">Retrieving All Entity Tags<a class="headerlink" href="#retrieving-all-entity-tags" title="Permanent link">&para;</a></h4>
+<p><code>GetEntityTags</code> fetches all tags for a specific entity with optional filtering:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>entity</code></td>
+<td><code>*types.Entity</code></td>
+<td>Parent entity to query</td>
+</tr>
+<tr>
+<td><code>since</code></td>
+<td><code>time.Time</code></td>
+<td>Filter by update timestamp (ignored if zero)</td>
+</tr>
+<tr>
+<td><code>names</code></td>
+<td><code>...string</code></td>
+<td>Optional property names to filter (returns all if empty)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Query Patterns:</strong></p>
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="err">##</span><span class="w"> </span><span class="n">Without</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="n">filter</span>
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">EntityTag</span><span class="w"> </span><span class="p">{</span><span class="n">entity_id</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;{entity.ID}&#39;</span><span class="p">})</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span>
+</span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a>
+</span><span id="__span-39-4"><a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a><span class="err">##</span><span class="w"> </span><span class="k">With</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="n">filter</span>
+</span><span id="__span-39-5"><a id="__codelineno-39-5" name="__codelineno-39-5" href="#__codelineno-39-5"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">:</span><span class="n">EntityTag</span><span class="w"> </span><span class="p">{</span><span class="n">entity_id</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;{entity.ID}&#39;</span><span class="p">})</span>
+</span><span id="__span-39-6"><a id="__codelineno-39-6" name="__codelineno-39-6" href="#__codelineno-39-6"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">updated_at</span><span class="w"> </span><span class="p">&gt;=</span><span class="w"> </span><span class="n">localDateTime</span><span class="p">(</span><span class="s">&#39;{since}&#39;</span><span class="p">)</span>
+</span><span id="__span-39-7"><a id="__codelineno-39-7" name="__codelineno-39-7" href="#__codelineno-39-7"></a><span class="k">RETURN</span><span class="w"> </span><span class="n">p</span>
+</span></code></pre></div>
+<p>Post-query filtering at  applies the <code>names</code> parameter in-memory by comparing <code>Property.Name()</code> against the provided list.</p>
+<h4 id="tag-deletion">Tag Deletion<a class="headerlink" href="#tag-deletion" title="Permanent link">&para;</a></h4>
+<p><code>DeleteEntityTag</code> removes a tag node completely:</p>
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="k">MATCH</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="n">EntityTag</span><span class="w"> </span><span class="p">{</span><span class="n">tag_id</span><span class="p">:</span><span class="w"> </span><span class="err">$</span><span class="n">tid</span><span class="p">})</span>
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a><span class="n">DETACH</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="n">n</span>
+</span></code></pre></div>
+<p>The <code>DETACH DELETE</code> ensures any relationships to the tag are also removed, maintaining graph integrity.</p>
+<hr />
+<h3 id="edge-tag-operations">Edge Tag Operations<a class="headerlink" href="#edge-tag-operations" title="Permanent link">&para;</a></h3>
+<p>Edge tag operations mirror entity tag operations with different node labels and parent relationships. The implementation follows the same patterns but uses <code>:EdgeTag</code> labels and <code>edge_id</code> properties instead of <code>entity_id</code>.</p>
+<p><strong>Key Functions:</strong></p>
+<pre class="mermaid"><code>graph TB
+    subgraph "Edge Tag API"
+        CreateEdgeTag["CreateEdgeTag(edge, tag)"]
+        CreateEdgeProp["CreateEdgeProperty(edge, prop)"]
+        FindById["FindEdgeTagById(id)"]
+        FindByContent["FindEdgeTagsByContent(prop, since)"]
+        GetTags["GetEdgeTags(edge, since, names...)"]
+        Delete["DeleteEdgeTag(id)"]
+    end
+
+    subgraph "Shared Extraction Logic"
+        NodeToTag["nodeToEdgeTag(node)"]
+        NodeToProp["nodeToProperty(node, ptype)"]
+    end
+
+    CreateEdgeTag --&gt; NodeToTag
+    FindById --&gt; NodeToTag
+    FindByContent --&gt; NodeToTag
+    GetTags --&gt; NodeToTag
+    NodeToTag --&gt; NodeToProp</code></pre>
+<p>The implementation reuses the same property extraction logic as entity tags, differing only in:
+- Node label: <code>:EdgeTag</code> instead of <code>:EntityTag</code>
+- Parent reference field: <code>edge_id</code> instead of <code>entity_id</code>
+- Return type: <code>*types.EdgeTag</code> instead of <code>*types.EntityTag</code></p>
+<hr />
+<h3 id="property-extraction-system">Property Extraction System<a class="headerlink" href="#property-extraction-system" title="Permanent link">&para;</a></h3>
+<h4 id="converting-neo4j-nodes-to-tags">Converting Neo4j Nodes to Tags<a class="headerlink" href="#converting-neo4j-nodes-to-tags" title="Permanent link">&para;</a></h4>
+<p>The extraction functions transform Neo4j nodes back into Go structs:</p>
+<pre class="mermaid"><code>graph TB
+    Node["neo4jdb.Node&lt;br/&gt;Raw Neo4j node"]
+
+    subgraph "Tag Extraction"
+        EntityExtract["nodeToEntityTag()"]
+        EdgeExtract["nodeToEdgeTag()"]
+    end
+
+    subgraph "Property Extraction"
+        PropExtract["nodeToProperty(node, ptype)"]
+    end
+
+    subgraph "Type-Specific Extraction"
+        DNS["nodeToDNSRecordProperty()"]
+        Simple["nodeToSimpleProperty()"]
+        Source["nodeToSourceProperty()"]
+        Vuln["nodeToVulnProperty()"]
+    end
+
+    Node --&gt; EntityExtract
+    Node --&gt; EdgeExtract
+
+    EntityExtract --&gt; PropExtract
+    EdgeExtract --&gt; PropExtract
+
+    PropExtract --&gt; DNS
+    PropExtract --&gt; Simple
+    PropExtract --&gt; Source
+    PropExtract --&gt; Vuln</code></pre>
+<p><strong>Extraction Flow:</strong></p>
+<ol>
+<li><strong>Read Common Fields</strong> - Extract <code>tag_id</code>, <code>entity_id</code>/<code>edge_id</code>, timestamps</li>
+<li><strong>Determine Property Type</strong> - Read <code>ttype</code> field to identify OAM property type</li>
+<li><strong>Dispatch to Type Handler</strong> - Call appropriate <code>nodeTo{Type}Property</code> function</li>
+<li><strong>Assemble Tag Struct</strong> - Combine extracted data into <code>EntityTag</code> or <code>EdgeTag</code></li>
+</ol>
+<h4 id="property-type-handlers">Property Type Handlers<a class="headerlink" href="#property-type-handlers" title="Permanent link">&para;</a></h4>
+<p>Each OAM property type has a dedicated extraction function:</p>
+<table>
+<thead>
+<tr>
+<th>Property Type</th>
+<th>Extractor Function</th>
+<th>Key Fields Extracted</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DNSRecordProperty</code></td>
+<td><code>nodeToDNSRecordProperty</code></td>
+<td><code>property_name</code>, <code>header_rrtype</code>, <code>header_class</code>, <code>header_ttl</code>, <code>data</code></td>
+</tr>
+<tr>
+<td><code>SimpleProperty</code></td>
+<td><code>nodeToSimpleProperty</code></td>
+<td><code>property_name</code>, <code>property_value</code></td>
+</tr>
+<tr>
+<td><code>SourceProperty</code></td>
+<td><code>nodeToSourceProperty</code></td>
+<td><code>name</code>, <code>confidence</code></td>
+</tr>
+<tr>
+<td><code>VulnProperty</code></td>
+<td><code>nodeToVulnProperty</code></td>
+<td><code>vuln_id</code>, <code>desc</code>, <code>source</code>, <code>category</code>, <code>enum</code>, <code>ref</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example: SimpleProperty Extraction</strong></p>
+<p>demonstrates the straightforward extraction:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>1. Call neo4jdb.GetProperty[string](node, &quot;property_name&quot;)
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>2. Call neo4jdb.GetProperty[string](node, &quot;property_value&quot;)
+</span><span id="__span-41-3"><a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a>3. Return &amp;general.SimpleProperty with both fields
+</span></code></pre></div>
+<p>Each extractor uses <code>neo4jdb.GetProperty[T]</code> for type-safe property access. Errors propagate upward if required fields are missing.</p>
+<hr />
+<h3 id="time-management">Time Management<a class="headerlink" href="#time-management" title="Permanent link">&para;</a></h3>
+<h4 id="timestamp-fields">Timestamp Fields<a class="headerlink" href="#timestamp-fields" title="Permanent link">&para;</a></h4>
+<p>Tags maintain two timestamps for tracking:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Purpose</th>
+<th>Update Strategy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CreatedAt</code></td>
+<td>Initial creation time</td>
+<td>Set once, never updated</td>
+</tr>
+<tr>
+<td><code>LastSeen</code></td>
+<td>Most recent observation</td>
+<td>Updated on every duplicate detection</td>
+</tr>
+</tbody>
+</table>
+<p>Both timestamps use Neo4j's <code>LocalDateTime</code> type for storage, converted via helper functions:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>Go time.Time --&gt; Neo4j LocalDateTime: timeToNeo4jTime(t)
+</span><span id="__span-42-2"><a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a>Neo4j LocalDateTime --&gt; Go time.Time: neo4jTimeToTime(t)
+</span></code></pre></div>
+<p><strong>Timestamp Behavior in Queries:</strong></p>
+<div class="language-cypher highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a><span class="err">##</span><span class="w"> </span><span class="n">Time</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="n">format</span>
+</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">updated_at</span><span class="w"> </span><span class="p">&gt;=</span><span class="w"> </span><span class="n">localDateTime</span><span class="p">(</span><span class="s">&#39;2025-01-15T10:30:00.123456789&#39;</span><span class="p">)</span>
+</span></code></pre></div>
+<p>The <code>since</code> parameter in query functions filters tags by <code>updated_at</code> (alias for <code>LastSeen</code>), enabling temporal queries for recently modified tags.</p>
+<hr />
+<h3 id="duplicate-detection-strategy">Duplicate Detection Strategy<a class="headerlink" href="#duplicate-detection-strategy" title="Permanent link">&para;</a></h3>
+<h4 id="content-matching-logic">Content Matching Logic<a class="headerlink" href="#content-matching-logic" title="Permanent link">&para;</a></h4>
+<p>The duplicate detection system at  prevents redundant tag creation:</p>
+<pre class="mermaid"><code>graph TD
+    Start["CreateEntityTag called"]
+    Query["FindEntityTagsByContent(property)"]
+
+    Decision{"Existing tag&lt;br/&gt;found?"}
+
+    TypeCheck{"Property type&lt;br/&gt;matches?"}
+    Update["Update LastSeen&lt;br/&gt;Build props map&lt;br/&gt;SET p = $props"]
+    Create["Generate new tag_id&lt;br/&gt;Set CreatedAt/LastSeen&lt;br/&gt;CREATE new node"]
+
+    Error["Return error:&lt;br/&gt;type mismatch"]
+    Return["Return tag"]
+
+    Start --&gt; Query
+    Query --&gt; Decision
+
+    Decision --&gt;|Yes| TypeCheck
+    Decision --&gt;|No| Create
+
+    TypeCheck --&gt;|Yes| Update
+    TypeCheck --&gt;|No| Error
+
+    Update --&gt; Return
+    Create --&gt; Return
+    Error --&gt; Return</code></pre>
+<p><strong>Property Type Validation:</strong></p>
+<p>The check at  ensures type consistency:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a>if input.Property.PropertyType() != t.Property.PropertyType() {
+</span><span id="__span-44-2"><a id="__codelineno-44-2" name="__codelineno-44-2" href="#__codelineno-44-2"></a>    return error
+</span><span id="__span-44-3"><a id="__codelineno-44-3" name="__codelineno-44-3" href="#__codelineno-44-3"></a>}
+</span></code></pre></div></p>
+<p>This prevents a <code>SimpleProperty</code> from updating a <code>DNSRecordProperty</code> with the same name, maintaining data integrity.</p>
+<hr />
+<h3 id="test-coverage_1">Test Coverage<a class="headerlink" href="#test-coverage_1" title="Permanent link">&para;</a></h3>
+<p>The integration tests in  verify:</p>
+<table>
+<thead>
+<tr>
+<th>Test Case</th>
+<th>Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TestEntityTag</code></td>
+<td>Full lifecycle: create, find, duplicate handling, timestamp updates, query by name, deletion</td>
+</tr>
+<tr>
+<td><code>TestEdgeTag</code></td>
+<td>Parallel verification for edge tags</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Test Scenarios:</strong></p>
+<ol>
+<li><strong>Initial Creation</strong> - Verify <code>CreatedAt</code> and <code>LastSeen</code> are set correctly</li>
+<li><strong>Duplicate Detection</strong> - Second creation with same property updates <code>LastSeen</code> only</li>
+<li><strong>Value Change</strong> - New property value creates new tag with later <code>CreatedAt</code></li>
+<li><strong>Filtered Retrieval</strong> - <code>GetEntityTags</code> with name filter returns correct subset</li>
+<li><strong>Deletion</strong> - Tag removal and subsequent lookup failure</li>
+</ol>
+<h3 id="neo4j-schema-and-constraints">Neo4j Schema and Constraints<a class="headerlink" href="#neo4j-schema-and-constraints" title="Permanent link">&para;</a></h3>
+<p>This page documents the Neo4j schema initialization system, including uniqueness constraints, range indexes, and database creation. It covers how the Neo4j repository ensures data integrity and query performance through structured schema definitions.</p>
+<p>For details on how these constraints are used during entity, edge, and tag operations, see <a href=".././triples/#neo4j-entity-operations">Neo4j Entity Operations</a>, <a href=".././triples/#neo4j-edge-operations">Neo4j Edge Operations</a>, and <a href=".././triples/#neo4j-tag-management">Neo4j Tag Management</a>. For broader migration system context, see <a href="#7.2">Neo4j Schema Initialization</a>.</p>
+<h3 id="schema-initialization-overview">Schema Initialization Overview<a class="headerlink" href="#schema-initialization-overview" title="Permanent link">&para;</a></h3>
+<p>The Neo4j schema is initialized through the <code>InitializeSchema</code> function, which creates the database, establishes constraints, and defines indexes. This initialization occurs automatically when a new Neo4j repository is created via <code>assetdb.New</code>.</p>
+<h4 id="initialization-flow">Initialization Flow<a class="headerlink" href="#initialization-flow" title="Permanent link">&para;</a></h4>
+<pre class="mermaid"><code>flowchart TD
+    Start["InitializeSchema(driver, dbname)"]
+    CreateDB["CREATE DATABASE IF NOT EXISTS"]
+    StartDB["START DATABASE WAIT 10 SECONDS"]
+    CoreConstraints["Apply Core Constraints"]
+    CoreIndexes["Apply Core Indexes"]
+    ContentConstraints["Apply Content Constraints"]
+    Done["Schema Ready"]
+
+    Start --&gt; CreateDB
+    CreateDB --&gt; StartDB
+    StartDB --&gt; CoreConstraints
+    CoreConstraints --&gt; CoreIndexes
+    CoreIndexes --&gt; ContentConstraints
+    ContentConstraints --&gt; Done
+
+    CoreConstraints --&gt; EntityConstraint["Entity.entity_id UNIQUE"]
+    CoreConstraints --&gt; EntityTagConstraint["EntityTag.tag_id UNIQUE"]
+    CoreConstraints --&gt; EdgeTagConstraint["EdgeTag.tag_id UNIQUE"]
+
+    CoreIndexes --&gt; EntityEtype["Entity.etype INDEX"]
+    CoreIndexes --&gt; EntityUpdated["Entity.updated_at INDEX"]
+    CoreIndexes --&gt; TagIndexes["Tag Indexes"]
+
+    ContentConstraints --&gt; AssetConstraints["20+ Asset Type Constraints"]</code></pre>
+<h3 id="core-schema-components">Core Schema Components<a class="headerlink" href="#core-schema-components" title="Permanent link">&para;</a></h3>
+<p>The Neo4j schema defines three primary node types with associated constraints and indexes:</p>
+<h4 id="entity-nodes">Entity Nodes<a class="headerlink" href="#entity-nodes" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Constraint Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>entity_id</code></td>
+<td>UNIQUE</td>
+<td>Ensures each entity has a unique identifier</td>
+</tr>
+<tr>
+<td><code>etype</code></td>
+<td>RANGE INDEX</td>
+<td>Enables efficient queries by asset type</td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td>RANGE INDEX</td>
+<td>Supports temporal queries and filtering</td>
+</tr>
+</tbody>
+</table>
+<h4 id="entitytag-nodes">EntityTag Nodes<a class="headerlink" href="#entitytag-nodes" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Constraint Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tag_id</code></td>
+<td>UNIQUE</td>
+<td>Ensures each tag has a unique identifier</td>
+</tr>
+<tr>
+<td><code>ttype</code></td>
+<td>RANGE INDEX</td>
+<td>Enables queries by property type</td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td>RANGE INDEX</td>
+<td>Supports temporal filtering</td>
+</tr>
+<tr>
+<td><code>entity_id</code></td>
+<td>RANGE INDEX</td>
+<td>Optimizes tag lookup by entity</td>
+</tr>
+</tbody>
+</table>
+<h4 id="edgetag-nodes">EdgeTag Nodes<a class="headerlink" href="#edgetag-nodes" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Constraint Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tag_id</code></td>
+<td>UNIQUE</td>
+<td>Ensures each tag has a unique identifier</td>
+</tr>
+<tr>
+<td><code>ttype</code></td>
+<td>RANGE INDEX</td>
+<td>Enables queries by property type</td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td>RANGE INDEX</td>
+<td>Supports temporal filtering</td>
+</tr>
+<tr>
+<td><code>edge_id</code></td>
+<td>RANGE INDEX</td>
+<td>Optimizes tag lookup by edge</td>
+</tr>
+</tbody>
+</table>
+<h3 id="constraint-implementation-details">Constraint Implementation Details<a class="headerlink" href="#constraint-implementation-details" title="Permanent link">&para;</a></h3>
+<p>The schema uses Cypher's <code>CREATE CONSTRAINT</code> syntax with the <code>IF NOT EXISTS</code> clause to ensure idempotent initialization.</p>
+<pre class="mermaid"><code>graph TB
+    subgraph "Entity Constraint"
+        EntityNode["(:Entity)"]
+        EntityProp["n.entity_id"]
+        EntityConstraint["constraint_entities_entity_id"]
+
+        EntityNode --&gt; EntityProp
+        EntityProp --&gt; EntityConstraint
+    end
+
+    subgraph "EntityTag Constraint"
+        TagNode["(:EntityTag)"]
+        TagProp["n.tag_id"]
+        TagConstraint["constraint_enttag_tag_id"]
+
+        TagNode --&gt; TagProp
+        TagProp --&gt; TagConstraint
+    end
+
+    subgraph "EdgeTag Constraint"
+        EdgeTagNode["(:EdgeTag)"]
+        EdgeTagProp["n.tag_id"]
+        EdgeTagConstraint["constraint_edgetag_tag_id"]
+
+        EdgeTagNode --&gt; EdgeTagProp
+        EdgeTagProp --&gt; EdgeTagConstraint
+    end</code></pre>
+<h4 id="executequery-helper">executeQuery Helper<a class="headerlink" href="#executequery-helper" title="Permanent link">&para;</a></h4>
+<p>The <code>executeQuery</code> function provides a wrapper around Neo4j's <code>ExecuteQuery</code> API, abstracting the context and transaction handling:</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Init as InitializeSchema
+    participant Exec as executeQuery
+    participant Driver as neo4jdb.Driver
+    participant DB as Neo4j Database
+
+    Init-&gt;&gt;Exec: executeQuery(driver, dbname, query)
+    Exec-&gt;&gt;Driver: ExecuteQuery(context, driver, query)
+    Driver-&gt;&gt;DB: Execute Cypher query
+    DB--&gt;&gt;Driver: Result or error
+    Driver--&gt;&gt;Exec: Result or error
+    Exec--&gt;&gt;Init: error or nil</code></pre>
+<h3 id="content-specific-constraints">Content-Specific Constraints<a class="headerlink" href="#content-specific-constraints" title="Permanent link">&para;</a></h3>
+<p>Each Open Asset Model asset type has its own constraint ensuring uniqueness on a natural key property. The <code>entitiesContentIndexes</code> function defines constraints for all 21 supported asset types.</p>
+<h4 id="asset-type-constraint-mapping">Asset Type Constraint Mapping<a class="headerlink" href="#asset-type-constraint-mapping" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Asset Type</th>
+<th>Node Label</th>
+<th>Unique Property</th>
+<th>Constraint Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Account</code></td>
+<td><code>:Account</code></td>
+<td><code>unique_id</code></td>
+<td><code>constraint_account_content_unique_id</code></td>
+</tr>
+<tr>
+<td><code>AutnumRecord</code></td>
+<td><code>:AutnumRecord</code></td>
+<td><code>handle</code>, <code>number</code></td>
+<td><code>constraint_autnum_content_handle</code>, <code>constraint_autnum_content_number</code></td>
+</tr>
+<tr>
+<td><code>AutonomousSystem</code></td>
+<td><code>:AutonomousSystem</code></td>
+<td><code>number</code></td>
+<td><code>constraint_autsys_content_number</code></td>
+</tr>
+<tr>
+<td><code>ContactRecord</code></td>
+<td><code>:ContactRecord</code></td>
+<td><code>discovered_at</code></td>
+<td><code>constraint_contact_record_content_discovered_at</code></td>
+</tr>
+<tr>
+<td><code>DomainRecord</code></td>
+<td><code>:DomainRecord</code></td>
+<td><code>domain</code></td>
+<td><code>constraint_domainrec_content_domain</code></td>
+</tr>
+<tr>
+<td><code>File</code></td>
+<td><code>:File</code></td>
+<td><code>url</code></td>
+<td><code>constraint_file_content_url</code></td>
+</tr>
+<tr>
+<td><code>FQDN</code></td>
+<td><code>:FQDN</code></td>
+<td><code>name</code></td>
+<td><code>constraint_fqdn_content_name</code></td>
+</tr>
+<tr>
+<td><code>FundsTransfer</code></td>
+<td><code>:FundsTransfer</code></td>
+<td><code>unique_id</code></td>
+<td><code>constraint_ft_content_unique_id</code></td>
+</tr>
+<tr>
+<td><code>Identifier</code></td>
+<td><code>:Identifier</code></td>
+<td><code>unique_id</code></td>
+<td><code>constraint_identifier_content_unique_id</code></td>
+</tr>
+<tr>
+<td><code>IPAddress</code></td>
+<td><code>:IPAddress</code></td>
+<td><code>address</code></td>
+<td><code>constraint_ipaddr_content_address</code></td>
+</tr>
+<tr>
+<td><code>IPNetRecord</code></td>
+<td><code>:IPNetRecord</code></td>
+<td><code>handle</code></td>
+<td><code>constraint_ipnetrec_content_handle</code></td>
+</tr>
+<tr>
+<td><code>Location</code></td>
+<td><code>:Location</code></td>
+<td><code>address</code></td>
+<td><code>constraint_location_content_name</code></td>
+</tr>
+<tr>
+<td><code>Netblock</code></td>
+<td><code>:Netblock</code></td>
+<td><code>cidr</code></td>
+<td><code>constraint_netblock_content_cidr</code></td>
+</tr>
+<tr>
+<td><code>Organization</code></td>
+<td><code>:Organization</code></td>
+<td><code>unique_id</code></td>
+<td><code>constraint_org_content_id</code></td>
+</tr>
+<tr>
+<td><code>Person</code></td>
+<td><code>:Person</code></td>
+<td><code>unique_id</code></td>
+<td><code>constraint_person_content_id</code></td>
+</tr>
+<tr>
+<td><code>Phone</code></td>
+<td><code>:Phone</code></td>
+<td><code>e164</code>, <code>raw</code></td>
+<td><code>constraint_phone_content_e164</code>, <code>constraint_phone_content_raw</code></td>
+</tr>
+<tr>
+<td><code>Product</code></td>
+<td><code>:Product</code></td>
+<td><code>unique_id</code></td>
+<td><code>constraint_product_content_id</code></td>
+</tr>
+<tr>
+<td><code>ProductRelease</code></td>
+<td><code>:ProductRelease</code></td>
+<td><code>name</code></td>
+<td><code>constraint_productrelease_content_name</code></td>
+</tr>
+<tr>
+<td><code>Service</code></td>
+<td><code>:Service</code></td>
+<td><code>unique_id</code></td>
+<td><code>constraint_service_content_id</code></td>
+</tr>
+<tr>
+<td><code>TLSCertificate</code></td>
+<td><code>:TLSCertificate</code></td>
+<td><code>serial_number</code></td>
+<td><code>constraint_tls_content_serial_number</code></td>
+</tr>
+<tr>
+<td><code>URL</code></td>
+<td><code>:URL</code></td>
+<td><code>url</code></td>
+<td><code>constraint_url_content_url</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="additional-content-indexes">Additional Content Indexes<a class="headerlink" href="#additional-content-indexes" title="Permanent link">&para;</a></h4>
+<p>Beyond uniqueness constraints, certain asset types have additional range indexes for frequently queried properties:</p>
+<table>
+<thead>
+<tr>
+<th>Asset Type</th>
+<th>Indexed Property</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IPNetRecord</code></td>
+<td><code>cidr</code></td>
+<td>Efficient CIDR range queries</td>
+</tr>
+<tr>
+<td><code>Organization</code></td>
+<td><code>name</code>, <code>legal_name</code></td>
+<td>Name-based searches</td>
+</tr>
+<tr>
+<td><code>Person</code></td>
+<td><code>full_name</code></td>
+<td>Name-based searches</td>
+</tr>
+<tr>
+<td><code>Product</code></td>
+<td><code>product_name</code></td>
+<td>Name-based searches</td>
+</tr>
+</tbody>
+</table>
+<h3 id="schema-to-code-mapping">Schema-to-Code Mapping<a class="headerlink" href="#schema-to-code-mapping" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    subgraph "Neo4j Schema"
+        EntityLabel["(:Entity)"]
+        AccountLabel["(:Account)"]
+        FQDNLabel["(:FQDN)"]
+        IPLabel["(:IPAddress)"]
+    end
+
+    subgraph "Go Code Structs"
+        EntityStruct["types.Entity"]
+        AccountStruct["account.Account"]
+        FQDNStruct["dns.FQDN"]
+        IPStruct["network.IPAddress"]
+    end
+
+    subgraph "Conversion Functions"
+        NodeToEntity["nodeToEntity()"]
+        NodeToAccount["nodeToAccount()"]
+        NodeToFQDN["nodeToFQDN()"]
+        NodeToIP["nodeToIPAddress()"]
+    end
+
+    EntityLabel --&gt; NodeToEntity
+    AccountLabel --&gt; NodeToAccount
+    FQDNLabel --&gt; NodeToFQDN
+    IPLabel --&gt; NodeToIP
+
+    NodeToEntity --&gt; EntityStruct
+    NodeToAccount --&gt; AccountStruct
+    NodeToFQDN --&gt; FQDNStruct
+    NodeToIP --&gt; IPStruct</code></pre>
+<h3 id="constraint-enforcement">Constraint Enforcement<a class="headerlink" href="#constraint-enforcement" title="Permanent link">&para;</a></h3>
+<p>Neo4j enforces these constraints at write time, preventing duplicate entities and ensuring data integrity:</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Repo as neoRepository
+    participant DB as Neo4j Database
+    participant Schema as Constraint Engine
+
+    Note over Repo,Schema: Creating Entity with FQDN "example.com"
+
+    Repo-&gt;&gt;DB: CREATE (e:Entity {entity_id: uuid})
+    DB-&gt;&gt;Schema: Check constraint_entities_entity_id
+    Schema--&gt;&gt;DB: OK (unique entity_id)
+
+    Repo-&gt;&gt;DB: CREATE (f:FQDN {name: "example.com"})
+    DB-&gt;&gt;Schema: Check constraint_fqdn_content_name
+
+    alt FQDN already exists
+        Schema--&gt;&gt;DB: Constraint violation
+        DB--&gt;&gt;Repo: Error: "example.com" already exists
+    else FQDN is unique
+        Schema--&gt;&gt;DB: OK (unique name)
+        DB--&gt;&gt;Repo: Node created
+    end</code></pre>
+<h3 id="index-types-and-performance">Index Types and Performance<a class="headerlink" href="#index-types-and-performance" title="Permanent link">&para;</a></h3>
+<p>Neo4j uses <strong>range indexes</strong> for all non-constraint indexes, enabling efficient range queries, equality checks, and sorting operations.</p>
+<h4 id="index-usage-patterns">Index Usage Patterns<a class="headerlink" href="#index-usage-patterns" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Index</th>
+<th>Query Pattern</th>
+<th>Example Cypher</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>entities_range_index_etype</code></td>
+<td>Filter by asset type</td>
+<td><code>MATCH (e:Entity) WHERE e.etype = 'FQDN'</code></td>
+</tr>
+<tr>
+<td><code>entities_range_index_updated_at</code></td>
+<td>Temporal queries</td>
+<td><code>MATCH (e:Entity) WHERE e.updated_at &gt; datetime('2024-01-01')</code></td>
+</tr>
+<tr>
+<td><code>enttag_range_index_entity_id</code></td>
+<td>Tag lookup</td>
+<td><code>MATCH (t:EntityTag) WHERE t.entity_id = $id</code></td>
+</tr>
+<tr>
+<td><code>org_range_index_name</code></td>
+<td>Name searches</td>
+<td><code>MATCH (o:Organization) WHERE o.name CONTAINS 'Example'</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="database-creation">Database Creation<a class="headerlink" href="#database-creation" title="Permanent link">&para;</a></h3>
+<p>The initialization process begins by ensuring the database exists and is started:</p>
+<pre class="mermaid"><code>flowchart LR
+    CreateCmd["CREATE DATABASE dbname&lt;br/&gt;IF NOT EXISTS"]
+    StartCmd["START DATABASE dbname&lt;br/&gt;WAIT 10 SECONDS"]
+    Ready["Database Ready"]
+
+    CreateCmd --&gt; StartCmd
+    StartCmd --&gt; Ready</code></pre>
+<p>These commands are executed with best-effort error handling (errors are ignored) since the database may already exist or be started.</p>
+<h3 id="error-handling_2">Error Handling<a class="headerlink" href="#error-handling_2" title="Permanent link">&para;</a></h3>
+<p>The schema initialization uses fail-fast error handling for constraints and indexes. If any constraint or index creation fails, the entire initialization process returns an error, preventing partial schema states.</p>
+<pre class="mermaid"><code>graph TD
+    Start["InitializeSchema()"]
+    CreateConstraint["Create Constraint"]
+    CheckError{"Error?"}
+    NextStep["Next Constraint/Index"]
+    ReturnError["return err"]
+    Complete["return nil"]
+
+    Start --&gt; CreateConstraint
+    CreateConstraint --&gt; CheckError
+    CheckError --&gt;|Yes| ReturnError
+    CheckError --&gt;|No| NextStep
+    NextStep --&gt; CreateConstraint
+    NextStep --&gt; Complete</code></pre>
+<h3 id="property-extraction-from-nodes">Property Extraction from Nodes<a class="headerlink" href="#property-extraction-from-nodes" title="Permanent link">&para;</a></h3>
+<p>The schema's property names directly correspond to the <code>neo4jdb.GetProperty</code> calls in entity extraction functions:</p>
+<pre class="mermaid"><code>graph TB
+    subgraph "FQDN Schema Constraint"
+        FQDNNode["(:FQDN)"]
+        NameProp["n.name UNIQUE"]
+        FQDNNode --&gt; NameProp
+    end
+
+    subgraph "nodeToFQDN Function"
+        GetProp["neo4jdb.GetProperty[string](node, 'name')"]
+        FQDNStruct["&amp;dns.FQDN{Name: name}"]
+        GetProp --&gt; FQDNStruct
+    end
+
+    NameProp -.-&gt;|"Same property name"| GetProp</code></pre>
+<h3 id="multi-property-constraints">Multi-Property Constraints<a class="headerlink" href="#multi-property-constraints" title="Permanent link">&para;</a></h3>
+<p>Some asset types require multiple unique constraints to ensure different forms of the same data are treated as distinct:</p>
+<h4 id="phone-number-example">Phone Number Example<a class="headerlink" href="#phone-number-example" title="Permanent link">&para;</a></h4>
+<p>The <code>Phone</code> asset type has two separate uniqueness constraints:
+- <code>constraint_phone_content_e164</code> on the standardized E.164 format
+- <code>constraint_phone_content_raw</code> on the raw input string</p>
+<p>This allows the same phone number to exist in multiple formats while preventing exact duplicates.</p>
+<h4 id="autnumrecord-example">AutnumRecord Example<a class="headerlink" href="#autnumrecord-example" title="Permanent link">&para;</a></h4>
+<p>The <code>AutnumRecord</code> asset type has two constraints:
+- <code>constraint_autnum_content_handle</code> on the registry handle
+- <code>constraint_autnum_content_number</code> on the AS number</p>
+<p>This prevents duplicates by both registry identifier and numeric AS value.</p>
 
 
 
@@ -3654,13 +8877,13 @@
         
         
           
-          <a href="../../open_asset_model/" class="md-footer__link md-footer__link--next" aria-label="Next: Open Asset Model">
+          <a href="../getting-started/" class="md-footer__link md-footer__link--next" aria-label="Next: Getting Started">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Open Asset Model
+                Getting Started
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -3765,7 +8988,7 @@
       
       
       
-      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["announce.dismiss","content.code.annotate","content.code.copy","content.code.select","content.footnote.tooltips","content.tabs.link","content.tooltips","navigation.footer","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.path","navigation.sections","navigation.tabs","navigation.top","navigation.tracking","search.highlight","toc.follow"],"search":"../../assets/javascripts/workers/search.e2d2d235.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["announce.dismiss","content.action.edit","content.action.view","content.code.annotate","content.code.copy","content.code.select","content.footnote.tooltips","content.tabs.link","content.tooltips","navigation.footer","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.path","navigation.sections","navigation.tabs","navigation.top","navigation.tracking","search.highlight","toc.follow"],"search":"../../assets/javascripts/workers/search.e2d2d235.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
     
     
       <script src="../../assets/javascripts/bundle.16f8adc2.min.js"></script>

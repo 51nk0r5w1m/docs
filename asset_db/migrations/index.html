@@ -1,0 +1,5996 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="In-depth OSINT collection and external attack surface mapping">
+      
+      
+        <meta name="author" content="OWASP Amass Contributors">
+      
+      
+        <link rel="canonical" href="https://51nk0r5w1m.github.io/docs/asset_db/migrations/">
+      
+      
+        <link rel="prev" href="../caching/">
+      
+      
+        <link rel="next" href="../api-reference/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="zensical-0.0.24">
+    
+    
+      
+        <title>Database Migrations - OWASP Amass Project</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.28978c9b.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/modern/palette.dfe2e883.min.css">
+      
+      
+
+  
+  
+  
+  
+  <style>:root{--md-annotation-icon:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M17%2013h-4v4h-2v-4H7v-2h4V7h2v4h4m-5-9A10%2010%200%200%200%202%2012a10%2010%200%200%200%2010%2010%2010%2010%200%200%200%2010-10A10%2010%200%200%200%2012%202%22/%3E%3C/svg%3E');}</style>
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,500,500i,700,700i%7CFira+Code:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Lato";--md-code-font:"Fira Code"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,a=__md_scope)=>JSON.parse(t.getItem(a.pathname+"."+e)),__md_set=(e,t,a=localStorage,_=__md_scope)=>{try{a.setItem(_.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#database-migrations" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="OWASP Amass Project" class="md-header__button md-logo" aria-label="OWASP Amass Project" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.897 20.503c-.384 0-1.782-2.489-1.97-3.198-.393-1.486-.308-2.114-.285-2.314.072-.613.667-.92.703-1.748.01-.256.14-1.535.243-2.534a1.7 1.7 0 0 1-.733-.343c.676.908-.32 1.995-1.767 3.443-1.536 1.536-4.945 2.961-4.945 2.961s1.425-3.41 2.961-4.945c1.13-1.129 2.04-1.983 2.816-1.983.22 0 .427.067.627.216a1.7 1.7 0 0 1-.343-.733c-.999.103-2.278.232-2.534.244-.829.036-1.135.63-1.747.702-.07.008-.194.024-.388.024-.36 0-.963-.054-1.926-.31-.772-.203-3.648-1.84-3.14-2.045.26-.105 1.087-.176 2.175-.176 1.047 0 2.337.066 3.596.23 1.57.205 3.01.463 3.992.656q.024-.08.058-.154l-1.004-.48s-.8-.92-.715-.984l.012-.003c.126 0 .767.733.829.816l.605.202-.284-.249s-.388-1.438-.287-1.472h.004c.106 0 .459 1.25.489 1.34.07.06.303.152.596.32l-.308-.79s.14-1.305.243-1.305h.003c.105.021-.02 1.089-.047 1.221l.51.783a1.3 1.3 0 0 1 .463-.082c.184 0 .374.036.558.107-.236-.502-.218-1.025.095-1.338a.84.84 0 0 1 .353-.209.46.46 0 0 1 .457-.383c.127 0 .254.05.352.148a.5.5 0 0 1 .147.335c.151-.311.329-.73.317-.867-.03-.307-.386-.852-.39-.857a.076.076 0 0 1 .064-.119c.025 0 .05.012.064.035.016.023.381.582.414.927.018.198-.21.696-.333.95a2.23 2.23 0 0 1 .873.874c.245-.12.715-.334.927-.334l.024.001c.345.033.904.399.927.414a.076.076 0 0 1-.084.128c-.005-.004-.55-.36-.857-.39h-.015c-.15 0-.552.171-.852.317.12.004.242.053.335.147a.48.48 0 0 1 .012.681.46.46 0 0 1-.247.128.85.85 0 0 1-.21.354.92.92 0 0 1-.67.255c-.212 0-.441-.055-.667-.16.132.343.142.708.025 1.02l.783.51c.095-.019.666-.088.993-.088.13 0 .222.011.228.04.02.106-1.305.247-1.305.247l-.79-.308c.168.293.26.527.32.596.091.03 1.374.392 1.34.493q-.007.018-.063.017c-.283 0-1.41-.304-1.41-.304l-.248-.284.202.605c.087.065.876.755.813.841q-.006.007-.016.007c-.139 0-.967-.722-.967-.722l-.481-1.004a1 1 0 0 1-.154.058c.193.982.451 2.422.656 3.992.335 2.569.26 5.261.054 5.77q-.024.06-.076.06M12 24C5.373 24 0 18.627 0 12S5.373 0 12 0s12 5.373 12 12-5.373 12-12 12m0-22.153C6.393 1.847 1.847 6.393 1.847 12S6.393 22.153 12 22.153 22.153 17.607 22.153 12 17.607 1.847 12 1.847"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OWASP Amass Project
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Database Migrations
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/51nk0r5w1m/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    OWASP Amass
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../installation/" class="md-tabs__link">
+        
+  
+  Installation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../cli/" class="md-tabs__link">
+          
+  
+  CLI Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/" class="md-tabs__link">
+          
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../plugins/" class="md-tabs__link">
+          
+  
+  Plugins
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../configuration/" class="md-tabs__link">
+          
+  
+  Configuration
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  Asset Database
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../open_asset_model/" class="md-tabs__link">
+          
+  
+  Open Asset Model
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../deployment/" class="md-tabs__link">
+          
+  
+  Deployment
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../contributing/contributing/" class="md-tabs__link">
+          
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="OWASP Amass Project" class="md-nav__button md-logo" aria-label="OWASP Amass Project" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.897 20.503c-.384 0-1.782-2.489-1.97-3.198-.393-1.486-.308-2.114-.285-2.314.072-.613.667-.92.703-1.748.01-.256.14-1.535.243-2.534a1.7 1.7 0 0 1-.733-.343c.676.908-.32 1.995-1.767 3.443-1.536 1.536-4.945 2.961-4.945 2.961s1.425-3.41 2.961-4.945c1.13-1.129 2.04-1.983 2.816-1.983.22 0 .427.067.627.216a1.7 1.7 0 0 1-.343-.733c-.999.103-2.278.232-2.534.244-.829.036-1.135.63-1.747.702-.07.008-.194.024-.388.024-.36 0-.963-.054-1.926-.31-.772-.203-3.648-1.84-3.14-2.045.26-.105 1.087-.176 2.175-.176 1.047 0 2.337.066 3.596.23 1.57.205 3.01.463 3.992.656q.024-.08.058-.154l-1.004-.48s-.8-.92-.715-.984l.012-.003c.126 0 .767.733.829.816l.605.202-.284-.249s-.388-1.438-.287-1.472h.004c.106 0 .459 1.25.489 1.34.07.06.303.152.596.32l-.308-.79s.14-1.305.243-1.305h.003c.105.021-.02 1.089-.047 1.221l.51.783a1.3 1.3 0 0 1 .463-.082c.184 0 .374.036.558.107-.236-.502-.218-1.025.095-1.338a.84.84 0 0 1 .353-.209.46.46 0 0 1 .457-.383c.127 0 .254.05.352.148a.5.5 0 0 1 .147.335c.151-.311.329-.73.317-.867-.03-.307-.386-.852-.39-.857a.076.076 0 0 1 .064-.119c.025 0 .05.012.064.035.016.023.381.582.414.927.018.198-.21.696-.333.95a2.23 2.23 0 0 1 .873.874c.245-.12.715-.334.927-.334l.024.001c.345.033.904.399.927.414a.076.076 0 0 1-.084.128c-.005-.004-.55-.36-.857-.39h-.015c-.15 0-.552.171-.852.317.12.004.242.053.335.147a.48.48 0 0 1 .012.681.46.46 0 0 1-.247.128.85.85 0 0 1-.21.354.92.92 0 0 1-.67.255c-.212 0-.441-.055-.667-.16.132.343.142.708.025 1.02l.783.51c.095-.019.666-.088.993-.088.13 0 .222.011.228.04.02.106-1.305.247-1.305.247l-.79-.308c.168.293.26.527.32.596.091.03 1.374.392 1.34.493q-.007.018-.063.017c-.283 0-1.41-.304-1.41-.304l-.248-.284.202.605c.087.065.876.755.813.841q-.006.007-.016.007c-.139 0-.967-.722-.967-.722l-.481-1.004a1 1 0 0 1-.154.058c.193.982.451 2.422.656 3.992.335 2.569.26 5.261.054 5.77q-.024.06-.076.06M12 24C5.373 24 0 18.627 0 12S5.373 0 12 0s12 5.373 12 12-5.373 12-12 12m0-22.153C6.393 1.847 1.847 6.393 1.847 12S6.393 22.153 12 22.153 22.153 17.607 22.153 12 17.607 1.847 12 1.847"/></svg>
+
+    </a>
+    OWASP Amass Project
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/51nk0r5w1m/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    OWASP Amass
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../cli/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CLI Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/enum/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    enum
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/subs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    subs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/assoc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    assoc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/track/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    track
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/viz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    viz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../architecture/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/engine-core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/event-dispatcher/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Dispatcher
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/plugin-registry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin Registry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/sessions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sessions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/data-flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/dns-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/dns-wildcard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Wildcard Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/dns-caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/network-mapping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network Mapping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/data-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../plugins/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/dns-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/api-integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Integrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/service-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/enrichment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enrichment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../configuration/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Configuration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/data_sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Sources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/transformations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transformations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset Database
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Asset Database
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../postgres/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PostgreSQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../triples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Triples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migrations
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#purpose-and-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Purpose and Scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-system-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration System Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-execution-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Execution Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#embedded-migration-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Embedded Migration Pattern
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Embedded Migration Pattern">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sqlite-migration-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQLite Migration Package
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#postgresql-migration-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PostgreSQL Migration Package
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-migrations-in-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using Migrations in Code
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-file-naming-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration File Naming Convention
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Migration File Naming Convention">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#migration-file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration File Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#database-schema-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database Schema Components
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#database-specific-differences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database-Specific Differences
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Database-Specific Differences">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sqlite-specific-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQLite Specific Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-state-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration State Tracking
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-with-repository-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration with Repository Layer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sql-schema-migrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQL Schema Migrations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#purpose-and-scope_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Purpose and Scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-architecture_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Migration Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#embedded-migration-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Embedded Migration Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-execution-flow_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Execution Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#schema-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema Structure
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Schema Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entity-relationship-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity-Relationship Diagram
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#postgresql-schema-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PostgreSQL Schema Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PostgreSQL Schema Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#table-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table Definitions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Table Definitions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entities-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entities Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-tags-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Tags Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edges-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edges Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edge-tags-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Tags Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#foreign-key-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Foreign Key Constraints
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sqlite-schema-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQLite Schema Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SQLite Schema Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#table-definitions_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table Definitions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Table Definitions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#foreign-key-enforcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Foreign Key Enforcement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entities-table_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entities Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-tags-table_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Tags Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edges-table_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edges Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edge-tags-table_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Tags Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#index-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Index Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Index Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#index-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Index Definitions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temporal-query-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Temporal Query Optimization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#postgresql-vs-sqlite-differences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PostgreSQL vs SQLite Differences
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PostgreSQL vs SQLite Differences">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#content-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content Storage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#identityauto-increment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Identity/Auto-increment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#foreign-key-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Foreign Key Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timestamp-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timestamp Types
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-execution-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Execution Example
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Migration Execution Example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#code-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#postgresql-migration-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PostgreSQL Migration Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sqlite-migration-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQLite Migration Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-directives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Directives
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Migration Directives">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#up-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Up Migration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#down-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Down Migration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rollback-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rollback Order
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#schema-version-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema Version Tracking
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See Also
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../open_asset_model/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Asset Model
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Open Asset Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../open_asset_model/assets/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assets
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8_2" id="__nav_8_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Assets
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/account/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Account
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/autnum_record/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AutnumRecord
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/autonomous_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AutonomousSystem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/contact_record/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ContactRecord
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/domain_record/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DomainRecord
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/file/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    File
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/fqdn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FQDN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/funds_transfer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FundsTransfer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/identifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/ip_address/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IPAddress
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/ipnet_record/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IPNetRecord
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/location/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Location
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/netblock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Netblock
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/person/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/phone/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/product/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/product_release/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ProductRelease
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/tls_certificate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TLSCertificate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/url/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    URL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../open_asset_model/relations/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relations
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8_3" id="__nav_8_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Relations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/basic_dns_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BasicDNSRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/port_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PortRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/pref_dns_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PrefDNSRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/simple_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SimpleRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/srv_dns_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SRVDNSRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../open_asset_model/properties/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Properties
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8_4" id="__nav_8_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Properties
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/properties/dns_property/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNSRecordProperty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/properties/simple_property/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SimpleProperty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/properties/source_property/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SourceProperty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/properties/vuln_property/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VulnProperty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/use-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Use Cases & Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../deployment/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deployment/docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deployment/config-best-practices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration Best Practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#purpose-and-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Purpose and Scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-system-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration System Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-execution-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Execution Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#embedded-migration-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Embedded Migration Pattern
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Embedded Migration Pattern">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sqlite-migration-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQLite Migration Package
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#postgresql-migration-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PostgreSQL Migration Package
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-migrations-in-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using Migrations in Code
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-file-naming-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration File Naming Convention
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Migration File Naming Convention">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#migration-file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration File Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#database-schema-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database Schema Components
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#database-specific-differences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database-Specific Differences
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Database-Specific Differences">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sqlite-specific-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQLite Specific Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-state-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration State Tracking
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-with-repository-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration with Repository Layer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sql-schema-migrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQL Schema Migrations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#purpose-and-scope_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Purpose and Scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-architecture_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Migration Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#embedded-migration-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Embedded Migration Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-execution-flow_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Execution Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#schema-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema Structure
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Schema Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entity-relationship-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity-Relationship Diagram
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#postgresql-schema-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PostgreSQL Schema Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PostgreSQL Schema Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#table-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table Definitions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Table Definitions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entities-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entities Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-tags-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Tags Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edges-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edges Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edge-tags-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Tags Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#foreign-key-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Foreign Key Constraints
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sqlite-schema-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQLite Schema Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SQLite Schema Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#table-definitions_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table Definitions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Table Definitions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#foreign-key-enforcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Foreign Key Enforcement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entities-table_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entities Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-tags-table_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Tags Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edges-table_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edges Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#edge-tags-table_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Tags Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#index-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Index Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Index Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#index-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Index Definitions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temporal-query-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Temporal Query Optimization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#postgresql-vs-sqlite-differences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PostgreSQL vs SQLite Differences
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PostgreSQL vs SQLite Differences">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#content-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content Storage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#identityauto-increment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Identity/Auto-increment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#foreign-key-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Foreign Key Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timestamp-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timestamp Types
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-execution-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Execution Example
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Migration Execution Example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#code-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#postgresql-migration-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PostgreSQL Migration Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sqlite-migration-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQLite Migration Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-directives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Directives
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Migration Directives">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#up-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Up Migration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#down-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Down Migration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rollback-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rollback Order
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#schema-version-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema Version Tracking
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See Also
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Asset Database
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+    <a href="https://github.com/51nk0r5w1m/docs/edit/main/docs/asset_db/migrations.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-file-pen" viewBox="0 0 24 24"><path d="M12.659 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v9.34"/><path d="M14 2v5a1 1 0 0 0 1 1h5M10.378 12.622a1 1 0 0 1 3 3.003L8.36 20.637a2 2 0 0 1-.854.506l-2.867.837a.5.5 0 0 1-.62-.62l.836-2.869a2 2 0 0 1 .506-.853z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/51nk0r5w1m/docs/raw/main/docs/asset_db/migrations.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-file-code-2" viewBox="0 0 24 24"><path d="M4 12.15V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.706.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2h-3.35"/><path d="M14 2v5a1 1 0 0 0 1 1h5M5 16l-3 3 3 3M9 22l3-3-3-3"/></svg>
+    </a>
+  
+
+
+<h1 id="database-migrations">Database Migrations<a class="headerlink" href="#database-migrations" title="Permanent link">&para;</a></h1>
+<h2 id="purpose-and-scope">Purpose and Scope<a class="headerlink" href="#purpose-and-scope" title="Permanent link">&para;</a></h2>
+<p>This page provides an overview of the database migration system in asset-db, which ensures database schemas are properly initialized and versioned before data operations begin. The migration system automatically creates the necessary tables, indexes, and constraints required by the repository implementations.</p>
+<p>This page covers:
+- The overall migration architecture and execution flow
+- The embedded migration file system pattern used for SQL databases
+- How the <code>sql-migrate</code> library is integrated for schema versioning</p>
+<p>For detailed information about specific implementations:
+- SQL schema structure and migration scripts: see <a href=".././migrations/#sql-schema-migrations">SQL Schema Migrations</a>
+- Neo4j constraint and index initialization: see <a href="#7.2">Neo4j Schema Initialization</a></p>
+<hr />
+<h2 id="migration-system-overview">Migration System Overview<a class="headerlink" href="#migration-system-overview" title="Permanent link">&para;</a></h2>
+<p>The asset-db migration system uses different approaches for SQL and graph databases:</p>
+<table>
+<thead>
+<tr>
+<th>Database Type</th>
+<th>Migration Tool</th>
+<th>Migration Format</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL</td>
+<td><code>rubenv/sql-migrate</code></td>
+<td>Embedded SQL scripts</td>
+<td><a href="">migrations/postgres/</a></td>
+</tr>
+<tr>
+<td>SQLite</td>
+<td><code>rubenv/sql-migrate</code></td>
+<td>Embedded SQL scripts</td>
+<td><a href="">migrations/sqlite3/</a></td>
+</tr>
+<tr>
+<td>Neo4j</td>
+<td>Custom Cypher initialization</td>
+<td>Programmatic constraints</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>The SQL migration system leverages Go's <code>embed</code> package to bundle migration scripts directly into the compiled binary, eliminating the need for external migration files at runtime.</p>
+<hr />
+<h2 id="migration-architecture">Migration Architecture<a class="headerlink" href="#migration-architecture" title="Permanent link">&para;</a></h2>
+<p>The following diagram illustrates how migrations are organized and accessed:</p>
+<pre class="mermaid"><code>graph TB
+    subgraph "Migration Packages"
+        SqlitePkg["migrations/sqlite3&lt;br/&gt;Package"]
+        PostgresPkg["migrations/postgres&lt;br/&gt;Package"]
+    end
+
+    subgraph "Embedded File Systems"
+        SqliteFS["sqlite3Migrations&lt;br/&gt;embed.FS"]
+        PostgresFS["postgresMigrations&lt;br/&gt;embed.FS"]
+    end
+
+    subgraph "Migration Files"
+        SqliteSQL["001_schema_init.sql&lt;br/&gt;(SQLite schema)"]
+        PostgresSQL["001_schema_init.sql&lt;br/&gt;(PostgreSQL schema)"]
+    end
+
+    subgraph "Access Functions"
+        SqliteMigrations["sqlite3.Migrations()"]
+        PostgresMigrations["postgres.Migrations()"]
+    end
+
+    subgraph "Migration Execution"
+        MigrateSource["migrate.EmbedFileSystemMigrationSource"]
+        MigrateExec["migrate.Exec()"]
+    end
+
+    SqliteSQL --&gt;|"go:embed *.sql"| SqliteFS
+    PostgresSQL --&gt;|"go:embed *.sql"| PostgresFS
+
+    SqliteFS --&gt; SqliteMigrations
+    PostgresFS --&gt; PostgresMigrations
+
+    SqliteMigrations --&gt; MigrateSource
+    PostgresMigrations --&gt; MigrateSource
+
+    MigrateSource --&gt; MigrateExec
+
+    MigrateExec --&gt;|"Creates tables:&lt;br/&gt;entities,&lt;br/&gt;entity_tags,&lt;br/&gt;edges,&lt;br/&gt;edge_tags"| DB[(Database)]</code></pre>
+<p>The migration packages expose a <code>Migrations()</code> function that returns an <code>embed.FS</code> containing all SQL migration files. This pattern allows the <code>sql-migrate</code> library to read migration scripts as if they were regular files, while actually reading from embedded data compiled into the binary.</p>
+<hr />
+<h2 id="migration-execution-flow">Migration Execution Flow<a class="headerlink" href="#migration-execution-flow" title="Permanent link">&para;</a></h2>
+<p>The following sequence diagram shows how migrations are executed during database initialization:</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant App as "Application Code"
+    participant GORM as "gorm.Open()"
+    participant MigPkg as "postgres.Migrations()&lt;br/&gt;or&lt;br/&gt;sqlite3.Migrations()"
+    participant MigSource as "migrate.EmbedFileSystemMigrationSource"
+    participant MigExec as "migrate.Exec()"
+    participant DB as "Database"
+
+    App-&gt;&gt;GORM: "Open database connection"
+    GORM--&gt;&gt;App: "*gorm.DB"
+
+    App-&gt;&gt;App: "db.DB() to get *sql.DB"
+
+    App-&gt;&gt;MigPkg: "Get embedded migrations"
+    MigPkg--&gt;&gt;App: "embed.FS"
+
+    App-&gt;&gt;MigSource: "Create migration source&lt;br/&gt;with embedded FS"
+    MigSource--&gt;&gt;App: "MigrationSource"
+
+    App-&gt;&gt;MigExec: "Exec(db, dialect, source, migrate.Up)"
+
+    MigExec-&gt;&gt;DB: "Check gorp_migrations table"
+
+    alt "Migrations needed"
+        MigExec-&gt;&gt;DB: "BEGIN TRANSACTION"
+        MigExec-&gt;&gt;DB: "Execute 001_schema_init.sql"
+        DB--&gt;&gt;MigExec: "Tables created"
+        MigExec-&gt;&gt;DB: "Record migration in gorp_migrations"
+        MigExec-&gt;&gt;DB: "COMMIT"
+    else "Already migrated"
+        MigExec-&gt;&gt;MigExec: "No action needed"
+    end
+
+    MigExec--&gt;&gt;App: "Migration complete"
+
+    App-&gt;&gt;App: "Database ready for operations"</code></pre>
+<p>The <code>sql-migrate</code> library maintains its own tracking table (<code>gorp_migrations</code>) to record which migrations have been applied, preventing duplicate execution of migration scripts.</p>
+<hr />
+<h2 id="embedded-migration-pattern">Embedded Migration Pattern<a class="headerlink" href="#embedded-migration-pattern" title="Permanent link">&para;</a></h2>
+<p>The migration system uses Go's <code>embed</code> directive to package SQL files into the compiled binary. Here's how the pattern works:</p>
+<h3 id="sqlite-migration-package">SQLite Migration Package<a class="headerlink" href="#sqlite-migration-package" title="Permanent link">&para;</a></h3>
+<p>The  file demonstrates the pattern:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">//go:embed *.sql</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kd">var</span><span class="w"> </span><span class="nx">sqlite3Migrations</span><span class="w"> </span><span class="nx">embed</span><span class="p">.</span><span class="nx">FS</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kd">func</span><span class="w"> </span><span class="nx">Migrations</span><span class="p">()</span><span class="w"> </span><span class="nx">embed</span><span class="p">.</span><span class="nx">FS</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">sqlite3Migrations</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The <code>//go:embed *.sql</code> directive instructs the Go compiler to embed all <code>.sql</code> files in the package directory into the <code>sqlite3Migrations</code> variable of type <code>embed.FS</code>. The <code>Migrations()</code> function provides external access to this embedded file system.</p>
+<h3 id="postgresql-migration-package">PostgreSQL Migration Package<a class="headerlink" href="#postgresql-migration-package" title="Permanent link">&para;</a></h3>
+<p>The  file follows the same pattern:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">//go:embed *.sql</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kd">var</span><span class="w"> </span><span class="nx">postgresMigrations</span><span class="w"> </span><span class="nx">embed</span><span class="p">.</span><span class="nx">FS</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="kd">func</span><span class="w"> </span><span class="nx">Migrations</span><span class="p">()</span><span class="w"> </span><span class="nx">embed</span><span class="p">.</span><span class="nx">FS</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">postgresMigrations</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>This consistent pattern allows both database types to be handled uniformly by the migration execution code.</p>
+<hr />
+<h2 id="using-migrations-in-code">Using Migrations in Code<a class="headerlink" href="#using-migrations-in-code" title="Permanent link">&para;</a></h2>
+<p>The following example from  demonstrates how to execute migrations:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// 1. Open database connection with GORM</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nx">db</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">gorm</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="nx">sqlite</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="nx">dsn</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">gorm</span><span class="p">.</span><span class="nx">Config</span><span class="p">{})</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1">// 2. Get standard *sql.DB from GORM</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nx">sqlDb</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">db</span><span class="p">.</span><span class="nx">DB</span><span class="p">()</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1">// 3. Create migration source from embedded file system</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="nx">migrationsSource</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">migrate</span><span class="p">.</span><span class="nx">EmbedFileSystemMigrationSource</span><span class="p">{</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="nx">FileSystem</span><span class="p">:</span><span class="w"> </span><span class="nx">Migrations</span><span class="p">(),</span><span class="w">  </span><span class="c1">// Get embed.FS</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="nx">Root</span><span class="p">:</span><span class="w">       </span><span class="s">&quot;/&quot;</span><span class="p">,</span><span class="w">           </span><span class="c1">// Root directory in the embedded FS</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="p">}</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="c1">// 4. Execute migrations</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">migrate</span><span class="p">.</span><span class="nx">Exec</span><span class="p">(</span><span class="nx">sqlDb</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;sqlite3&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">migrationsSource</span><span class="p">,</span><span class="w"> </span><span class="nx">migrate</span><span class="p">.</span><span class="nx">Up</span><span class="p">)</span>
+</span></code></pre></div>
+<p>The <code>migrate.Exec()</code> function takes:
+- <code>sqlDb</code>: A standard <code>*sql.DB</code> connection
+- <code>"sqlite3"</code> or <code>"postgres"</code>: The SQL dialect identifier
+- <code>migrationsSource</code>: The embedded migration source
+- <code>migrate.Up</code>: Direction (apply migrations)</p>
+<hr />
+<h2 id="migration-file-naming-convention">Migration File Naming Convention<a class="headerlink" href="#migration-file-naming-convention" title="Permanent link">&para;</a></h2>
+<p>Migration files follow a numbered naming convention to control execution order:</p>
+<table>
+<thead>
+<tr>
+<th>File Name</th>
+<th>Purpose</th>
+<th>Apply Order</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>001_schema_init.sql</code></td>
+<td>Initial schema creation</td>
+<td>First</td>
+</tr>
+<tr>
+<td><code>002_*.sql</code></td>
+<td>Future migrations</td>
+<td>Second</td>
+</tr>
+<tr>
+<td><code>003_*.sql</code></td>
+<td>Future migrations</td>
+<td>Third</td>
+</tr>
+</tbody>
+</table>
+<p>The numeric prefix ensures migrations are applied in the correct sequence. Each file contains both <code>-- +migrate Up</code> and <code>-- +migrate Down</code> sections, allowing bidirectional migration.</p>
+<h3 id="migration-file-structure">Migration File Structure<a class="headerlink" href="#migration-file-structure" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">-- +migrate Up</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">entities</span><span class="p">(...);</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_entities_updated_at</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">entities</span><span class="w"> </span><span class="p">(</span><span class="n">updated_at</span><span class="p">);</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1">-- ... more DDL statements</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1">-- +migrate Down</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">DROP</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">idx_entities_updated_at</span><span class="p">;</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="k">DROP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">entities</span><span class="p">;</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="c1">-- ... rollback statements</span>
+</span></code></pre></div>
+<p>The <code>-- +migrate Up</code> section defines the forward migration (creating schema), while <code>-- +migrate Down</code> defines the rollback (dropping schema). The <code>sql-migrate</code> library parses these directives to execute the appropriate section.</p>
+<hr />
+<h2 id="database-schema-components">Database Schema Components<a class="headerlink" href="#database-schema-components" title="Permanent link">&para;</a></h2>
+<p>All SQL migrations create four core tables that map to the <a href="#3.2">types package</a>:</p>
+<table>
+<thead>
+<tr>
+<th>Table Name</th>
+<th>Maps To Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>entities</code></td>
+<td><code>types.Entity</code></td>
+<td>Stores asset nodes</td>
+</tr>
+<tr>
+<td><code>entity_tags</code></td>
+<td><code>types.EntityTag</code></td>
+<td>Stores entity metadata properties</td>
+</tr>
+<tr>
+<td><code>edges</code></td>
+<td><code>types.Edge</code></td>
+<td>Stores relationships between entities</td>
+</tr>
+<tr>
+<td><code>edge_tags</code></td>
+<td><code>types.EdgeTag</code></td>
+<td>Stores edge metadata properties</td>
+</tr>
+</tbody>
+</table>
+<p>Each table includes:
+- Auto-incrementing primary key (<code>entity_id</code>, <code>tag_id</code>, <code>edge_id</code>)
+- Timestamp fields (<code>created_at</code>, <code>updated_at</code>)
+- Type field (<code>etype</code>, <code>ttype</code>) for storing OAM type information
+- Content field (<code>content</code>) for storing serialized OAM objects
+- Foreign key constraints for referential integrity
+- Indexes on <code>updated_at</code> fields for efficient temporal queries</p>
+<hr />
+<h2 id="database-specific-differences">Database-Specific Differences<a class="headerlink" href="#database-specific-differences" title="Permanent link">&para;</a></h2>
+<p>While the schema structure is identical across SQL databases, there are implementation differences:</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>PostgreSQL</th>
+<th>SQLite</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary Key</td>
+<td><code>INT GENERATED ALWAYS AS IDENTITY</code></td>
+<td><code>INTEGER PRIMARY KEY</code> (autoincrement)</td>
+</tr>
+<tr>
+<td>JSON Storage</td>
+<td><code>JSONB</code> (binary JSON with indexing)</td>
+<td><code>TEXT</code> (JSON as string)</td>
+</tr>
+<tr>
+<td>Timestamp Type</td>
+<td><code>TIMESTAMP without time zone</code></td>
+<td><code>DATETIME</code></td>
+</tr>
+<tr>
+<td>Foreign Key Default</td>
+<td>Enforced by default</td>
+<td>Requires <code>PRAGMA foreign_keys = ON</code></td>
+</tr>
+<tr>
+<td>Constraint Naming</td>
+<td>Named constraints (<code>fk_entity_tags_entities</code>)</td>
+<td>Anonymous constraints</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sqlite-specific-configuration">SQLite Specific Configuration<a class="headerlink" href="#sqlite-specific-configuration" title="Permanent link">&para;</a></h3>
+<p>SQLite requires explicit foreign key enforcement via pragma:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">-- see https://www.sqlite.org/foreignkeys.html#fk_enable about enabling foreign keys</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">PRAGMA</span><span class="w"> </span><span class="n">foreign_keys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">ON</span><span class="p">;</span>
+</span></code></pre></div>
+<p>This pragma must be set at the beginning of each connection, not just during migration.</p>
+<hr />
+<h2 id="migration-state-tracking">Migration State Tracking<a class="headerlink" href="#migration-state-tracking" title="Permanent link">&para;</a></h2>
+<p>The <code>sql-migrate</code> library automatically creates and manages a <code>gorp_migrations</code> table to track applied migrations:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>gorp_migrations
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>├── id (migration identifier, e.g., &quot;001_schema_init.sql&quot;)
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>└── applied_at (timestamp of application)
+</span></code></pre></div>
+<p>This table is created automatically and should not be modified manually. The library queries this table to determine which migrations need to be applied during <code>migrate.Exec()</code> execution.</p>
+<hr />
+<h2 id="integration-with-repository-layer">Integration with Repository Layer<a class="headerlink" href="#integration-with-repository-layer" title="Permanent link">&para;</a></h2>
+<p>Migrations are executed before repository creation in the initialization flow. From the high-level architecture diagrams, the sequence is:</p>
+<ol>
+<li><code>assetdb.New()</code> is called with database type and connection string</li>
+<li>Migration system executes schema initialization</li>
+<li>Repository implementation (<code>sqlRepository</code> or <code>neoRepository</code>) is created</li>
+<li>Repository is returned to the caller</li>
+</ol>
+<p>This ensures the database schema is always in the correct state before any data operations occur. The migration execution is transparent to repository consumers.</p>
+<p>For details on how repositories use the migrated schema:
+- SQL repository usage: see <a href=".././postgres/#sql-repository-implementation">SQL Repository</a>
+- Neo4j repository usage: see <a href=".././triples/#neo4j-repository">Neo4j Repository</a></p>
+<h2 id="sql-schema-migrations">SQL Schema Migrations<a class="headerlink" href="#sql-schema-migrations" title="Permanent link">&para;</a></h2>
+<h2 id="purpose-and-scope_1">Purpose and Scope<a class="headerlink" href="#purpose-and-scope_1" title="Permanent link">&para;</a></h2>
+<p>This document covers the SQL schema migration system for PostgreSQL and SQLite databases in the asset-db repository. It details the migration scripts, table structures, indexes, constraints, and the execution mechanism using the <code>sql-migrate</code> library.</p>
+<p>For Neo4j graph database schema initialization, see <a href="#7.2">Neo4j Schema Initialization</a>.</p>
+<hr />
+<h2 id="migration-architecture_1">Migration Architecture<a class="headerlink" href="#migration-architecture_1" title="Permanent link">&para;</a></h2>
+<p>The SQL migration system uses the <code>rubenv/sql-migrate</code> library to manage database schema versioning. Migration scripts are embedded directly into the Go binary using Go's <code>embed</code> package, ensuring that schema definitions are always available at runtime without external file dependencies.</p>
+<h3 id="embedded-migration-files">Embedded Migration Files<a class="headerlink" href="#embedded-migration-files" title="Permanent link">&para;</a></h3>
+<p>Each database type has its own migration package with embedded SQL files:</p>
+<p><strong>PostgreSQL Migrations:</strong>
+- Package: <code>migrations/postgres</code>
+- Embedded via: 
+- Accessor function: <code>Migrations()</code> returns <code>embed.FS</code> </p>
+<p><strong>SQLite Migrations:</strong>
+- Package: <code>migrations/sqlite3</code>
+- Embedded via: 
+- Accessor function: <code>Migrations()</code> returns <code>embed.FS</code> </p>
+<hr />
+<h2 id="migration-execution-flow_1">Migration Execution Flow<a class="headerlink" href="#migration-execution-flow_1" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>sequenceDiagram
+    participant App as "Application Code"
+    participant GORM as "gorm.DB"
+    participant SQLMigrate as "sql-migrate Library"
+    participant EmbedFS as "embed.FS (Migration Files)"
+    participant DB as "Database (PostgreSQL/SQLite)"
+
+    App-&gt;&gt;GORM: "Open(dsn, config)"
+    GORM--&gt;&gt;App: "gorm.DB instance"
+    App-&gt;&gt;GORM: "DB()"
+    GORM--&gt;&gt;App: "*sql.DB"
+
+    App-&gt;&gt;EmbedFS: "Migrations()"
+    EmbedFS--&gt;&gt;App: "embed.FS"
+
+    App-&gt;&gt;SQLMigrate: "migrate.EmbedFileSystemMigrationSource{}"
+    App-&gt;&gt;SQLMigrate: "migrate.Exec(sqlDb, dialect, source, Up)"
+
+    SQLMigrate-&gt;&gt;EmbedFS: "Read *.sql files"
+    EmbedFS--&gt;&gt;SQLMigrate: "SQL scripts"
+
+    SQLMigrate-&gt;&gt;DB: "Parse +migrate Up directives"
+    SQLMigrate-&gt;&gt;DB: "Execute CREATE TABLE statements"
+    SQLMigrate-&gt;&gt;DB: "Execute CREATE INDEX statements"
+    SQLMigrate-&gt;&gt;DB: "Record migration version"
+
+    DB--&gt;&gt;SQLMigrate: "Schema created"
+    SQLMigrate--&gt;&gt;App: "Migration complete"</code></pre>
+<hr />
+<h2 id="schema-structure">Schema Structure<a class="headerlink" href="#schema-structure" title="Permanent link">&para;</a></h2>
+<p>The SQL schema implements a property graph model with four core tables: <code>entities</code>, <code>entity_tags</code>, <code>edges</code>, and <code>edge_tags</code>. This structure corresponds to the types defined in .</p>
+<h3 id="entity-relationship-diagram">Entity-Relationship Diagram<a class="headerlink" href="#entity-relationship-diagram" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>erDiagram
+    entities {
+        INT entity_id PK "Auto-generated identity"
+        TIMESTAMP created_at "Creation timestamp"
+        TIMESTAMP updated_at "Last update timestamp"
+        VARCHAR etype "Asset type identifier"
+        JSONB_or_TEXT content "Serialized oam.Asset"
+    }
+
+    entity_tags {
+        INT tag_id PK "Auto-generated identity"
+        TIMESTAMP created_at "Creation timestamp"
+        TIMESTAMP updated_at "Last update timestamp"
+        VARCHAR ttype "Property type identifier"
+        JSONB_or_TEXT content "Serialized oam.Property"
+        INT entity_id FK "References entities"
+    }
+
+    edges {
+        INT edge_id PK "Auto-generated identity"
+        TIMESTAMP created_at "Creation timestamp"
+        TIMESTAMP updated_at "Last update timestamp"
+        VARCHAR etype "Relation type identifier"
+        JSONB_or_TEXT content "Serialized oam.Relation"
+        INT from_entity_id FK "Source entity"
+        INT to_entity_id FK "Destination entity"
+    }
+
+    edge_tags {
+        INT tag_id PK "Auto-generated identity"
+        TIMESTAMP created_at "Creation timestamp"
+        TIMESTAMP updated_at "Last update timestamp"
+        VARCHAR ttype "Property type identifier"
+        JSONB_or_TEXT content "Serialized oam.Property"
+        INT edge_id FK "References edges"
+    }
+
+    entities ||--o{ entity_tags : "has many"
+    entities ||--o{ edges : "from_entity_id"
+    entities ||--o{ edges : "to_entity_id"
+    edges ||--o{ edge_tags : "has many"</code></pre>
+<hr />
+<h2 id="postgresql-schema-details">PostgreSQL Schema Details<a class="headerlink" href="#postgresql-schema-details" title="Permanent link">&para;</a></h2>
+<h3 id="table-definitions">Table Definitions<a class="headerlink" href="#table-definitions" title="Permanent link">&para;</a></h3>
+<p>The PostgreSQL schema uses native JSONB columns for storing serialized Open Asset Model content, providing efficient querying and indexing capabilities.</p>
+<h4 id="entities-table">Entities Table<a class="headerlink" href="#entities-table" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Constraints</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>entity_id</code></td>
+<td><code>INT</code></td>
+<td><code>PRIMARY KEY</code>, <code>GENERATED ALWAYS AS IDENTITY</code></td>
+<td>Auto-incrementing primary key</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>TIMESTAMP without time zone</code></td>
+<td><code>DEFAULT CURRENT_TIMESTAMP</code></td>
+<td>Record creation time</td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>TIMESTAMP without time zone</code></td>
+<td><code>DEFAULT CURRENT_TIMESTAMP</code></td>
+<td>Last modification time</td>
+</tr>
+<tr>
+<td><code>etype</code></td>
+<td><code>VARCHAR(255)</code></td>
+<td>-</td>
+<td>Asset type from Open Asset Model</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td><code>JSONB</code></td>
+<td>-</td>
+<td>Serialized <code>oam.Asset</code> object</td>
+</tr>
+</tbody>
+</table>
+<h4 id="entity-tags-table">Entity Tags Table<a class="headerlink" href="#entity-tags-table" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Constraints</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tag_id</code></td>
+<td><code>INT</code></td>
+<td><code>PRIMARY KEY</code>, <code>GENERATED ALWAYS AS IDENTITY</code></td>
+<td>Auto-incrementing primary key</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>TIMESTAMP without time zone</code></td>
+<td><code>DEFAULT CURRENT_TIMESTAMP</code></td>
+<td>Record creation time</td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>TIMESTAMP without time zone</code></td>
+<td><code>DEFAULT CURRENT_TIMESTAMP</code></td>
+<td>Last modification time</td>
+</tr>
+<tr>
+<td><code>ttype</code></td>
+<td><code>VARCHAR(255)</code></td>
+<td>-</td>
+<td>Property type from Open Asset Model</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td><code>JSONB</code></td>
+<td>-</td>
+<td>Serialized <code>oam.Property</code> object</td>
+</tr>
+<tr>
+<td><code>entity_id</code></td>
+<td><code>INT</code></td>
+<td><code>FOREIGN KEY</code>, <code>ON DELETE CASCADE</code></td>
+<td>References <code>entities(entity_id)</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="edges-table">Edges Table<a class="headerlink" href="#edges-table" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Constraints</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>edge_id</code></td>
+<td><code>INT</code></td>
+<td><code>PRIMARY KEY</code>, <code>GENERATED ALWAYS AS IDENTITY</code></td>
+<td>Auto-incrementing primary key</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>TIMESTAMP without time zone</code></td>
+<td><code>DEFAULT CURRENT_TIMESTAMP</code></td>
+<td>Record creation time</td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>TIMESTAMP without time zone</code></td>
+<td><code>DEFAULT CURRENT_TIMESTAMP</code></td>
+<td>Last modification time</td>
+</tr>
+<tr>
+<td><code>etype</code></td>
+<td><code>VARCHAR(255)</code></td>
+<td>-</td>
+<td>Relation type from Open Asset Model</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td><code>JSONB</code></td>
+<td>-</td>
+<td>Serialized <code>oam.Relation</code> object</td>
+</tr>
+<tr>
+<td><code>from_entity_id</code></td>
+<td><code>INT</code></td>
+<td><code>FOREIGN KEY</code>, <code>ON DELETE CASCADE</code></td>
+<td>Source entity reference</td>
+</tr>
+<tr>
+<td><code>to_entity_id</code></td>
+<td><code>INT</code></td>
+<td><code>FOREIGN KEY</code>, <code>ON DELETE CASCADE</code></td>
+<td>Destination entity reference</td>
+</tr>
+</tbody>
+</table>
+<h4 id="edge-tags-table">Edge Tags Table<a class="headerlink" href="#edge-tags-table" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Constraints</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tag_id</code></td>
+<td><code>INT</code></td>
+<td><code>PRIMARY KEY</code>, <code>GENERATED ALWAYS AS IDENTITY</code></td>
+<td>Auto-incrementing primary key</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>TIMESTAMP without time zone</code></td>
+<td><code>DEFAULT CURRENT_TIMESTAMP</code></td>
+<td>Record creation time</td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>TIMESTAMP without time zone</code></td>
+<td><code>DEFAULT CURRENT_TIMESTAMP</code></td>
+<td>Last modification time</td>
+</tr>
+<tr>
+<td><code>ttype</code></td>
+<td><code>VARCHAR(255)</code></td>
+<td>-</td>
+<td>Property type from Open Asset Model</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td><code>JSONB</code></td>
+<td>-</td>
+<td>Serialized <code>oam.Property</code> object</td>
+</tr>
+<tr>
+<td><code>edge_id</code></td>
+<td><code>INT</code></td>
+<td><code>FOREIGN KEY</code>, <code>ON DELETE CASCADE</code></td>
+<td>References <code>edges(edge_id)</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="foreign-key-constraints">Foreign Key Constraints<a class="headerlink" href="#foreign-key-constraints" title="Permanent link">&para;</a></h3>
+<p>PostgreSQL uses named constraints for referential integrity:</p>
+<ul>
+<li><code>fk_entity_tags_entities</code>: Links <code>entity_tags.entity_id</code> to <code>entities.entity_id</code> </li>
+<li><code>fk_edges_entities_from</code>: Links <code>edges.from_entity_id</code> to <code>entities.entity_id</code> </li>
+<li><code>fk_edges_entities_to</code>: Links <code>edges.to_entity_id</code> to <code>entities.entity_id</code> </li>
+<li><code>fk_edge_tags_edges</code>: Links <code>edge_tags.edge_id</code> to <code>edges.edge_id</code> </li>
+</ul>
+<p>All foreign keys use <code>ON DELETE CASCADE</code> to ensure dependent records are automatically removed when parent records are deleted.</p>
+<hr />
+<h2 id="sqlite-schema-details">SQLite Schema Details<a class="headerlink" href="#sqlite-schema-details" title="Permanent link">&para;</a></h2>
+<h3 id="table-definitions_1">Table Definitions<a class="headerlink" href="#table-definitions_1" title="Permanent link">&para;</a></h3>
+<p>The SQLite schema is structurally similar to PostgreSQL but uses <code>TEXT</code> columns for JSON content and requires explicit foreign key enforcement.</p>
+<h4 id="foreign-key-enforcement">Foreign Key Enforcement<a class="headerlink" href="#foreign-key-enforcement" title="Permanent link">&para;</a></h4>
+<p>SQLite requires explicit enablement of foreign key constraints:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">PRAGMA</span><span class="w"> </span><span class="n">foreign_keys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">ON</span><span class="p">;</span>
+</span></code></pre></div>
+<h4 id="entities-table_1">Entities Table<a class="headerlink" href="#entities-table_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Constraints</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>entity_id</code></td>
+<td><code>INTEGER</code></td>
+<td><code>PRIMARY KEY</code></td>
+<td>Auto-incrementing primary key</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>DATETIME</code></td>
+<td><code>DEFAULT CURRENT_TIMESTAMP</code></td>
+<td>Record creation time</td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>DATETIME</code></td>
+<td><code>DEFAULT CURRENT_TIMESTAMP</code></td>
+<td>Last modification time</td>
+</tr>
+<tr>
+<td><code>etype</code></td>
+<td><code>TEXT</code></td>
+<td>-</td>
+<td>Asset type from Open Asset Model</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td><code>TEXT</code></td>
+<td>-</td>
+<td>JSON-serialized <code>oam.Asset</code> object</td>
+</tr>
+</tbody>
+</table>
+<h4 id="entity-tags-table_1">Entity Tags Table<a class="headerlink" href="#entity-tags-table_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Constraints</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tag_id</code></td>
+<td><code>INTEGER</code></td>
+<td><code>PRIMARY KEY</code></td>
+<td>Auto-incrementing primary key</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>DATETIME</code></td>
+<td><code>DEFAULT CURRENT_TIMESTAMP</code></td>
+<td>Record creation time</td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>DATETIME</code></td>
+<td><code>DEFAULT CURRENT_TIMESTAMP</code></td>
+<td>Last modification time</td>
+</tr>
+<tr>
+<td><code>ttype</code></td>
+<td><code>TEXT</code></td>
+<td>-</td>
+<td>Property type from Open Asset Model</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td><code>TEXT</code></td>
+<td>-</td>
+<td>JSON-serialized <code>oam.Property</code> object</td>
+</tr>
+<tr>
+<td><code>entity_id</code></td>
+<td><code>INTEGER</code></td>
+<td><code>FOREIGN KEY</code>, <code>ON DELETE CASCADE</code></td>
+<td>References <code>entities(entity_id)</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="edges-table_1">Edges Table<a class="headerlink" href="#edges-table_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Constraints</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>edge_id</code></td>
+<td><code>INTEGER</code></td>
+<td><code>PRIMARY KEY</code></td>
+<td>Auto-incrementing primary key</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>DATETIME</code></td>
+<td><code>DEFAULT CURRENT_TIMESTAMP</code></td>
+<td>Record creation time</td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>DATETIME</code></td>
+<td><code>DEFAULT CURRENT_TIMESTAMP</code></td>
+<td>Last modification time</td>
+</tr>
+<tr>
+<td><code>etype</code></td>
+<td><code>TEXT</code></td>
+<td>-</td>
+<td>Relation type from Open Asset Model</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td><code>TEXT</code></td>
+<td>-</td>
+<td>JSON-serialized <code>oam.Relation</code> object</td>
+</tr>
+<tr>
+<td><code>from_entity_id</code></td>
+<td><code>INTEGER</code></td>
+<td><code>FOREIGN KEY</code>, <code>ON DELETE CASCADE</code></td>
+<td>Source entity reference</td>
+</tr>
+<tr>
+<td><code>to_entity_id</code></td>
+<td><code>INTEGER</code></td>
+<td><code>FOREIGN KEY</code>, <code>ON DELETE CASCADE</code></td>
+<td>Destination entity reference</td>
+</tr>
+</tbody>
+</table>
+<h4 id="edge-tags-table_1">Edge Tags Table<a class="headerlink" href="#edge-tags-table_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Constraints</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tag_id</code></td>
+<td><code>INTEGER</code></td>
+<td><code>PRIMARY KEY</code></td>
+<td>Auto-incrementing primary key</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>DATETIME</code></td>
+<td><code>DEFAULT CURRENT_TIMESTAMP</code></td>
+<td>Record creation time</td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>DATETIME</code></td>
+<td><code>DEFAULT CURRENT_TIMESTAMP</code></td>
+<td>Last modification time</td>
+</tr>
+<tr>
+<td><code>ttype</code></td>
+<td><code>TEXT</code></td>
+<td>-</td>
+<td>Property type from Open Asset Model</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td><code>TEXT</code></td>
+<td>-</td>
+<td>JSON-serialized <code>oam.Property</code> object</td>
+</tr>
+<tr>
+<td><code>edge_id</code></td>
+<td><code>INTEGER</code></td>
+<td><code>FOREIGN KEY</code>, <code>ON DELETE CASCADE</code></td>
+<td>References <code>edges(edge_id)</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="index-strategy">Index Strategy<a class="headerlink" href="#index-strategy" title="Permanent link">&para;</a></h2>
+<p>Both PostgreSQL and SQLite schemas include identical indexing strategies to optimize common query patterns.</p>
+<h3 id="index-definitions">Index Definitions<a class="headerlink" href="#index-definitions" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Index Name</th>
+<th>Table</th>
+<th>Columns</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>idx_entities_updated_at</code></td>
+<td><code>entities</code></td>
+<td><code>updated_at</code></td>
+<td>Temporal queries filtering by last update time</td>
+</tr>
+<tr>
+<td><code>idx_entities_etype</code></td>
+<td><code>entities</code></td>
+<td><code>etype</code></td>
+<td>Type-based entity lookups</td>
+</tr>
+<tr>
+<td><code>idx_enttag_updated_at</code></td>
+<td><code>entity_tags</code></td>
+<td><code>updated_at</code></td>
+<td>Temporal queries for entity tags</td>
+</tr>
+<tr>
+<td><code>idx_enttag_entity_id</code></td>
+<td><code>entity_tags</code></td>
+<td><code>entity_id</code></td>
+<td>Fast lookup of tags for a specific entity</td>
+</tr>
+<tr>
+<td><code>idx_edge_updated_at</code></td>
+<td><code>edges</code></td>
+<td><code>updated_at</code></td>
+<td>Temporal queries for relationships</td>
+</tr>
+<tr>
+<td><code>idx_edge_from_entity_id</code></td>
+<td><code>edges</code></td>
+<td><code>from_entity_id</code></td>
+<td>Outgoing edge traversal</td>
+</tr>
+<tr>
+<td><code>idx_edge_to_entity_id</code></td>
+<td><code>edges</code></td>
+<td><code>to_entity_id</code></td>
+<td>Incoming edge traversal</td>
+</tr>
+<tr>
+<td><code>idx_edgetag_updated_at</code></td>
+<td><code>edge_tags</code></td>
+<td><code>updated_at</code></td>
+<td>Temporal queries for edge tags</td>
+</tr>
+<tr>
+<td><code>idx_edgetag_edge_id</code></td>
+<td><code>edge_tags</code></td>
+<td><code>edge_id</code></td>
+<td>Fast lookup of tags for a specific edge</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PostgreSQL:</strong> , <a href="">29-30</a>, <a href="">51-53</a>, <a href="">69-70</a></p>
+<p><strong>SQLite:</strong> , <a href="">29-30</a>, <a href="">48-50</a>, <a href="">64-65</a></p>
+<h3 id="temporal-query-optimization">Temporal Query Optimization<a class="headerlink" href="#temporal-query-optimization" title="Permanent link">&para;</a></h3>
+<p>All <code>updated_at</code> indexes support the repository's temporal query pattern, where operations accept a <code>since</code> parameter to retrieve only records modified after a specific timestamp. This is critical for the caching system's synchronization strategy.</p>
+<hr />
+<h2 id="postgresql-vs-sqlite-differences">PostgreSQL vs SQLite Differences<a class="headerlink" href="#postgresql-vs-sqlite-differences" title="Permanent link">&para;</a></h2>
+<h3 id="content-storage">Content Storage<a class="headerlink" href="#content-storage" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>PostgreSQL</th>
+<th>SQLite</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Content Column Type</td>
+<td><code>JSONB</code></td>
+<td><code>TEXT</code></td>
+</tr>
+<tr>
+<td>JSON Querying</td>
+<td>Native JSONB operators</td>
+<td>String-based parsing</td>
+</tr>
+<tr>
+<td>Indexing Content</td>
+<td>GIN indexes supported</td>
+<td>Full-text search extensions</td>
+</tr>
+<tr>
+<td>Storage Efficiency</td>
+<td>Binary JSON format</td>
+<td>String serialization</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PostgreSQL:</strong> <br />
+<strong>SQLite:</strong> </p>
+<h3 id="identityauto-increment">Identity/Auto-increment<a class="headerlink" href="#identityauto-increment" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>PostgreSQL</th>
+<th>SQLite</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary Key Generation</td>
+<td><code>GENERATED ALWAYS AS IDENTITY</code></td>
+<td><code>INTEGER PRIMARY KEY</code> (implicit auto-increment)</td>
+</tr>
+<tr>
+<td>Syntax</td>
+<td>SQL standard</td>
+<td>SQLite-specific</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PostgreSQL:</strong> <br />
+<strong>SQLite:</strong> </p>
+<h3 id="foreign-key-handling">Foreign Key Handling<a class="headerlink" href="#foreign-key-handling" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>PostgreSQL</th>
+<th>SQLite</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Foreign Keys</td>
+<td>Always enforced</td>
+<td>Requires <code>PRAGMA foreign_keys = ON</code></td>
+</tr>
+<tr>
+<td>Constraint Naming</td>
+<td>Named constraints (e.g., <code>fk_entity_tags_entities</code>)</td>
+<td>Anonymous constraints</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PostgreSQL:</strong> <br />
+<strong>SQLite:</strong> , <a href="">24-26</a></p>
+<h3 id="timestamp-types">Timestamp Types<a class="headerlink" href="#timestamp-types" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>PostgreSQL</th>
+<th>SQLite</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Timestamp Type</td>
+<td><code>TIMESTAMP without time zone</code></td>
+<td><code>DATETIME</code></td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td><code>CURRENT_TIMESTAMP</code></td>
+<td><code>CURRENT_TIMESTAMP</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="migration-execution-example">Migration Execution Example<a class="headerlink" href="#migration-execution-example" title="Permanent link">&para;</a></h2>
+<h3 id="code-integration">Code Integration<a class="headerlink" href="#code-integration" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart LR
+    App["Application Code"]
+    Embed["embed.FS&lt;br/&gt;(*.sql files)"]
+    Factory["migrate.EmbedFileSystemMigrationSource"]
+    Exec["migrate.Exec()"]
+    DB["Database"]
+
+    App --&gt;|"Import migrations package"| Embed
+    Embed --&gt;|"Migrations()"| Factory
+    Factory --&gt;|"source + dialect"| Exec
+    Exec --&gt;|"Execute SQL"| DB
+
+    subgraph "PostgreSQL"
+        PGEmbed["postgres.Migrations()"]
+        PGDialect["dialect: 'postgres'"]
+    end
+
+    subgraph "SQLite"
+        SQLiteEmbed["sqlite3.Migrations()"]
+        SQLiteDialect["dialect: 'sqlite3'"]
+    end</code></pre>
+<h3 id="postgresql-migration-execution">PostgreSQL Migration Execution<a class="headerlink" href="#postgresql-migration-execution" title="Permanent link">&para;</a></h3>
+<p>The PostgreSQL example demonstrates the complete migration flow:</p>
+<ol>
+<li><strong>Open GORM Connection:</strong> </li>
+<li><strong>Get SQL Database:</strong> </li>
+<li><strong>Create Migration Source:</strong> </li>
+<li><strong>Execute Migrations:</strong> </li>
+<li><strong>Verify Tables:</strong> </li>
+</ol>
+<h3 id="sqlite-migration-execution">SQLite Migration Execution<a class="headerlink" href="#sqlite-migration-execution" title="Permanent link">&para;</a></h3>
+<p>The SQLite example follows the same pattern but uses SQLite-specific configuration:</p>
+<ol>
+<li><strong>Open GORM Connection:</strong> </li>
+<li><strong>Get SQL Database:</strong> </li>
+<li><strong>Create Migration Source:</strong> </li>
+<li><strong>Execute Migrations:</strong> </li>
+<li><strong>Verify Tables:</strong> </li>
+</ol>
+<hr />
+<h2 id="migration-directives">Migration Directives<a class="headerlink" href="#migration-directives" title="Permanent link">&para;</a></h2>
+<p>The <code>sql-migrate</code> library uses special comment directives to identify migration sections:</p>
+<h3 id="up-migration">Up Migration<a class="headerlink" href="#up-migration" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">-- +migrate Up</span>
+</span></code></pre></div>
+<p>Marks the beginning of forward migration SQL statements. This section is executed when upgrading the database schema.</p>
+<p><strong>PostgreSQL:</strong> <br />
+<strong>SQLite:</strong> </p>
+<h3 id="down-migration">Down Migration<a class="headerlink" href="#down-migration" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">-- +migrate Down</span>
+</span></code></pre></div>
+<p>Marks the beginning of rollback migration SQL statements. This section is executed when downgrading the database schema.</p>
+<p><strong>PostgreSQL:</strong> <br />
+<strong>SQLite:</strong> </p>
+<h3 id="rollback-order">Rollback Order<a class="headerlink" href="#rollback-order" title="Permanent link">&para;</a></h3>
+<p>The down migration drops objects in reverse dependency order:</p>
+<ol>
+<li>Drop <code>edge_tags</code> indexes and table</li>
+<li>Drop <code>edges</code> indexes and table</li>
+<li>Drop <code>entity_tags</code> indexes and table</li>
+<li>Drop <code>entities</code> indexes and table</li>
+</ol>
+<p>This ensures foreign key constraints are not violated during schema teardown.</p>
+<p><strong>PostgreSQL:</strong> <br />
+<strong>SQLite:</strong> </p>
+<hr />
+<h2 id="schema-version-tracking">Schema Version Tracking<a class="headerlink" href="#schema-version-tracking" title="Permanent link">&para;</a></h2>
+<p>The <code>sql-migrate</code> library automatically creates a <code>gorp_migrations</code> table to track applied migrations:</p>
+<pre class="mermaid"><code>graph LR
+    App["Application"]
+    SQLMigrate["sql-migrate Library"]
+    MigTable["gorp_migrations Table"]
+    Schema["Application Schema"]
+
+    App --&gt;|"migrate.Exec()"| SQLMigrate
+    SQLMigrate --&gt;|"Check version"| MigTable
+    SQLMigrate --&gt;|"Apply new migrations"| Schema
+    SQLMigrate --&gt;|"Update version"| MigTable</code></pre>
+<p>This table stores:
+- Migration ID (filename)
+- Applied timestamp</p>
+<p>This prevents duplicate execution of migrations and enables proper ordering of schema changes.</p>
+<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href=".././">Asset Database Overview</a></li>
+<li><a href=".././postgres/">PostgreSQL Setup</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-circle-arrow-up" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4M12 16V8"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../caching/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Caching">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Caching
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../api-reference/" class="md-footer__link md-footer__link--next" aria-label="Next: API Reference">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                API Reference
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2017-2026 Jeff Foley &mdash; Licensed under Apache 2.0
+
+    </div>
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/owasp-amass" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/owasp-amass/amass-docker-compose" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M349.9 236.3h-66.1v-59.4h66.1zm0-204.3h-66.1v60.7h66.1zm78.2 144.8H362v59.4h66.1zm-156.3-72.1h-66.1v60.1h66.1zm78.1 0h-66.1v60.1h66.1zm276.8 100c-14.4-9.7-47.6-13.2-73.1-8.4-3.3-24-16.7-44.9-41.1-63.7l-14-9.3-9.3 14c-18.4 27.8-23.4 73.6-3.7 103.8-8.7 4.7-25.8 11.1-48.4 10.7H2.4c-8.7 50.8 5.8 116.8 44 162.1 37.1 43.9 92.7 66.2 165.4 66.2 157.4 0 273.9-72.5 328.4-204.2 21.4.4 67.6.1 91.3-45.2 1.5-2.5 6.6-13.2 8.5-17.1zm-511.1-27.9h-66v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1zm78.1 0h-66.1v59.4h66.1zm-78.1-72.1h-66.1v60.1h66.1z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://discord.gg/HNePVyX3cp" target="_blank" rel="noopener" title="discord.gg" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+    
+    
+      
+    
+    
+    
+      
+      
+    
+    <a href="https://infosec.exchange/@amass" target="_blank" rel="noopener me" title="infosec.exchange" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M433 179.1c0-97.2-63.7-125.7-63.7-125.7-62.5-28.7-228.6-28.4-290.5 0 0 0-63.7 28.5-63.7 125.7 0 115.7-6.6 259.4 105.6 289.1 40.5 10.7 75.3 13 103.3 11.4 50.8-2.8 79.3-18.1 79.3-18.1l-1.7-36.9s-36.3 11.4-77.1 10.1c-40.4-1.4-83-4.4-89.6-54-.6-4.6-.9-9.3-.9-13.9 85.6 20.9 158.7 9.1 178.7 6.7 56.1-6.7 105-41.3 111.2-72.9 9.8-49.8 9-121.5 9-121.5zm-75.1 125.2h-46.6V190.1c0-49.7-64-51.6-64 6.9v62.5H201V197c0-58.5-64-56.6-64-6.9v114.2H90.3c0-122.1-5.2-147.9 18.4-175 25.9-28.9 79.8-30.8 103.8 6.1l11.6 19.5 11.6-19.5c24.1-37.1 78.1-34.8 103.8-6.1 23.7 27.3 18.4 53 18.4 175"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://x.com/owaspamass/" target="_blank" rel="noopener" title="x.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M357.2 48h70.6L273.6 224.2 455 464H313L201.7 318.6 74.5 464H3.8l164.9-188.5L-5.2 48h145.6l100.5 132.9zm-24.8 373.8h39.1L119.1 88h-42z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["announce.dismiss","content.action.edit","content.action.view","content.code.annotate","content.code.copy","content.code.select","content.footnote.tooltips","content.tabs.link","content.tooltips","navigation.footer","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.path","navigation.sections","navigation.tabs","navigation.top","navigation.tracking","search.highlight","toc.follow"],"search":"../../assets/javascripts/workers/search.e2d2d235.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.16f8adc2.min.js"></script>
+      
+    
+  </body>
+</html>
