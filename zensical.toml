@@ -21,8 +21,8 @@ Copyright &copy; 2017-2026 Jeff Foley &mdash; Licensed under Apache 2.0
 extra_css = ["stylesheets/extra.css"]
 
 nav = [
-  { "Home" = "index.md" },
   { "Getting Started" = [
+    { "Overview" = "index.md" },
     { "Installation" = "installation.md" },
     { "Deployment" = "deployment/index.md" },
     { "Docker" = "deployment/docker.md" },
