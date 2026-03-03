@@ -1,0 +1,226 @@
+# ============================================================================
+# OWASP Amass Documentation - Zensical Configuration
+# Primary config file (migrated from mkdocs.yml)
+# ============================================================================
+
+[project]
+
+site_name = "OWASP Amass Project"
+site_url = "https://owasp-amass.github.io/docs/"
+site_description = "In-depth OSINT collection and external attack surface mapping"
+site_author = "OWASP Amass Contributors"
+
+repo_name = "OWASP Amass"
+repo_url = "https://github.com/owasp-amass/amass"
+remote_branch = "gh-pages"
+
+copyright = """
+Copyright &copy; 2017-2026 Jeff Foley &mdash; Licensed under Apache 2.0
+"""
+
+extra_css = ["stylesheets/extra.css"]
+
+nav = [
+  { "Home" = "index.md" },
+  { "Architecture" = [
+    { "Overview" = "architecture/index.md" },
+    { "Plugin System" = "architecture/plugins.md" },
+    { "Data Flow" = "architecture/data-flow.md" },
+    { "DNS System" = "architecture/dns-system.md" },
+    { "Sessions" = "architecture/sessions.md" },
+    { "Network Mapping" = "architecture/network-mapping.md" },
+  ]},
+  { "CLI Reference" = [
+    { "Overview" = "cli/index.md" },
+    { "enum" = "cli/enum.md" },
+    { "engine" = "cli/engine.md" },
+    { "subs" = "cli/subs.md" },
+    { "assoc" = "cli/assoc.md" },
+    { "track" = "cli/track.md" },
+    { "viz" = "cli/viz.md" },
+  ]},
+  { "Configuration" = [
+    { "Configuration" = "configuration/index.md" },
+    { "Data Sources" = "configuration/data_sources.md" },
+    { "Transformations" = "configuration/transformations.md" },
+  ]},
+  { "Asset Database" = [
+    { "Asset Database" = "asset_db/index.md" },
+    { "PostgreSQL" = "asset_db/postgres.md" },
+    { "Triples" = "asset_db/triples.md" },
+  ]},
+  { "Open Asset Model" = [
+    { "Open Asset Model" = "open_asset_model/index.md" },
+    { "Assets" = [
+      { "Assets" = "open_asset_model/assets/index.md" },
+      { "Account" = "open_asset_model/assets/account.md" },
+      { "AutnumRecord" = "open_asset_model/assets/autnum_record.md" },
+      { "AutonomousSystem" = "open_asset_model/assets/autonomous_system.md" },
+      { "ContactRecord" = "open_asset_model/assets/contact_record.md" },
+      { "DomainRecord" = "open_asset_model/assets/domain_record.md" },
+      { "File" = "open_asset_model/assets/file.md" },
+      { "FQDN" = "open_asset_model/assets/fqdn.md" },
+      { "FundsTransfer" = "open_asset_model/assets/funds_transfer.md" },
+      { "Identifier" = "open_asset_model/assets/identifier.md" },
+      { "IPAddress" = "open_asset_model/assets/ip_address.md" },
+      { "IPNetRecord" = "open_asset_model/assets/ipnet_record.md" },
+      { "Location" = "open_asset_model/assets/location.md" },
+      { "Netblock" = "open_asset_model/assets/netblock.md" },
+      { "Organization" = "open_asset_model/assets/organization.md" },
+      { "Person" = "open_asset_model/assets/person.md" },
+      { "Phone" = "open_asset_model/assets/phone.md" },
+      { "Product" = "open_asset_model/assets/product.md" },
+      { "ProductRelease" = "open_asset_model/assets/product_release.md" },
+      { "Service" = "open_asset_model/assets/service.md" },
+      { "TLSCertificate" = "open_asset_model/assets/tls_certificate.md" },
+      { "URL" = "open_asset_model/assets/url.md" },
+    ]},
+    { "Relations" = [
+      { "Relations" = "open_asset_model/relations/index.md" },
+      { "BasicDNSRelation" = "open_asset_model/relations/basic_dns_relation.md" },
+      { "PortRelation" = "open_asset_model/relations/port_relation.md" },
+      { "PrefDNSRelation" = "open_asset_model/relations/pref_dns_relation.md" },
+      { "SimpleRelation" = "open_asset_model/relations/simple_relation.md" },
+      { "SRVDNSRelation" = "open_asset_model/relations/srv_dns_relation.md" },
+    ]},
+    { "Properties" = [
+      { "Properties" = "open_asset_model/properties/index.md" },
+      { "DNSRecordProperty" = "open_asset_model/properties/dns_property.md" },
+      { "SimpleProperty" = "open_asset_model/properties/simple_property.md" },
+      { "SourceProperty" = "open_asset_model/properties/source_property.md" },
+      { "VulnProperty" = "open_asset_model/properties/vuln_property.md" },
+    ]},
+  ]},
+  { "Data Sources" = "data_sources/data_sources.md" },
+  { "Dashboards" = "dashboards/dashboards.md" },
+  { "Changelog" = "changelog/changelog.md" },
+  { "Contributing" = "contributing/contributing.md" },
+]
+
+# ----------------------------------------------------------------------------
+# Theme Configuration
+# ----------------------------------------------------------------------------
+[project.theme]
+
+variant = "modern"
+favicon = "assets/favicon.png"
+language = "en"
+
+features = [
+    "announce.dismiss",
+    "content.code.annotate",
+    "content.code.copy",
+    "content.code.select",
+    "content.footnote.tooltips",
+    "content.tabs.link",
+    "content.tooltips",
+    "navigation.footer",
+    "navigation.indexes",
+    "navigation.instant",
+    "navigation.instant.prefetch",
+    "navigation.path",
+    "navigation.sections",
+    "navigation.tabs",
+    "navigation.top",
+    "navigation.tracking",
+    "search.highlight",
+    "toc.follow",
+]
+
+[project.theme.icon]
+logo = "simple/owasp"
+annotation = "material/plus-circle"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "black"
+accent = "blue"
+toggle.icon = "material/toggle-switch"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "black"
+accent = "blue"
+toggle.icon = "material/toggle-switch-off-outline"
+toggle.name = "Switch to light mode"
+
+[project.theme.font]
+text = "Lato"
+code = "Fira Code"
+
+# ----------------------------------------------------------------------------
+# Social Links
+# ----------------------------------------------------------------------------
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/owasp-amass"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/docker"
+link = "https://github.com/owasp-amass/amass-docker-compose"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/discord"
+link = "https://discord.gg/HNePVyX3cp"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/mastodon"
+link = "https://infosec.exchange/@amass"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/x-twitter"
+link = "https://x.com/owaspamass/"
+
+# ----------------------------------------------------------------------------
+# Markdown Extensions
+# ----------------------------------------------------------------------------
+[project.markdown_extensions]
+
+abbr = {}
+admonition = {}
+attr_list = {}
+def_list = {}
+footnotes = {}
+md_in_html = {}
+toc = { permalink = true }
+tables = {}
+
+[project.markdown_extensions."pymdownx.arithmatex"]
+generic = true
+
+[project.markdown_extensions."pymdownx.betterem"]
+smart_enable = "all"
+
+[project.markdown_extensions."pymdownx.caret"]
+[project.markdown_extensions."pymdownx.details"]
+
+[project.markdown_extensions."pymdownx.emoji"]
+emoji_index = "zensical.extensions.emoji.twemoji"
+emoji_generator = "zensical.extensions.emoji.to_svg"
+
+[project.markdown_extensions."pymdownx.highlight"]
+anchor_linenums = true
+line_spans = "__span"
+pygments_lang_class = true
+
+[project.markdown_extensions."pymdownx.inlinehilite"]
+[project.markdown_extensions."pymdownx.snippets"]
+[project.markdown_extensions."pymdownx.keys"]
+[project.markdown_extensions."pymdownx.mark"]
+[project.markdown_extensions."pymdownx.smartsymbols"]
+
+[project.markdown_extensions."pymdownx.superfences"]
+custom_fences = [
+    { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]
+
+[project.markdown_extensions."pymdownx.tabbed"]
+alternate_style = true
+
+[project.markdown_extensions."pymdownx.tasklist"]
+custom_checkbox = true
+
+[project.markdown_extensions."pymdownx.tilde"]
