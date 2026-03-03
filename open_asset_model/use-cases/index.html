@@ -3057,7 +3057,7 @@
   <a href="#pattern-query-before-creating-relationships" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ✅ Pattern: Query Before Creating Relationships
+        Pattern: Query Before Creating Relationships
       
     </span>
   </a>
@@ -3068,7 +3068,7 @@
   <a href="#pattern-interface-compliance-testing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ✅ Pattern: Interface Compliance Testing
+        Pattern: Interface Compliance Testing
       
     </span>
   </a>
@@ -3079,7 +3079,7 @@
   <a href="#pattern-batch-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ✅ Pattern: Batch Validation
+        Pattern: Batch Validation
       
     </span>
   </a>
@@ -3090,7 +3090,7 @@
   <a href="#pattern-relationship-label-discovery" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ✅ Pattern: Relationship Label Discovery
+        Pattern: Relationship Label Discovery
       
     </span>
   </a>
@@ -3101,7 +3101,7 @@
   <a href="#anti-pattern-skipping-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ❌ Anti-Pattern: Skipping Validation
+        Anti-Pattern: Skipping Validation
       
     </span>
   </a>
@@ -3592,7 +3592,7 @@
   <a href="#pattern-query-before-creating-relationships" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ✅ Pattern: Query Before Creating Relationships
+        Pattern: Query Before Creating Relationships
       
     </span>
   </a>
@@ -3603,7 +3603,7 @@
   <a href="#pattern-interface-compliance-testing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ✅ Pattern: Interface Compliance Testing
+        Pattern: Interface Compliance Testing
       
     </span>
   </a>
@@ -3614,7 +3614,7 @@
   <a href="#pattern-batch-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ✅ Pattern: Batch Validation
+        Pattern: Batch Validation
       
     </span>
   </a>
@@ -3625,7 +3625,7 @@
   <a href="#pattern-relationship-label-discovery" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ✅ Pattern: Relationship Label Discovery
+        Pattern: Relationship Label Discovery
       
     </span>
   </a>
@@ -3636,7 +3636,7 @@
   <a href="#anti-pattern-skipping-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ❌ Anti-Pattern: Skipping Validation
+        Anti-Pattern: Skipping Validation
       
     </span>
   </a>
@@ -4201,27 +4201,27 @@
     Store --&gt; Report</code></pre>
 <hr />
 <h2 id="common-patterns-and-anti-patterns">Common Patterns and Anti-Patterns<a class="headerlink" href="#common-patterns-and-anti-patterns" title="Permanent link">&para;</a></h2>
-<h3 id="pattern-query-before-creating-relationships">✅ Pattern: Query Before Creating Relationships<a class="headerlink" href="#pattern-query-before-creating-relationships" title="Permanent link">&para;</a></h3>
+<h3 id="pattern-query-before-creating-relationships">Pattern: Query Before Creating Relationships<a class="headerlink" href="#pattern-query-before-creating-relationships" title="Permanent link">&para;</a></h3>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>1. Create source asset (e.g., FQDN)
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>2. Call GetAssetOutgoingRelations(FQDN) to discover valid labels
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>3. For each label, call GetTransformAssetTypes(FQDN, label, rtype)
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>4. Create destination assets only if types match expected discovery
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>5. Validate with ValidRelationship before storing
 </span></code></pre></div>
-<h3 id="pattern-interface-compliance-testing">✅ Pattern: Interface Compliance Testing<a class="headerlink" href="#pattern-interface-compliance-testing" title="Permanent link">&para;</a></h3>
+<h3 id="pattern-interface-compliance-testing">Pattern: Interface Compliance Testing<a class="headerlink" href="#pattern-interface-compliance-testing" title="Permanent link">&para;</a></h3>
 <div class="language-go highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">func</span><span class="w"> </span><span class="nx">TestAssetInterface</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="nx">model</span><span class="p">.</span><span class="nx">Asset</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">File</span><span class="p">{}</span><span class="w">       </span><span class="c1">// Value receiver check</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="nx">model</span><span class="p">.</span><span class="nx">Asset</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="nx">File</span><span class="p">)(</span><span class="kc">nil</span><span class="p">)</span><span class="w"> </span><span class="c1">// Pointer receiver check</span>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">}</span>
 </span></code></pre></div>
-<h3 id="pattern-batch-validation">✅ Pattern: Batch Validation<a class="headerlink" href="#pattern-batch-validation" title="Permanent link">&para;</a></h3>
+<h3 id="pattern-batch-validation">Pattern: Batch Validation<a class="headerlink" href="#pattern-batch-validation" title="Permanent link">&para;</a></h3>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>1. Collect discovered relationships in memory
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>2. Batch validate using ValidRelationship
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>3. Filter invalid relationships (log for debugging)
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>4. Bulk insert valid relationships to storage
 </span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>5. Generate validation statistics
 </span></code></pre></div>
-<h3 id="pattern-relationship-label-discovery">✅ Pattern: Relationship Label Discovery<a class="headerlink" href="#pattern-relationship-label-discovery" title="Permanent link">&para;</a></h3>
+<h3 id="pattern-relationship-label-discovery">Pattern: Relationship Label Discovery<a class="headerlink" href="#pattern-relationship-label-discovery" title="Permanent link">&para;</a></h3>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>// Given an Organization asset, discover what relationships can be created:
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>labels := GetAssetOutgoingRelations(Organization)
@@ -4232,7 +4232,7 @@
 </span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>destTypes := GetTransformAssetTypes(Organization, &quot;location&quot;, SimpleRelation)
 </span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>// Returns: [Location]
 </span></code></pre></div>
-<h3 id="anti-pattern-skipping-validation">❌ Anti-Pattern: Skipping Validation<a class="headerlink" href="#anti-pattern-skipping-validation" title="Permanent link">&para;</a></h3>
+<h3 id="anti-pattern-skipping-validation">Anti-Pattern: Skipping Validation<a class="headerlink" href="#anti-pattern-skipping-validation" title="Permanent link">&para;</a></h3>
 <div class="admonition danger">
 <p class="admonition-title">Never skip validation</p>
 <p>Assuming a relationship is valid and storing directly to the database creates invalid graph structures that break queries and analysis.</p>
