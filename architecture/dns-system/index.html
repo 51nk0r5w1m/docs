@@ -3690,32 +3690,6 @@
 <h1 id="dns-system">DNS System<a class="headerlink" href="#dns-system" title="Permanent link">&para;</a></h1>
 <p>Amass implements a sophisticated DNS resolution system with multiple resolver pools, intelligent rate limiting, wildcard detection, and caching.</p>
 <h2 id="resolver-architecture">Resolver Architecture<a class="headerlink" href="#resolver-architecture" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>flowchart TB
-    subgraph Resolvers["Resolver Pools"]
-        BASELINE[Baseline Resolvers&lt;br/&gt;Google, Cloudflare, Quad9]
-        PUBLIC[Public Resolvers&lt;br/&gt;from public-dns.info]
-        CUSTOM[Custom Resolvers&lt;br/&gt;-r flag]
-        TRUSTED[Trusted Resolvers&lt;br/&gt;-tr flag]
-    end
-
-    subgraph Processing["Query Processing"]
-        RATE[Rate Limiter]
-        WILD[Wildcard Detector]
-        CACHE[(DNS Cache)]
-        VALID[Response Validator]
-    end
-
-    subgraph Output
-        RESULT[DNS Response]
-        ASSET[Asset Creation]
-    end
-
-    QUERY[DNS Query] --&gt; RATE
-    RATE --&gt; BASELINE &amp; PUBLIC &amp; CUSTOM &amp; TRUSTED
-    BASELINE &amp; PUBLIC &amp; CUSTOM &amp; TRUSTED --&gt; WILD
-    WILD --&gt; CACHE
-    CACHE --&gt; VALID
-    VALID --&gt; RESULT --&gt; ASSET</code></pre>
 <h2 id="resolver-types">Resolver Types<a class="headerlink" href="#resolver-types" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3750,17 +3724,6 @@
 </table>
 <h2 id="rate-limiting">Rate Limiting<a class="headerlink" href="#rate-limiting" title="Permanent link">&para;</a></h2>
 <p>The system enforces strict query rate limits per resolver:</p>
-<pre class="mermaid"><code>flowchart LR
-    subgraph Limits["Rate Limits"]
-        PUB[Public: 5 QPS]
-        BASE[Baseline: 15 QPS]
-        TRUST[Trusted: 15+ QPS]
-    end
-
-    QUERY[Query] --&gt; LIMITER{Rate Limiter}
-    LIMITER --&gt;|Under limit| RESOLVER[Execute Query]
-    LIMITER --&gt;|Over limit| WAIT[Wait/Queue]
-    WAIT --&gt; LIMITER</code></pre>
 <h3 id="configuration-flags">Configuration Flags<a class="headerlink" href="#configuration-flags" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -3790,12 +3753,6 @@
 </table>
 <h2 id="wildcard-detection">Wildcard Detection<a class="headerlink" href="#wildcard-detection" title="Permanent link">&para;</a></h2>
 <p>The wildcard detector prevents false positives from catch-all DNS configurations:</p>
-<pre class="mermaid"><code>flowchart TB
-    QUERY[Query: random.example.com] --&gt; CHECK{Wildcard Check}
-    CHECK --&gt;|Random subdomain resolves| WILDCARD[Wildcard Detected]
-    CHECK --&gt;|No response| SAFE[Safe to Enumerate]
-    WILDCARD --&gt; FILTER[Filter Results]
-    SAFE --&gt; PROCESS[Process Normally]</code></pre>
 <h3 id="detection-method">Detection Method<a class="headerlink" href="#detection-method" title="Permanent link">&para;</a></h3>
 <ol>
 <li>Generate random subdomain string</li>
@@ -3876,21 +3833,6 @@
 </table>
 <h2 id="dns-discovery-techniques">DNS Discovery Techniques<a class="headerlink" href="#dns-discovery-techniques" title="Permanent link">&para;</a></h2>
 <h3 id="subdomain-enumeration">Subdomain Enumeration<a class="headerlink" href="#subdomain-enumeration" title="Permanent link">&para;</a></h3>
-<pre class="mermaid"><code>flowchart LR
-    subgraph Passive["Passive Sources"]
-        CT[Certificate Transparency]
-        APIS[Third-party APIs]
-        ARCHIVES[Web Archives]
-    end
-
-    subgraph Active["Active Techniques"]
-        BRUTE[Brute Forcing]
-        NSEC[NSEC Walking]
-        ZONE[Zone Transfers]
-    end
-
-    Passive --&gt; RESULTS[(Discovered Subdomains)]
-    Active --&gt; RESULTS</code></pre>
 <h3 id="techniques">Techniques<a class="headerlink" href="#techniques" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -4086,90 +4028,9 @@
     RandomSelector --&gt; Connection
     Connection --&gt; NetworkQuery</code></pre>
 <h3 id="performquery-execution-flow">PerformQuery Execution Flow<a class="headerlink" href="#performquery-execution-flow" title="Permanent link">&para;</a></h3>
-<pre class="mermaid"><code>flowchart TD
-    PerformQuery["PerformQuery(name, qtype)"]
-    BuildMsg["Build DNS Message"]
-    TypeCheck{"qtype == PTR?"}
-    QueryMsg["utils.QueryMsg(name, qtype)"]
-    ReverseMsg["utils.ReverseMsg(name)"]
-    DnsQuery["dnsQuery(msg, trusted)"]
-    WildcardCheck["wildcardDetected(resp, detector)"]
-    ValidateAnswers["Validate Answer Records"]
-    ExtractRR["Extract RRs by Type"]
-
-    PerformQuery --&gt; BuildMsg
-    BuildMsg --&gt; TypeCheck
-    TypeCheck --&gt;|No| QueryMsg
-    TypeCheck --&gt;|Yes| ReverseMsg
-    QueryMsg --&gt; DnsQuery
-    ReverseMsg --&gt; DnsQuery
-    DnsQuery --&gt; WildcardCheck
-    WildcardCheck --&gt;|Not Wildcard| ValidateAnswers
-    WildcardCheck --&gt;|Wildcard| ErrorReturn["Return wildcard error"]
-    ValidateAnswers --&gt; ExtractRR
-    ExtractRR --&gt;|RRs Found| Success["Return []dns.RR"]
-    ExtractRR --&gt;|No RRs| ErrorReturn
-
-    subgraph "Retry Loop (up to 10 attempts)"
-        BuildMsg
-        TypeCheck
-        QueryMsg
-        ReverseMsg
-        DnsQuery
-        WildcardCheck
-        ValidateAnswers
-        ExtractRR
-    end</code></pre>
 <h3 id="dns-query-response-handling">DNS Query Response Handling<a class="headerlink" href="#dns-query-response-handling" title="Permanent link">&para;</a></h3>
-<pre class="mermaid"><code>flowchart LR
-    Input["dns.Msg"]
-    Exchange["pool.Exchange(ctx, msg)"]
-    CheckRcode{"Check Rcode"}
-    NameError["RcodeNameError"]
-    Success["RcodeSuccess"]
-    CheckAnswers{"len(Answer) &gt; 0?"}
-
-    Input --&gt; Exchange
-    Exchange --&gt; CheckRcode
-    CheckRcode --&gt;|NameError| NameError
-    CheckRcode --&gt;|Success| Success
-    CheckRcode --&gt;|Other| OtherError["Return unexpected response error"]
-    NameError --&gt; ErrorNameNotExist["Error: name does not exist"]
-    Success --&gt; CheckAnswers
-    CheckAnswers --&gt;|Yes| ReturnResp["Return dns.Msg"]
-    CheckAnswers --&gt;|No| ErrorNoRecord["Error: no record of this type"]</code></pre>
 <h3 id="wildcard-response-validation">Wildcard Response Validation<a class="headerlink" href="#wildcard-response-validation" title="Permanent link">&para;</a></h3>
-<pre class="mermaid"><code>flowchart TD
-    Response["DNS Response"]
-    ExtractName["Extract Question Name"]
-    GetETLD1["publicsuffix.EffectiveTLDPlusOne(name)"]
-    CallDetector["detector.WildcardDetected(ctx, resp, dom)"]
-    WildcardResult{"Is Wildcard?"}
-    CheckAnswers["Check len(resp.Answer) &gt; 0"]
-    FilterByType["utils.AnswersByType(resp, qtype)"]
-    ValidateRRs{"len(rr) &gt; 0?"}
-
-    Response --&gt; ExtractName
-    ExtractName --&gt; GetETLD1
-    GetETLD1 --&gt; CallDetector
-    CallDetector --&gt; WildcardResult
-    WildcardResult --&gt;|Yes| RejectWildcard["Reject: wildcard detected"]
-    WildcardResult --&gt;|No| CheckAnswers
-    CheckAnswers --&gt; FilterByType
-    FilterByType --&gt; ValidateRRs
-    ValidateRRs --&gt;|Yes| Accept["Accept Response"]
-    ValidateRRs --&gt;|No| RejectNoRR["Reject: no matching RRs"]</code></pre>
 <h3 id="wildcard-detector-initialization">Wildcard Detector Initialization<a class="headerlink" href="#wildcard-detector-initialization" title="Permanent link">&para;</a></h3>
-<pre class="mermaid"><code>flowchart TD
-    TrustedResolvers["trustedResolvers()"]
-    CreateDetectorNS["servers.NewNameserver(8.8.4.4)"]
-    CreateConns["conn.New(cpus, single_selector)"]
-    CreateDetector["wildcards.NewDetector(serv, wconns, nil)"]
-
-    TrustedResolvers --&gt; CreateDetectorNS
-    CreateDetectorNS --&gt; CreateConns
-    CreateConns --&gt; CreateDetector
-    CreateDetector --&gt; DetectorInstance["detector (global var)"]</code></pre>
 <h3 id="resolver-configuration-loading">Resolver Configuration Loading<a class="headerlink" href="#resolver-configuration-loading" title="Permanent link">&para;</a></h3>
 <pre class="mermaid"><code>graph TB
     subgraph "Configuration Loading"

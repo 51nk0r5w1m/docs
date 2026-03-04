@@ -3899,49 +3899,6 @@
 <hr />
 <h2 id="multi-asset-discovery-pipeline">Multi-Asset Discovery Pipeline<a class="headerlink" href="#multi-asset-discovery-pipeline" title="Permanent link">&para;</a></h2>
 <p>This example shows a complete discovery pipeline that validates relationships as assets are discovered.</p>
-<pre class="mermaid"><code>flowchart TD
-    Start["Start: Seed Domain 'example.com'"]
-    CreateFQDN["Create FQDN Asset&lt;br/&gt;fqdn.Name = 'example.com'"]
-    QueryOutgoing["GetAssetOutgoingRelations(FQDN)"]
-    OutgoingLabels["Returns: ['port', 'dns_record', 'node', 'registration']"]
-
-    DNSLookup["Perform DNS Lookup"]
-    FoundIP["Found: 93.184.216.34"]
-    CreateIP["Create IPAddress Asset&lt;br/&gt;ip.Address = '93.184.216.34'"]
-
-    ValidateRel["ValidRelationship(FQDN, 'dns_record',&lt;br/&gt;BasicDNSRelation, IPAddress)"]
-    IsValid{"Valid?"}
-    StoreRel["Store Relationship:&lt;br/&gt;example.com --dns_record--&gt; 93.184.216.34"]
-    SkipRel["Skip Invalid Relationship&lt;br/&gt;Log Error"]
-
-    CheckMore{"More DNS&lt;br/&gt;records?"}
-    FoundMX["Found MX: mail.example.com"]
-    CreateMXFQDN["Create FQDN Asset&lt;br/&gt;mx.Name = 'mail.example.com'"]
-    ValidateMX["ValidRelationship(FQDN, 'dns_record',&lt;br/&gt;PrefDNSRelation, FQDN)"]
-    StoreMX["Store MX Relationship"]
-
-    Serialize["Serialize All Assets to JSON"]
-    Persist["Persist to Database/Graph"]
-
-    Start --&gt; CreateFQDN
-    CreateFQDN --&gt; QueryOutgoing
-    QueryOutgoing --&gt; OutgoingLabels
-    OutgoingLabels --&gt; DNSLookup
-    DNSLookup --&gt; FoundIP
-    FoundIP --&gt; CreateIP
-    CreateIP --&gt; ValidateRel
-    ValidateRel --&gt; IsValid
-    IsValid --&gt;|true| StoreRel
-    IsValid --&gt;|false| SkipRel
-    StoreRel --&gt; CheckMore
-    SkipRel --&gt; CheckMore
-    CheckMore --&gt;|Yes| FoundMX
-    CheckMore --&gt;|No| Serialize
-    FoundMX --&gt; CreateMXFQDN
-    CreateMXFQDN --&gt; ValidateMX
-    ValidateMX --&gt; StoreMX
-    StoreMX --&gt; CheckMore
-    Serialize --&gt; Persist</code></pre>
 <h3 id="discovery-statistics-example">Discovery Statistics Example<a class="headerlink" href="#discovery-statistics-example" title="Permanent link">&para;</a></h3>
 <table>
 <thead>

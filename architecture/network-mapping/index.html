@@ -3814,26 +3814,6 @@
 <h1 id="network-infrastructure-mapping">Network Infrastructure Mapping<a class="headerlink" href="#network-infrastructure-mapping" title="Permanent link">&para;</a></h1>
 <p>Amass performs comprehensive network mapping through coordinated plugin operations, correlating IP addresses, network blocks, and autonomous system numbers (ASNs) to build complete infrastructure maps.</p>
 <h2 id="network-discovery-architecture">Network Discovery Architecture<a class="headerlink" href="#network-discovery-architecture" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>flowchart TB
-    subgraph Discovery["Asset Discovery"]
-        FQDN[FQDN&lt;br/&gt;example.com]
-        DNS[DNS Resolution]
-    end
-
-    subgraph Network["Network Mapping"]
-        IP[IP Address&lt;br/&gt;192.0.2.1]
-        NET[Netblock&lt;br/&gt;192.0.2.0/24]
-        ASN[ASN&lt;br/&gt;AS64496]
-    end
-
-    subgraph Attribution["Organization Attribution"]
-        ORG[Organization&lt;br/&gt;Example Inc]
-        WHOIS[WHOIS Data]
-    end
-
-    FQDN --&gt; DNS --&gt; IP
-    IP --&gt; NET --&gt; ASN --&gt; ORG
-    IP --&gt; WHOIS --&gt; ORG</code></pre>
 <h2 id="ip-to-network-correlation">IP-to-Network Correlation<a class="headerlink" href="#ip-to-network-correlation" title="Permanent link">&para;</a></h2>
 <h3 id="discovery-pipeline">Discovery Pipeline<a class="headerlink" href="#discovery-pipeline" title="Permanent link">&para;</a></h3>
 <ol>
@@ -3937,29 +3917,7 @@
 </table>
 <h3 id="rdap-support">RDAP Support<a class="headerlink" href="#rdap-support" title="Permanent link">&para;</a></h3>
 <p>Modern RDAP (Registration Data Access Protocol) queries provide structured JSON responses:</p>
-<pre class="mermaid"><code>flowchart LR
-    QUERY[RDAP Query] --&gt; SERVER[RDAP Server]
-    SERVER --&gt; RESPONSE[JSON Response]
-    RESPONSE --&gt; PARSE[Parse Data]
-    PARSE --&gt; ASSETS[Create Assets]</code></pre>
 <h2 id="network-relationship-model">Network Relationship Model<a class="headerlink" href="#network-relationship-model" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>flowchart TB
-    subgraph Assets["Discovered Assets"]
-        FQDN1[www.example.com]
-        FQDN2[api.example.com]
-        IP1[192.0.2.1]
-        IP2[192.0.2.2]
-        NET[192.0.2.0/24]
-        ASN[AS64496]
-        ORG[Example Inc]
-    end
-
-    FQDN1 --&gt;|resolves_to| IP1
-    FQDN2 --&gt;|resolves_to| IP2
-    IP1 --&gt;|belongs_to| NET
-    IP2 --&gt;|belongs_to| NET
-    NET --&gt;|member_of| ASN
-    ASN --&gt;|owned_by| ORG</code></pre>
 <h3 id="relationship-types">Relationship Types<a class="headerlink" href="#relationship-types" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -4013,26 +3971,6 @@
 </span></code></pre></div>
 <h2 id="infrastructure-correlation">Infrastructure Correlation<a class="headerlink" href="#infrastructure-correlation" title="Permanent link">&para;</a></h2>
 <h3 id="multi-source-correlation">Multi-Source Correlation<a class="headerlink" href="#multi-source-correlation" title="Permanent link">&para;</a></h3>
-<pre class="mermaid"><code>flowchart TB
-    subgraph Sources["Data Sources"]
-        DNS[DNS Records]
-        WHOIS[WHOIS/RDAP]
-        BGP[BGP Tools]
-        CT[Certificate Transparency]
-    end
-
-    subgraph Correlation["Correlation Engine"]
-        MERGE[Merge Data]
-        DEDUP[Deduplicate]
-        RELATE[Build Relations]
-    end
-
-    subgraph Output["Infrastructure Map"]
-        GRAPH[(Graph Database)]
-    end
-
-    DNS &amp; WHOIS &amp; BGP &amp; CT --&gt; MERGE
-    MERGE --&gt; DEDUP --&gt; RELATE --&gt; GRAPH</code></pre>
 <h3 id="correlation-points">Correlation Points<a class="headerlink" href="#correlation-points" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -4253,21 +4191,6 @@
 </table>
 <h3 id="transformation-matching">Transformation Matching<a class="headerlink" href="#transformation-matching" title="Permanent link">&para;</a></h3>
 <p>Transformation rules in <code>config.yaml</code> control which plugins are permitted to process which asset types. This is evaluated for every handler execution:</p>
-<pre class="mermaid"><code>flowchart TD
-    Start["Handler Execution"]
-    Start --&gt; HasTrans{"Transformations&lt;br/&gt;defined for&lt;br/&gt;asset type?"}
-
-    HasTrans --&gt; |No| Execute["Execute Handler"]
-
-    HasTrans --&gt; |Yes| AllExclude{"Is plugin in&lt;br/&gt;'all' exclude list?"}
-    AllExclude --&gt; |Yes| Skip["Skip Handler"]
-
-    AllExclude --&gt; |No| PluginMatch{"Is plugin&lt;br/&gt;explicitly&lt;br/&gt;listed in 'to'?"}
-    PluginMatch --&gt; |Yes| Execute
-
-    PluginMatch --&gt; |No| TransMatch{"Does plugin produce&lt;br/&gt;transformation&lt;br/&gt;in config?"}
-    TransMatch --&gt; |Yes| Execute
-    TransMatch --&gt; |No| Skip</code></pre>
 <p>Example transformation configuration:</p>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">transformations</span><span class="p">:</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">FQDN</span>

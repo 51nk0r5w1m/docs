@@ -3746,52 +3746,6 @@
 <h1 id="architecture-overview">Architecture Overview<a class="headerlink" href="#architecture-overview" title="Permanent link">&para;</a></h1>
 <p>OWASP Amass implements an <strong>event-driven plugin architecture</strong> centered on a core engine that processes asset discovery through sophisticated coordination mechanisms. The system implements the Open Asset Model (OAM) to standardize cyber asset representation across a graph database backend.</p>
 <h2 id="system-architecture">System Architecture<a class="headerlink" href="#system-architecture" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>flowchart TB
-    subgraph CLI["CLI Layer"]
-        CMD[amass command]
-        CMD --&gt; ENUM[enum]
-        CMD --&gt; ENGINE[engine]
-        CMD --&gt; ASSOC[assoc]
-        CMD --&gt; SUBS[subs]
-        CMD --&gt; TRACK[track]
-        CMD --&gt; VIZ[viz]
-    end
-
-    subgraph Core["Engine Core"]
-        DISP[Dispatcher]
-        REG[Registry]
-        SM[SessionManager]
-        GQL[GraphQL Server]
-    end
-
-    subgraph Plugins["Plugin Ecosystem"]
-        DNS[DNS Plugins]
-        API[API Plugins]
-        SVC[Service Discovery]
-        WHOIS[WHOIS Plugins]
-    end
-
-    subgraph Data["Data Layer"]
-        CACHE[(Cache)]
-        GDB[(Graph Database)]
-        QUEUE[(Session Queue)]
-    end
-
-    subgraph External["External Services"]
-        RESOLVERS[DNS Resolvers]
-        APIS[External APIs]
-        WHOIS_SRV[WHOIS Servers]
-    end
-
-    ENUM &amp; ENGINE --&gt; GQL
-    GQL --&gt; DISP
-    DISP --&gt; REG
-    REG --&gt; DNS &amp; API &amp; SVC &amp; WHOIS
-    SM --&gt; CACHE &amp; QUEUE
-    DNS &amp; API &amp; SVC &amp; WHOIS --&gt; GDB
-    DNS --&gt; RESOLVERS
-    API --&gt; APIS
-    WHOIS --&gt; WHOIS_SRV</code></pre>
 <h2 id="core-components">Core Components<a class="headerlink" href="#core-components" title="Permanent link">&para;</a></h2>
 <h3 id="engine-core">Engine Core<a class="headerlink" href="#engine-core" title="Permanent link">&para;</a></h3>
 <p>The central <code>AmassEngine</code> orchestrates discovery operations through these key subsystems:</p>
@@ -3846,17 +3800,6 @@
     Database--&gt;&gt;Client: Updated Graph</code></pre>
 <h2 id="session-management">Session Management<a class="headerlink" href="#session-management" title="Permanent link">&para;</a></h2>
 <p>The <code>SessionManager</code> coordinates multiple concurrent discovery sessions with isolated configuration and state:</p>
-<pre class="mermaid"><code>flowchart LR
-    subgraph Session["Session Context"]
-        DB[(session.db)]
-        CACHE[session.cache]
-        QUEUE[session.queue]
-        RANGER[session.ranger]
-    end
-
-    CONFIG[Configuration] --&gt; Session
-    Session --&gt; SCOPE{Scope Validation}
-    SCOPE --&gt; PROCESS[Asset Processing]</code></pre>
 <table>
 <thead>
 <tr>
@@ -3884,16 +3827,6 @@
 </tbody>
 </table>
 <h2 id="multi-layer-storage-architecture">Multi-Layer Storage Architecture<a class="headerlink" href="#multi-layer-storage-architecture" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>flowchart TB
-    subgraph Storage["Data Storage Layers"]
-        direction TB
-        L1[Cache Layer&lt;br/&gt;In-memory with TTL]
-        L2[Graph Database&lt;br/&gt;SQLite / PostgreSQL]
-        L3[Session Storage&lt;br/&gt;QueueDB with temp directories]
-        L4[Asset Model&lt;br/&gt;OAM Entities &amp; Edges]
-    end
-
-    L1 --&gt; L2 --&gt; L3 --&gt; L4</code></pre>
 <h3 id="database-support">Database Support<a class="headerlink" href="#database-support" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -4004,10 +3937,6 @@
 <p><strong>Default endpoint:</strong> <code>http://127.0.0.1:4000/graphql</code></p>
 <h2 id="configuration-priority">Configuration Priority<a class="headerlink" href="#configuration-priority" title="Permanent link">&para;</a></h2>
 <p>Settings are resolved in priority order:</p>
-<pre class="mermaid"><code>flowchart LR
-    CLI[Command-line Args&lt;br/&gt;Highest Priority] --&gt; ENV[Environment Variables]
-    ENV --&gt; FILE[Configuration Files&lt;br/&gt;Lowest Priority]
-    FILE --&gt; FINAL[Final Configuration]</code></pre>
 <h2 id="external-service-integration">External Service Integration<a class="headerlink" href="#external-service-integration" title="Permanent link">&para;</a></h2>
 <h3 id="dns-resolution-infrastructure">DNS Resolution Infrastructure<a class="headerlink" href="#dns-resolution-infrastructure" title="Permanent link">&para;</a></h3>
 <p>The system manages multiple resolver pools with sophisticated rate limiting:</p>

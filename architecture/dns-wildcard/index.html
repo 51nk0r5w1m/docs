@@ -3627,36 +3627,6 @@
 </tbody>
 </table>
 <h2 id="detection-algorithm">Detection Algorithm<a class="headerlink" href="#detection-algorithm" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>flowchart TD
-    Start["DNS Response Received"]
-    Extract["Extract FQDN from response&lt;br/&gt;Question[0].Name"]
-    RemoveDot["RemoveLastDot()"]
-    ToLower["strings.ToLower()"]
-
-    ETLD["publicsuffix.EffectiveTLDPlusOne()&lt;br/&gt;Extract: example.com from&lt;br/&gt;test.sub.example.com"]
-
-    CheckError{"Error or&lt;br/&gt;empty domain?"}
-    CheckWildcard["detector.WildcardDetected()&lt;br/&gt;(context, resp, domain)"]
-
-    IsWildcard{"Wildcard&lt;br/&gt;detected?"}
-    ReturnTrue["Return true&lt;br/&gt;(filter this result)"]
-    ReturnFalse["Return false&lt;br/&gt;(valid result)"]
-
-    Start --&gt; Extract
-    Extract --&gt; RemoveDot
-    RemoveDot --&gt; ToLower
-    ToLower --&gt; ETLD
-    ETLD --&gt; CheckError
-
-    CheckError --&gt;|Yes| ReturnFalse
-    CheckError --&gt;|No| CheckWildcard
-
-    CheckWildcard --&gt; IsWildcard
-    IsWildcard --&gt;|Yes| ReturnTrue
-    IsWildcard --&gt;|No| ReturnFalse
-
-    style ETLD fill:#f9f9f9
-    style CheckWildcard fill:#f9f9f9</code></pre>
 <h3 id="effectivetld1-extraction">EffectiveTLD+1 Extraction<a class="headerlink" href="#effectivetld1-extraction" title="Permanent link">&para;</a></h3>
 <p>The detection algorithm first extracts the <strong>EffectiveTLD+1</strong> (eTLD+1) from the queried domain — the registered domain name:</p>
 <table>

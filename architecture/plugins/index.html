@@ -3359,25 +3359,6 @@
 <h1 id="plugin-system">Plugin System<a class="headerlink" href="#plugin-system" title="Permanent link">&para;</a></h1>
 <p>Amass employs an <strong>event-driven plugin architecture</strong> where plugins register handlers for specific asset types. The system coordinates multiple discovery plugins through a central registry that builds processing pipelines.</p>
 <h2 id="plugin-architecture">Plugin Architecture<a class="headerlink" href="#plugin-architecture" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>flowchart TB
-    subgraph Registry["Plugin Registry"]
-        REG[Registry Manager]
-        REG --&gt; P1[DNS Plugins]
-        REG --&gt; P2[API Plugins]
-        REG --&gt; P3[Service Discovery]
-        REG --&gt; P4[WHOIS Plugins]
-    end
-
-    subgraph Pipeline["Processing Pipeline"]
-        direction LR
-        H1[Handler 1&lt;br/&gt;Priority 1] --&gt; H2[Handler 2&lt;br/&gt;Priority 2]
-        H2 --&gt; H3[Handler 3&lt;br/&gt;Priority 3]
-        H3 --&gt; HN[Handler N&lt;br/&gt;Priority N]
-    end
-
-    EVENT[Asset Event] --&gt; REG
-    REG --&gt; Pipeline
-    Pipeline --&gt; OUTPUT[Enriched Assets]</code></pre>
 <h2 id="handler-registration">Handler Registration<a class="headerlink" href="#handler-registration" title="Permanent link">&para;</a></h2>
 <p>Plugins register handlers with the Registry, which builds processing pipelines based on:</p>
 <table>
@@ -3593,37 +3574,6 @@
 <li>System feeds new assets back into pipelines</li>
 </ol>
 <h2 id="asset-flow-through-plugins">Asset Flow Through Plugins<a class="headerlink" href="#asset-flow-through-plugins" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>flowchart LR
-    subgraph Input
-        FQDN[FQDN Asset]
-        IP[IP Address]
-        ORG[Organization]
-    end
-
-    subgraph DNS["DNS Handlers"]
-        TXT[TXT Handler]
-        CNAME[CNAME Handler]
-        A[A/AAAA Handler]
-    end
-
-    subgraph Enrichment["Enrichment"]
-        HTTP[HTTP Probes]
-        CERT[Certificate Analysis]
-        WHOIS[WHOIS Lookup]
-    end
-
-    subgraph Output
-        ENRICHED[Enriched Assets]
-        RELATIONS[Relationships]
-    end
-
-    FQDN --&gt; TXT --&gt; CNAME --&gt; A
-    A --&gt; HTTP --&gt; CERT
-    IP --&gt; WHOIS
-    ORG --&gt; GLEIF[GLEIF/Aviato]
-
-    CERT &amp; WHOIS &amp; GLEIF --&gt; ENRICHED
-    ENRICHED --&gt; RELATIONS</code></pre>
 <h3 id="example-fqdn-discovery-flow">Example: FQDN Discovery Flow<a class="headerlink" href="#example-fqdn-discovery-flow" title="Permanent link">&para;</a></h3>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Input: example.com (FQDN)
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    │
