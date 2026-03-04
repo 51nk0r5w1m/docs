@@ -4,55 +4,6 @@ OWASP Amass implements an **event-driven plugin architecture** centered on a cor
 
 ## System Architecture
 
-```mermaid
-flowchart TB
-    subgraph CLI["CLI Layer"]
-        CMD[amass command]
-        CMD --> ENUM[enum]
-        CMD --> ENGINE[engine]
-        CMD --> ASSOC[assoc]
-        CMD --> SUBS[subs]
-        CMD --> TRACK[track]
-        CMD --> VIZ[viz]
-    end
-
-    subgraph Core["Engine Core"]
-        DISP[Dispatcher]
-        REG[Registry]
-        SM[SessionManager]
-        GQL[GraphQL Server]
-    end
-
-    subgraph Plugins["Plugin Ecosystem"]
-        DNS[DNS Plugins]
-        API[API Plugins]
-        SVC[Service Discovery]
-        WHOIS[WHOIS Plugins]
-    end
-
-    subgraph Data["Data Layer"]
-        CACHE[(Cache)]
-        GDB[(Graph Database)]
-        QUEUE[(Session Queue)]
-    end
-
-    subgraph External["External Services"]
-        RESOLVERS[DNS Resolvers]
-        APIS[External APIs]
-        WHOIS_SRV[WHOIS Servers]
-    end
-
-    ENUM & ENGINE --> GQL
-    GQL --> DISP
-    DISP --> REG
-    REG --> DNS & API & SVC & WHOIS
-    SM --> CACHE & QUEUE
-    DNS & API & SVC & WHOIS --> GDB
-    DNS --> RESOLVERS
-    API --> APIS
-    WHOIS --> WHOIS_SRV
-```
-
 ## Core Components
 
 ### Engine Core
@@ -98,20 +49,6 @@ sequenceDiagram
 
 The `SessionManager` coordinates multiple concurrent discovery sessions with isolated configuration and state:
 
-```mermaid
-flowchart LR
-    subgraph Session["Session Context"]
-        DB[(session.db)]
-        CACHE[session.cache]
-        QUEUE[session.queue]
-        RANGER[session.ranger]
-    end
-
-    CONFIG[Configuration] --> Session
-    Session --> SCOPE{Scope Validation}
-    SCOPE --> PROCESS[Asset Processing]
-```
-
 | Component | Description |
 |-----------|-------------|
 | `session.db` | SQLite persistent storage for the session |
@@ -120,19 +57,6 @@ flowchart LR
 | `session.ranger` | CIDR range matching for network scope |
 
 ## Multi-Layer Storage Architecture
-
-```mermaid
-flowchart TB
-    subgraph Storage["Data Storage Layers"]
-        direction TB
-        L1[Cache Layer<br/>In-memory with TTL]
-        L2[Graph Database<br/>SQLite / PostgreSQL]
-        L3[Session Storage<br/>QueueDB with temp directories]
-        L4[Asset Model<br/>OAM Entities & Edges]
-    end
-
-    L1 --> L2 --> L3 --> L4
-```
 
 ### Database Support
 
@@ -189,13 +113,6 @@ The engine exposes a GraphQL API for programmatic control:
 ## Configuration Priority
 
 Settings are resolved in priority order:
-
-```mermaid
-flowchart LR
-    CLI[Command-line Args<br/>Highest Priority] --> ENV[Environment Variables]
-    ENV --> FILE[Configuration Files<br/>Lowest Priority]
-    FILE --> FINAL[Final Configuration]
-```
 
 ## External Service Integration
 

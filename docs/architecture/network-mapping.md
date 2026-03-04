@@ -4,29 +4,6 @@ Amass performs comprehensive network mapping through coordinated plugin operatio
 
 ## Network Discovery Architecture
 
-```mermaid
-flowchart TB
-    subgraph Discovery["Asset Discovery"]
-        FQDN[FQDN<br/>example.com]
-        DNS[DNS Resolution]
-    end
-
-    subgraph Network["Network Mapping"]
-        IP[IP Address<br/>192.0.2.1]
-        NET[Netblock<br/>192.0.2.0/24]
-        ASN[ASN<br/>AS64496]
-    end
-
-    subgraph Attribution["Organization Attribution"]
-        ORG[Organization<br/>Example Inc]
-        WHOIS[WHOIS Data]
-    end
-
-    FQDN --> DNS --> IP
-    IP --> NET --> ASN --> ORG
-    IP --> WHOIS --> ORG
-```
-
 ## IP-to-Network Correlation
 
 ### Discovery Pipeline
@@ -88,35 +65,7 @@ The `BGP.Tools` plugin provides autonomous system intelligence:
 
 Modern RDAP (Registration Data Access Protocol) queries provide structured JSON responses:
 
-```mermaid
-flowchart LR
-    QUERY[RDAP Query] --> SERVER[RDAP Server]
-    SERVER --> RESPONSE[JSON Response]
-    RESPONSE --> PARSE[Parse Data]
-    PARSE --> ASSETS[Create Assets]
-```
-
 ## Network Relationship Model
-
-```mermaid
-flowchart TB
-    subgraph Assets["Discovered Assets"]
-        FQDN1[www.example.com]
-        FQDN2[api.example.com]
-        IP1[192.0.2.1]
-        IP2[192.0.2.2]
-        NET[192.0.2.0/24]
-        ASN[AS64496]
-        ORG[Example Inc]
-    end
-
-    FQDN1 -->|resolves_to| IP1
-    FQDN2 -->|resolves_to| IP2
-    IP1 -->|belongs_to| NET
-    IP2 -->|belongs_to| NET
-    NET -->|member_of| ASN
-    ASN -->|owned_by| ORG
-```
 
 ### Relationship Types
 
@@ -153,29 +102,6 @@ IP 192.0.2.1 discovered
 ## Infrastructure Correlation
 
 ### Multi-Source Correlation
-
-```mermaid
-flowchart TB
-    subgraph Sources["Data Sources"]
-        DNS[DNS Records]
-        WHOIS[WHOIS/RDAP]
-        BGP[BGP Tools]
-        CT[Certificate Transparency]
-    end
-
-    subgraph Correlation["Correlation Engine"]
-        MERGE[Merge Data]
-        DEDUP[Deduplicate]
-        RELATE[Build Relations]
-    end
-
-    subgraph Output["Infrastructure Map"]
-        GRAPH[(Graph Database)]
-    end
-
-    DNS & WHOIS & BGP & CT --> MERGE
-    MERGE --> DEDUP --> RELATE --> GRAPH
-```
 
 ### Correlation Points
 
@@ -369,24 +295,6 @@ graph TB
 ### Transformation Matching
 
 Transformation rules in `config.yaml` control which plugins are permitted to process which asset types. This is evaluated for every handler execution:
-
-```mermaid
-flowchart TD
-    Start["Handler Execution"]
-    Start --> HasTrans{"Transformations<br/>defined for<br/>asset type?"}
-
-    HasTrans --> |No| Execute["Execute Handler"]
-
-    HasTrans --> |Yes| AllExclude{"Is plugin in<br/>'all' exclude list?"}
-    AllExclude --> |Yes| Skip["Skip Handler"]
-
-    AllExclude --> |No| PluginMatch{"Is plugin<br/>explicitly<br/>listed in 'to'?"}
-    PluginMatch --> |Yes| Execute
-
-    PluginMatch --> |No| TransMatch{"Does plugin produce<br/>transformation<br/>in config?"}
-    TransMatch --> |Yes| Execute
-    TransMatch --> |No| Skip
-```
 
 Example transformation configuration:
 

@@ -4,26 +4,6 @@ Amass implements isolated discovery sessions through the `SessionManager`, enabl
 
 ## Session Architecture
 
-```mermaid
-flowchart TB
-    subgraph Manager["Session Manager"]
-        SM[SessionManager]
-        SM --> S1[Session 1]
-        SM --> S2[Session 2]
-        SM --> S3[Session N]
-    end
-
-    subgraph Session["Session Components"]
-        CONFIG[Configuration]
-        DB[(session.db)]
-        CACHE[session.cache]
-        QUEUE[session.queue]
-        RANGER[session.ranger]
-    end
-
-    S1 --> Session
-```
-
 ## Session Lifecycle
 
 ```mermaid
@@ -66,25 +46,6 @@ Each session maintains completely isolated data structures:
 
 Scope defines what targets are in-scope for discovery:
 
-```mermaid
-flowchart LR
-    subgraph Scope["Scope Definition"]
-        DOMAINS[Domains<br/>example.com]
-        IPS[IP Addresses<br/>192.0.2.1]
-        CIDRS[CIDR Blocks<br/>192.0.2.0/24]
-        ASNS[ASN Numbers<br/>AS64496]
-    end
-
-    subgraph Validation
-        CHECK{In Scope?}
-    end
-
-    ASSET[Discovered Asset] --> CHECK
-    Scope --> CHECK
-    CHECK -->|Yes| PROCESS[Process Asset]
-    CHECK -->|No| DISCARD[Discard]
-```
-
 ### Configuration Methods
 
 | Method | Example |
@@ -116,23 +77,6 @@ scope:
 ```
 
 ## Session Isolation
-
-```mermaid
-flowchart TB
-    subgraph Session1["Session 1"]
-        DB1[(Database)]
-        CACHE1[Cache]
-        QUEUE1[Queue]
-    end
-
-    subgraph Session2["Session 2"]
-        DB2[(Database)]
-        CACHE2[Cache]
-        QUEUE2[Queue]
-    end
-
-    Session1 -.->|Isolated| Session2
-```
 
 ### Isolation Properties
 

@@ -149,52 +149,6 @@ graph LR
 
 This example shows a complete discovery pipeline that validates relationships as assets are discovered.
 
-```mermaid
-flowchart TD
-    Start["Start: Seed Domain 'example.com'"]
-    CreateFQDN["Create FQDN Asset<br/>fqdn.Name = 'example.com'"]
-    QueryOutgoing["GetAssetOutgoingRelations(FQDN)"]
-    OutgoingLabels["Returns: ['port', 'dns_record', 'node', 'registration']"]
-
-    DNSLookup["Perform DNS Lookup"]
-    FoundIP["Found: 93.184.216.34"]
-    CreateIP["Create IPAddress Asset<br/>ip.Address = '93.184.216.34'"]
-
-    ValidateRel["ValidRelationship(FQDN, 'dns_record',<br/>BasicDNSRelation, IPAddress)"]
-    IsValid{"Valid?"}
-    StoreRel["Store Relationship:<br/>example.com --dns_record--> 93.184.216.34"]
-    SkipRel["Skip Invalid Relationship<br/>Log Error"]
-
-    CheckMore{"More DNS<br/>records?"}
-    FoundMX["Found MX: mail.example.com"]
-    CreateMXFQDN["Create FQDN Asset<br/>mx.Name = 'mail.example.com'"]
-    ValidateMX["ValidRelationship(FQDN, 'dns_record',<br/>PrefDNSRelation, FQDN)"]
-    StoreMX["Store MX Relationship"]
-
-    Serialize["Serialize All Assets to JSON"]
-    Persist["Persist to Database/Graph"]
-
-    Start --> CreateFQDN
-    CreateFQDN --> QueryOutgoing
-    QueryOutgoing --> OutgoingLabels
-    OutgoingLabels --> DNSLookup
-    DNSLookup --> FoundIP
-    FoundIP --> CreateIP
-    CreateIP --> ValidateRel
-    ValidateRel --> IsValid
-    IsValid -->|true| StoreRel
-    IsValid -->|false| SkipRel
-    StoreRel --> CheckMore
-    SkipRel --> CheckMore
-    CheckMore -->|Yes| FoundMX
-    CheckMore -->|No| Serialize
-    FoundMX --> CreateMXFQDN
-    CreateMXFQDN --> ValidateMX
-    ValidateMX --> StoreMX
-    StoreMX --> CheckMore
-    Serialize --> Persist
-```
-
 ### Discovery Statistics Example
 
 | Metric | Count |

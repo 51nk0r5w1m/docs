@@ -4,28 +4,6 @@ Amass employs an **event-driven plugin architecture** where plugins register han
 
 ## Plugin Architecture
 
-```mermaid
-flowchart TB
-    subgraph Registry["Plugin Registry"]
-        REG[Registry Manager]
-        REG --> P1[DNS Plugins]
-        REG --> P2[API Plugins]
-        REG --> P3[Service Discovery]
-        REG --> P4[WHOIS Plugins]
-    end
-
-    subgraph Pipeline["Processing Pipeline"]
-        direction LR
-        H1[Handler 1<br/>Priority 1] --> H2[Handler 2<br/>Priority 2]
-        H2 --> H3[Handler 3<br/>Priority 3]
-        H3 --> HN[Handler N<br/>Priority N]
-    end
-
-    EVENT[Asset Event] --> REG
-    REG --> Pipeline
-    Pipeline --> OUTPUT[Enriched Assets]
-```
-
 ## Handler Registration
 
 Plugins register handlers with the Registry, which builds processing pipelines based on:
@@ -131,40 +109,6 @@ Plugins operate within an event-driven model:
 4. System feeds new assets back into pipelines
 
 ## Asset Flow Through Plugins
-
-```mermaid
-flowchart LR
-    subgraph Input
-        FQDN[FQDN Asset]
-        IP[IP Address]
-        ORG[Organization]
-    end
-
-    subgraph DNS["DNS Handlers"]
-        TXT[TXT Handler]
-        CNAME[CNAME Handler]
-        A[A/AAAA Handler]
-    end
-
-    subgraph Enrichment["Enrichment"]
-        HTTP[HTTP Probes]
-        CERT[Certificate Analysis]
-        WHOIS[WHOIS Lookup]
-    end
-
-    subgraph Output
-        ENRICHED[Enriched Assets]
-        RELATIONS[Relationships]
-    end
-
-    FQDN --> TXT --> CNAME --> A
-    A --> HTTP --> CERT
-    IP --> WHOIS
-    ORG --> GLEIF[GLEIF/Aviato]
-
-    CERT & WHOIS & GLEIF --> ENRICHED
-    ENRICHED --> RELATIONS
-```
 
 ### Example: FQDN Discovery Flow
 

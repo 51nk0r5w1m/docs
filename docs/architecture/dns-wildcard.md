@@ -67,39 +67,6 @@ graph TB
 
 ## Detection Algorithm
 
-```mermaid
-flowchart TD
-    Start["DNS Response Received"]
-    Extract["Extract FQDN from response<br/>Question[0].Name"]
-    RemoveDot["RemoveLastDot()"]
-    ToLower["strings.ToLower()"]
-    
-    ETLD["publicsuffix.EffectiveTLDPlusOne()<br/>Extract: example.com from<br/>test.sub.example.com"]
-    
-    CheckError{"Error or<br/>empty domain?"}
-    CheckWildcard["detector.WildcardDetected()<br/>(context, resp, domain)"]
-    
-    IsWildcard{"Wildcard<br/>detected?"}
-    ReturnTrue["Return true<br/>(filter this result)"]
-    ReturnFalse["Return false<br/>(valid result)"]
-    
-    Start --> Extract
-    Extract --> RemoveDot
-    RemoveDot --> ToLower
-    ToLower --> ETLD
-    ETLD --> CheckError
-    
-    CheckError -->|Yes| ReturnFalse
-    CheckError -->|No| CheckWildcard
-    
-    CheckWildcard --> IsWildcard
-    IsWildcard -->|Yes| ReturnTrue
-    IsWildcard -->|No| ReturnFalse
-    
-    style ETLD fill:#f9f9f9
-    style CheckWildcard fill:#f9f9f9
-```
-
 ### EffectiveTLD+1 Extraction
 
 The detection algorithm first extracts the **EffectiveTLD+1** (eTLD+1) from the queried domain — the registered domain name:

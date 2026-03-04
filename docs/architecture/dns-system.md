@@ -4,35 +4,6 @@ Amass implements a sophisticated DNS resolution system with multiple resolver po
 
 ## Resolver Architecture
 
-```mermaid
-flowchart TB
-    subgraph Resolvers["Resolver Pools"]
-        BASELINE[Baseline Resolvers<br/>Google, Cloudflare, Quad9]
-        PUBLIC[Public Resolvers<br/>from public-dns.info]
-        CUSTOM[Custom Resolvers<br/>-r flag]
-        TRUSTED[Trusted Resolvers<br/>-tr flag]
-    end
-
-    subgraph Processing["Query Processing"]
-        RATE[Rate Limiter]
-        WILD[Wildcard Detector]
-        CACHE[(DNS Cache)]
-        VALID[Response Validator]
-    end
-
-    subgraph Output
-        RESULT[DNS Response]
-        ASSET[Asset Creation]
-    end
-
-    QUERY[DNS Query] --> RATE
-    RATE --> BASELINE & PUBLIC & CUSTOM & TRUSTED
-    BASELINE & PUBLIC & CUSTOM & TRUSTED --> WILD
-    WILD --> CACHE
-    CACHE --> VALID
-    VALID --> RESULT --> ASSET
-```
-
 ## Resolver Types
 
 | Type | Description | Default QPS |
@@ -46,20 +17,6 @@ flowchart TB
 
 The system enforces strict query rate limits per resolver:
 
-```mermaid
-flowchart LR
-    subgraph Limits["Rate Limits"]
-        PUB[Public: 5 QPS]
-        BASE[Baseline: 15 QPS]
-        TRUST[Trusted: 15+ QPS]
-    end
-
-    QUERY[Query] --> LIMITER{Rate Limiter}
-    LIMITER -->|Under limit| RESOLVER[Execute Query]
-    LIMITER -->|Over limit| WAIT[Wait/Queue]
-    WAIT --> LIMITER
-```
-
 ### Configuration Flags
 
 | Flag | Description | Default |
@@ -71,15 +28,6 @@ flowchart LR
 ## Wildcard Detection
 
 The wildcard detector prevents false positives from catch-all DNS configurations:
-
-```mermaid
-flowchart TB
-    QUERY[Query: random.example.com] --> CHECK{Wildcard Check}
-    CHECK -->|Random subdomain resolves| WILDCARD[Wildcard Detected]
-    CHECK -->|No response| SAFE[Safe to Enumerate]
-    WILDCARD --> FILTER[Filter Results]
-    SAFE --> PROCESS[Process Normally]
-```
 
 ### Detection Method
 
@@ -114,24 +62,6 @@ The DNS plugin ecosystem includes specialized handlers executed by priority:
 ## DNS Discovery Techniques
 
 ### Subdomain Enumeration
-
-```mermaid
-flowchart LR
-    subgraph Passive["Passive Sources"]
-        CT[Certificate Transparency]
-        APIS[Third-party APIs]
-        ARCHIVES[Web Archives]
-    end
-
-    subgraph Active["Active Techniques"]
-        BRUTE[Brute Forcing]
-        NSEC[NSEC Walking]
-        ZONE[Zone Transfers]
-    end
-
-    Passive --> RESULTS[(Discovered Subdomains)]
-    Active --> RESULTS
-```
 
 ### Techniques
 
@@ -295,104 +225,11 @@ graph TB
 
 ### PerformQuery Execution Flow
 
-```mermaid
-flowchart TD
-    PerformQuery["PerformQuery(name, qtype)"]
-    BuildMsg["Build DNS Message"]
-    TypeCheck{"qtype == PTR?"}
-    QueryMsg["utils.QueryMsg(name, qtype)"]
-    ReverseMsg["utils.ReverseMsg(name)"]
-    DnsQuery["dnsQuery(msg, trusted)"]
-    WildcardCheck["wildcardDetected(resp, detector)"]
-    ValidateAnswers["Validate Answer Records"]
-    ExtractRR["Extract RRs by Type"]
-
-    PerformQuery --> BuildMsg
-    BuildMsg --> TypeCheck
-    TypeCheck -->|No| QueryMsg
-    TypeCheck -->|Yes| ReverseMsg
-    QueryMsg --> DnsQuery
-    ReverseMsg --> DnsQuery
-    DnsQuery --> WildcardCheck
-    WildcardCheck -->|Not Wildcard| ValidateAnswers
-    WildcardCheck -->|Wildcard| ErrorReturn["Return wildcard error"]
-    ValidateAnswers --> ExtractRR
-    ExtractRR -->|RRs Found| Success["Return []dns.RR"]
-    ExtractRR -->|No RRs| ErrorReturn
-
-    subgraph "Retry Loop (up to 10 attempts)"
-        BuildMsg
-        TypeCheck
-        QueryMsg
-        ReverseMsg
-        DnsQuery
-        WildcardCheck
-        ValidateAnswers
-        ExtractRR
-    end
-```
-
 ### DNS Query Response Handling
-
-```mermaid
-flowchart LR
-    Input["dns.Msg"]
-    Exchange["pool.Exchange(ctx, msg)"]
-    CheckRcode{"Check Rcode"}
-    NameError["RcodeNameError"]
-    Success["RcodeSuccess"]
-    CheckAnswers{"len(Answer) > 0?"}
-
-    Input --> Exchange
-    Exchange --> CheckRcode
-    CheckRcode -->|NameError| NameError
-    CheckRcode -->|Success| Success
-    CheckRcode -->|Other| OtherError["Return unexpected response error"]
-    NameError --> ErrorNameNotExist["Error: name does not exist"]
-    Success --> CheckAnswers
-    CheckAnswers -->|Yes| ReturnResp["Return dns.Msg"]
-    CheckAnswers -->|No| ErrorNoRecord["Error: no record of this type"]
-```
 
 ### Wildcard Response Validation
 
-```mermaid
-flowchart TD
-    Response["DNS Response"]
-    ExtractName["Extract Question Name"]
-    GetETLD1["publicsuffix.EffectiveTLDPlusOne(name)"]
-    CallDetector["detector.WildcardDetected(ctx, resp, dom)"]
-    WildcardResult{"Is Wildcard?"}
-    CheckAnswers["Check len(resp.Answer) > 0"]
-    FilterByType["utils.AnswersByType(resp, qtype)"]
-    ValidateRRs{"len(rr) > 0?"}
-
-    Response --> ExtractName
-    ExtractName --> GetETLD1
-    GetETLD1 --> CallDetector
-    CallDetector --> WildcardResult
-    WildcardResult -->|Yes| RejectWildcard["Reject: wildcard detected"]
-    WildcardResult -->|No| CheckAnswers
-    CheckAnswers --> FilterByType
-    FilterByType --> ValidateRRs
-    ValidateRRs -->|Yes| Accept["Accept Response"]
-    ValidateRRs -->|No| RejectNoRR["Reject: no matching RRs"]
-```
-
 ### Wildcard Detector Initialization
-
-```mermaid
-flowchart TD
-    TrustedResolvers["trustedResolvers()"]
-    CreateDetectorNS["servers.NewNameserver(8.8.4.4)"]
-    CreateConns["conn.New(cpus, single_selector)"]
-    CreateDetector["wildcards.NewDetector(serv, wconns, nil)"]
-
-    TrustedResolvers --> CreateDetectorNS
-    CreateDetectorNS --> CreateConns
-    CreateConns --> CreateDetector
-    CreateDetector --> DetectorInstance["detector (global var)"]
-```
 
 ### Resolver Configuration Loading
 
