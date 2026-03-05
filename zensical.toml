@@ -73,16 +73,17 @@ nav = [
     { "Service Discovery Integration" = "plugins/service-discovery-integration.md" },
     { "Enrichment" = "plugins/enrichment.md" },
     { "Support Utilities" = "plugins/support-utilities.md" },
-    { "GLEIF" = "plugins/gleif.md" },
-    { "Aviato" = "plugins/aviato.md" },
+  ]},
+  { "Data Sources" = [
+    { "Data Sources" = "data_sources/data_sources.md" },
+    { "GLEIF" = "data_sources/gleif.md" },
+    { "Aviato" = "data_sources/aviato.md" },
   ]},
   { "Open Asset Model" = [
     { "Overview" = "open_asset_model/index.md" },
     { "Asset Interface" = "open_asset_model/asset-interface.md" },
     { "Relation Interface" = "open_asset_model/relation-interface.md" },
     { "Property Interface" = "open_asset_model/property-interface.md" },
-    { "Package Organization" = "open_asset_model/package-organization.md" },
-    { "Testing" = "open_asset_model/testing.md" },
     { "Assets" = [
       { "Assets" = "open_asset_model/assets/index.md" },
       { "Network Assets" = "open_asset_model/assets/network-assets.md" },
@@ -126,9 +127,13 @@ nav = [
       { "SourceProperty" = "open_asset_model/properties/source_property.md" },
       { "VulnProperty" = "open_asset_model/properties/vuln_property.md" },
     ]},
-    { "Implementation Guide" = "open_asset_model/implementation.md" },
     { "Use Cases & Examples" = "open_asset_model/use-cases.md" },
-    { "Contributing" = "open_asset_model/contributing.md" },
+    { "Development" = [
+      { "Package Organization" = "open_asset_model/development/package-organization.md" },
+      { "Implementation Guide" = "open_asset_model/development/implementation.md" },
+      { "Testing" = "open_asset_model/development/testing.md" },
+      { "Contributing" = "open_asset_model/development/contributing.md" },
+    ]},
   ]},
   { "Asset Database" = [
     { "Overview" = "asset_db/index.md" },
