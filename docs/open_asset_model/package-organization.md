@@ -1,0 +1,401 @@
+# Package Organization
+
+This document explains the repository's package structure, describing how the codebase is organized into a core package and domain-specific packages. It covers the relationship between packages, file naming conventions, and the architectural principles that guide the organization.
+
+For details on implementing new asset types within these packages, see [Implementing Asset Types](#6.1). For information on the core interfaces that drive this organization, see [Core Architecture](#2).
+
+---
+
+## Core Package Structure
+
+The repository follows a **hub-and-spoke architecture** where a single core package defines interfaces and type enumerations, while domain-specific packages provide concrete implementations.
+
+### Root Package: `open_asset_model`
+
+The root package  contains the foundational abstractions that all other packages depend on:
+
+| Component | Definition | Lines |
+|-----------|------------|-------|
+| `Asset` interface | Defines the contract all asset types must implement |  |
+| `AssetType` enum | String-based enumeration of all 21 asset type constants |  |
+| `AssetList` variable | Slice containing all defined asset types for iteration |  |
+
+The core package also defines `Relation` and `Property` interfaces (referenced but not shown in provided files), following the same pattern of interface definition followed by type enumeration.
+
+**Design Principle**: The root package contains **only abstractions**—no concrete implementations exist in `open_asset_model` package itself. This enforces clean separation between interface definitions and their implementations.
+
+### Directory Structure Overview
+
+```mermaid
+graph TB
+    root["Root: open_asset_model<br/>(asset.go, relation.go, property.go)"]
+    
+    root --> network["network/<br/>(Network Infrastructure)"]
+    root --> org["org/<br/>(Organizations)"]
+    root --> people["people/<br/>(Persons)"]
+    root --> contact["contact/<br/>(Locations, Phones)"]
+    root --> file["file/<br/>(Files)"]
+    root --> url["url/<br/>(URLs)"]
+    root --> platform["platform/<br/>(Services, Products)"]
+    root --> certificate["certificate/<br/>(TLS Certificates)"]
+    root --> account["account/<br/>(Accounts)"]
+    root --> financial["financial/<br/>(Fund Transfers)"]
+    root --> registration["registration/<br/>(WHOIS/RDAP Records)"]
+    root --> dns["dns/<br/>(DNS Relations)"]
+    root --> general["general/<br/>(Simple Relations/Properties)"]
+    root --> property["property/<br/>(Source Properties)"]
+    
+    network -.imports.-> root
+    org -.imports.-> root
+    people -.imports.-> root
+    contact -.imports.-> root
+    file -.imports.-> root
+    url -.imports.-> root
+    platform -.imports.-> root
+    certificate -.imports.-> root
+    account -.imports.-> root
+    financial -.imports.-> root
+    registration -.imports.-> root
+    dns -.imports.-> root
+    general -.imports.-> root
+    property -.imports.-> root
+```
+
+**Sources**: , Diagram 4 from system context
+
+---
+
+## Domain-Specific Package Organization
+
+Each domain-specific package focuses on a cohesive set of related asset types or relationship types. Packages are organized by **business domain** rather than technical layer.
+
+### Asset Implementation Packages
+
+| Package | Asset Types | Purpose |
+|---------|-------------|---------|
+| `network` | FQDN, IPAddress, Netblock, AutonomousSystem | Network infrastructure primitives |
+| `org` | Organization | Organizational entities |
+| `people` | Person | Individual persons |
+| `contact` | Location, Phone | Contact information |
+| `file` | File | File resources |
+| `url` | URL | Web URLs |
+| `platform` | Service, Product, ProductRelease | Technology platforms and services |
+| `certificate` | TLSCertificate | TLS/SSL certificates |
+| `account` | Account | User accounts and credentials |
+| `financial` | FundsTransfer | Financial transactions |
+| `registration` | DomainRecord, AutnumRecord, IPNetRecord, ContactRecord | WHOIS/RDAP registration records |
+
+### Relationship and Property Packages
+
+| Package | Components | Purpose |
+|---------|------------|---------|
+| `dns` | BasicDNSRelation, PrefDNSRelation, SRVDNSRelation | DNS-specific relationship types |
+| `general` | SimpleRelation, SimpleProperty | Generic relationship and property implementations |
+| `property` | SourceProperty | Data source tracking properties |
+
+**Sources**: Diagram 4 from system context, 
+
+---
+
+## Package Import Patterns
+
+### Standard Import Pattern
+
+All domain-specific packages follow a consistent import pattern for accessing the core abstractions:
+
+```
+import (
+    model "github.com/owasp-amass/open-asset-model"
+)
+```
+
+This aliased import as `model` is the **standard convention** used throughout the codebase , . It provides a clear namespace for core types like `model.Asset`, `model.AssetType`, and `model.File`.
+
+### Dependency Flow
+
+```mermaid
+graph TD
+    subgraph "External Dependencies"
+        encoding["encoding/json<br/>(Standard Library)"]
+        testify["github.com/stretchr/testify<br/>(Testing)"]
+    end
+    
+    subgraph "Core Package"
+        asset["asset.go<br/>Asset, AssetType, AssetList"]
+        relation["relation.go<br/>Relation, RelationType"]
+        property["property.go<br/>Property, PropertyType"]
+    end
+    
+    subgraph "Domain Packages"
+        filePackage["file/file.go<br/>File struct"]
+        fileTest["file/file_test.go<br/>Test functions"]
+    end
+    
+    encoding --> filePackage
+    asset --> filePackage
+    
+    filePackage --> fileTest
+    testify --> fileTest
+    
+    relation -.validates using.-> asset
+```
+
+**Key Observations**:
+- Domain packages depend only on the core package and standard library
+- No cross-dependencies between domain packages (e.g., `file` doesn't import `network`)
+- Test files import both the implementation and `testify` for assertions 
+
+**Sources**: , , 
+
+---
+
+## File Naming Conventions
+
+### Implementation Files
+
+Each package follows a consistent naming pattern:
+
+| Pattern | Example | Purpose |
+|---------|---------|---------|
+| `<asset>.go` | `file.go` | Main implementation file containing the asset struct and interface methods |
+| `<asset>_test.go` | `file_test.go` | Unit tests for the asset implementation |
+
+**Single Responsibility**: Each implementation file contains exactly one asset type definition . This keeps files small and focused.
+
+### Test File Organization
+
+Test files are co-located with their implementation files in the same package . This provides:
+- Direct access to package-private members
+- Clear correspondence between implementation and tests
+- Simplified test discovery for CI pipelines
+
+**Sources**: , 
+
+---
+
+## Typical Package Structure
+
+Each domain package follows this structure pattern:
+
+```mermaid
+graph LR
+    subgraph "file Package"
+        fileGo["file.go"]
+        fileTest["file_test.go"]
+    end
+    
+    subgraph "Contents: file.go"
+        copyright["Copyright header<br/>(Lines 1-3)"]
+        pkgDecl["package file<br/>(Line 5)"]
+        imports["Imports<br/>(Lines 7-11)"]
+        struct["File struct<br/>(Lines 13-18)"]
+        key["Key() method<br/>(Lines 20-23)"]
+        assetType["AssetType() method<br/>(Lines 25-28)"]
+        json["JSON() method<br/>(Lines 30-33)"]
+    end
+    
+    subgraph "Contents: file_test.go"
+        testCopyright["Copyright header"]
+        testPkg["package file"]
+        testImports["Imports: testing, reflect, model"]
+        testKey["TestFileKey<br/>(Lines 14-21)"]
+        testAssetType["TestFileAssetType<br/>(Lines 23-34)"]
+        testJSON["TestFileJSON<br/>(Lines 36-52)"]
+    end
+    
+    fileGo --> copyright
+    copyright --> pkgDecl
+    pkgDecl --> imports
+    imports --> struct
+    struct --> key
+    key --> assetType
+    assetType --> json
+    
+    fileTest --> testCopyright
+    testCopyright --> testPkg
+    testPkg --> testImports
+    testImports --> testKey
+    testKey --> testAssetType
+    testAssetType --> testJSON
+```
+
+**Sources**: , 
+
+---
+
+## Implementation File Anatomy
+
+### Required Components
+
+Every asset implementation file contains these components in order:
+
+1. **Copyright Header** 
+   - Apache 2.0 license notice
+   - SPDX identifier
+
+2. **Package Declaration** 
+   - Package name matches directory name
+
+3. **Import Block** 
+   - Standard library imports (`encoding/json`)
+   - Aliased model import
+
+4. **Struct Definition** 
+   - Public struct implementing `Asset` interface
+   - JSON tags for serialization
+
+5. **Interface Methods** 
+   - `Key()` returning unique identifier
+   - `AssetType()` returning asset type constant
+   - `JSON()` performing serialization
+
+### Test File Anatomy
+
+Test files follow a parallel structure:
+
+| Test Function | Purpose | Example |
+|---------------|---------|---------|
+| `Test<Asset>Key` | Verifies `Key()` returns expected value |  |
+| `Test<Asset>AssetType` | Verifies interface implementation and type constant |  |
+| `Test<Asset>JSON` | Verifies JSON serialization output |  |
+
+**Interface Compliance Check**: Every `AssetType` test includes compile-time verification:
+```go
+var _ model.Asset = File{}       // Value receiver check
+var _ model.Asset = (*File)(nil) // Pointer receiver check
+```
+
+**Sources**: , 
+
+---
+
+## CI Integration and Testing
+
+### Continuous Integration Pipeline
+
+The repository uses GitHub Actions for automated testing . Two jobs run on every push and pull request:
+
+| Job | Command | Purpose |
+|-----|---------|---------|
+| `golangci` | `golangci-lint` | Static analysis and linting  |
+| `unit` | `go test -race -timeout 240s ./...` | Unit tests with race detection  |
+
+**Test Discovery**: The `./...` pattern in the test command recursively discovers all test files across all packages . This means:
+- New packages automatically integrate into CI without configuration changes
+- Every `*_test.go` file is executed
+- Race conditions are detected across the entire codebase
+
+### Package-Level Test Execution
+
+Tests run at the package level with proper isolation:
+
+```mermaid
+graph TB
+    ciRunner["CI Runner<br/>(ubuntu-20.04)"]
+    goTest["go test -race -timeout 240s ./..."]
+    
+    ciRunner --> goTest
+    
+    goTest --> fileTests["file/file_test.go"]
+    goTest --> networkTests["network/*_test.go"]
+    goTest --> orgTests["org/*_test.go"]
+    goTest --> otherTests["..."]
+    
+    fileTests --> testKey["TestFileKey()"]
+    fileTests --> testAssetType["TestFileAssetType()"]
+    fileTests --> testJSON["TestFileJSON()"]
+```
+
+**Sources**: 
+
+---
+
+## Module Configuration
+
+The repository is configured as a Go module :
+
+```
+module github.com/owasp-amass/open-asset-model
+
+go 1.19
+```
+
+### Dependencies
+
+| Dependency | Purpose | Usage |
+|------------|---------|-------|
+| `github.com/stretchr/testify` | Test assertions and helpers | Used in test files for cleaner assertions  |
+| Standard library only | Core functionality | No external dependencies for production code |
+
+**Minimal Dependencies**: The production code depends only on Go's standard library . This ensures:
+- Easy integration into other projects
+- No dependency conflicts
+- Minimal attack surface
+- Fast compilation times
+
+**Sources**: , 
+
+---
+
+## Package Relationship Summary
+
+```mermaid
+graph TB
+    subgraph "Module Root"
+        mod["go.mod<br/>github.com/owasp-amass/open-asset-model"]
+    end
+    
+    subgraph "Core Abstractions"
+        assetGo["asset.go<br/>Asset, AssetType, AssetList"]
+        relationGo["relation.go<br/>Relation, RelationType"]
+        propertyGo["property.go<br/>Property, PropertyType"]
+    end
+    
+    subgraph "Asset Implementations"
+        fileImpl["file/file.go<br/>File"]
+        networkImpl["network/*.go<br/>FQDN, IPAddress, Netblock, AS"]
+        orgImpl["org/org.go<br/>Organization"]
+        moreAssets["13 more packages..."]
+    end
+    
+    subgraph "Relation Implementations"
+        dnsImpl["dns/dns_record.go<br/>BasicDNS, PrefDNS, SRV"]
+        generalRel["general/simple.go<br/>SimpleRelation"]
+    end
+    
+    subgraph "Property Implementations"
+        sourceImpl["property/source.go<br/>SourceProperty"]
+        generalProp["general/simple.go<br/>SimpleProperty"]
+    end
+    
+    subgraph "Test Files"
+        fileTest["file/file_test.go"]
+        otherTests["Other *_test.go files"]
+    end
+    
+    mod --> assetGo
+    mod --> relationGo
+    mod --> propertyGo
+    
+    assetGo --> fileImpl
+    assetGo --> networkImpl
+    assetGo --> orgImpl
+    assetGo --> moreAssets
+    
+    relationGo --> dnsImpl
+    relationGo --> generalRel
+    
+    propertyGo --> sourceImpl
+    propertyGo --> generalProp
+    
+    fileImpl --> fileTest
+    networkImpl --> otherTests
+```
+
+**Key Principles**:
+1. **Unidirectional dependencies**: Domain packages depend on core, never the reverse
+2. **No lateral dependencies**: Asset packages don't import each other
+3. **Test isolation**: Each package tests only its own implementations
+4. **Interface-driven**: All implementations satisfy interfaces defined in core
+
+**Sources**: , , , , Diagram 4 from system context
