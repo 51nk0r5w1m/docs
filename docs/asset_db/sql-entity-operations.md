@@ -1,0 +1,344 @@
+# SQL Entity Operations
+
+This page documents entity CRUD (Create, Read, Delete) operations in the SQL repository implementation. It covers how entities representing assets are created, queried, and managed in PostgreSQL and SQLite databases using GORM. For edge (relationship) operations, see [SQL Edge Operations](#4.2). For entity tag management, see [SQL Tag Management](#4.3).
+
+## Overview
+
+The SQL repository implements entity operations defined in the `Repository` interface using GORM as the ORM layer. Entities are stored in the `entities` table with JSON-serialized content. The implementation handles duplicate detection, timestamp management, and conversion between database records and `types.Entity` objects.
+
+**Sources:** 
+
+## Entity Storage Model
+
+### Database Schema
+
+Entities in SQL repositories are stored using the `Entity` struct, which maps to the `entities` table:
+
+| Field | Type | Purpose |
+|-------|------|---------|
+| `ID` | `uint64` | Auto-incrementing primary key |
+| `Type` | `string` | Asset type (e.g., "FQDN", "IPAddress") from `oam.AssetType()` |
+| `Content` | `string` | JSON-serialized asset data from `oam.Asset.JSON()` |
+| `CreatedAt` | `time.Time` | First creation timestamp |
+| `UpdatedAt` | `time.Time` | Last seen/update timestamp |
+
+The `Content` field stores the complete asset as JSON, allowing flexible storage of any asset type defined in the Open Asset Model.
+
+```mermaid
+graph TB
+    subgraph "types Package"
+        TypesEntity["types.Entity<br/>ID: string<br/>CreatedAt: time.Time<br/>LastSeen: time.Time<br/>Asset: oam.Asset"]
+    end
+    
+    subgraph "sqlrepo Package"
+        SQLEntity["Entity struct<br/>ID: uint64<br/>Type: string<br/>Content: string (JSON)<br/>CreatedAt: time.Time<br/>UpdatedAt: time.Time"]
+        
+        Parse["Parse() method<br/>Deserializes JSON<br/>to oam.Asset"]
+        
+        JSONQuery["JSONQuery() method<br/>Builds GORM where clause"]
+    end
+    
+    subgraph "Database"
+        EntitiesTable["entities table<br/>PostgreSQL or SQLite"]
+    end
+    
+    TypesEntity -->|"CreateEntity()"| SQLEntity
+    SQLEntity -->|"GORM Save()"| EntitiesTable
+    EntitiesTable -->|"GORM Find()"| SQLEntity
+    SQLEntity -->|"Parse()"| TypesEntity
+    
+    SQLEntity -.->|"Uses"| Parse
+    SQLEntity -.->|"Uses"| JSONQuery
+```
+
+**Sources:** , 
+
+## Create Operations
+
+### CreateEntity
+
+The `CreateEntity` method persists a `types.Entity` to the database. It includes sophisticated duplicate detection logic that updates existing entities rather than creating duplicates.
+
+```mermaid
+flowchart TD
+    Start["CreateEntity(input *types.Entity)"]
+    Serialize["Serialize input.Asset to JSON<br/>jsonContent, err := input.Asset.JSON()"]
+    CreateStruct["Create Entity struct<br/>Type = input.Asset.AssetType()<br/>Content = jsonContent"]
+    CheckDup["FindEntitiesByContent()<br/>Check for existing entity"]
+    
+    DupExists{{"Duplicate<br/>exists?"}}
+    SameType{{"Same<br/>AssetType?"}}
+    UpdateExisting["Update existing:<br/>entity.ID = existing.ID<br/>entity.UpdatedAt = now"]
+    SetNew["Set timestamps:<br/>entity.CreatedAt = now or input.CreatedAt<br/>entity.UpdatedAt = now or input.LastSeen"]
+    
+    Save["db.Save(&entity)<br/>GORM upsert operation"]
+    Convert["Convert to types.Entity<br/>ID: strconv.FormatUint()<br/>Timestamps: UTC to Local"]
+    Return["Return *types.Entity"]
+    
+    Start --> Serialize
+    Serialize --> CreateStruct
+    CreateStruct --> CheckDup
+    CheckDup --> DupExists
+    DupExists -->|"Yes"| SameType
+    DupExists -->|"No"| SetNew
+    SameType -->|"Yes"| UpdateExisting
+    SameType -->|"No"| SetNew
+    UpdateExisting --> Save
+    SetNew --> Save
+    Save --> Convert
+    Convert --> Return
+```
+
+**Key behaviors:**
+- **Duplicate detection:** Queries `FindEntitiesByContent` to check if entity already exists 
+- **Update vs Insert:** If duplicate found with matching `AssetType`, updates `UpdatedAt` timestamp but preserves `ID` and `CreatedAt` 
+- **GORM Save:** Uses `db.Save()` which performs upsert (insert or update based on primary key) 
+- **ID conversion:** Database `uint64` ID converted to string for `types.Entity` 
+- **Timezone handling:** Timestamps stored in UTC, returned in local time 
+
+**Sources:** , 
+
+### CreateAsset
+
+The `CreateAsset` method is a convenience wrapper around `CreateEntity`:
+
+```go
+func (sql *sqlRepository) CreateAsset(asset oam.Asset) (*types.Entity, error) {
+    return sql.CreateEntity(&types.Entity{Asset: asset})
+}
+```
+
+It accepts an `oam.Asset` directly and wraps it in a `types.Entity` before calling `CreateEntity`.
+
+**Sources:** , 
+
+## Query Operations
+
+### FindEntityById
+
+Retrieves a single entity by its string ID.
+
+| Operation | Implementation |
+|-----------|----------------|
+| **Input** | `id string` - Entity ID as string |
+| **Conversion** | `strconv.ParseUint(id, 10, 64)` to convert to `uint64` |
+| **Query** | `db.First(&entity)` - GORM query by primary key |
+| **Parsing** | `entity.Parse()` - Deserializes JSON content to `oam.Asset` |
+| **Output** | `*types.Entity` with populated `Asset` field |
+
+**Error cases:**
+- Invalid ID format (not a valid uint64)
+- Entity not found in database
+- JSON parsing failure
+
+**Sources:** , 
+
+### FindEntitiesByContent
+
+Searches for entities matching specific asset content, with optional time filtering.
+
+```mermaid
+graph TD
+    Input["FindEntitiesByContent(assetData, since)"]
+    SerializeInput["Serialize input asset to JSON"]
+    BuildQuery["entity.JSONQuery()<br/>Build JSON matching query"]
+    
+    ApplyFilters["tx.Where('etype = ?', type)"]
+    CheckSince{{"since.IsZero()?"}}
+    AddTimeFilter["tx.Where('updated_at >= ?', since.UTC())"]
+    
+    Execute["tx.Find(&entities)<br/>Execute GORM query"]
+    Parse["Parse each Entity.Content<br/>to oam.Asset"]
+    BuildResults["Build []*types.Entity slice"]
+    Return["Return results"]
+    
+    Input --> SerializeInput
+    SerializeInput --> BuildQuery
+    BuildQuery --> ApplyFilters
+    ApplyFilters --> CheckSince
+    CheckSince -->|"No"| AddTimeFilter
+    CheckSince -->|"Yes"| Execute
+    AddTimeFilter --> Execute
+    Execute --> Parse
+    Parse --> BuildResults
+    BuildResults --> Return
+```
+
+**Key features:**
+- **Content matching:** Uses `JSONQuery()` method to build database-specific JSON query 
+- **Type filtering:** Always filters by `etype` field 
+- **Time filtering:** Optional `since` parameter filters by `updated_at >= since` 
+- **Zero value handling:** If `since.IsZero()`, time filter is skipped 
+
+**Sources:** , 
+
+### FindEntitiesByType
+
+Retrieves all entities of a specific asset type, with optional time filtering.
+
+| Parameter | Type | Purpose |
+|-----------|------|---------|
+| `atype` | `oam.AssetType` | Asset type to filter (e.g., "FQDN", "IPAddress") |
+| `since` | `time.Time` | Optional time filter for `updated_at >= since` |
+
+**Query variations:**
+
+```go
+// Without time filter (since.IsZero())
+db.Where("etype = ?", atype).Find(&entities)
+
+// With time filter
+db.Where("etype = ? AND updated_at >= ?", atype, since.UTC()).Find(&entities)
+```
+
+**Sources:** , 
+
+## Delete Operations
+
+### DeleteEntity
+
+Removes an entity by ID from the database.
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant DeleteEntity
+    participant GORM
+    participant Database
+    
+    Client->>DeleteEntity: DeleteEntity(id string)
+    DeleteEntity->>DeleteEntity: strconv.ParseUint(id, 10, 64)
+    DeleteEntity->>GORM: db.Delete(&Entity{ID: entityId})
+    GORM->>Database: DELETE FROM entities WHERE id = ?
+    Database-->>GORM: Rows affected
+    GORM-->>DeleteEntity: result.Error
+    DeleteEntity-->>Client: error or nil
+```
+
+**Implementation details:**
+- Converts string ID to `uint64` 
+- Uses GORM's `Delete()` method with primary key 
+- Returns error if conversion fails or deletion fails
+- Does not check if entity exists before deletion
+
+**Sources:** , 
+
+## Duplicate Handling Strategy
+
+The SQL repository implements intelligent duplicate detection in `CreateEntity`:
+
+```mermaid
+graph LR
+    subgraph "Duplicate Detection Flow"
+        Call["CreateEntity called<br/>with new asset"]
+        Query["FindEntitiesByContent()<br/>Search existing"]
+        
+        Check{{"Matching entity<br/>found?"}}
+        TypeCheck{{"Same<br/>AssetType?"}}
+        
+        Update["Update existing:<br/>- Keep same ID<br/>- Keep CreatedAt<br/>- Update UpdatedAt"]
+        Create["Create new:<br/>- New ID<br/>- Set CreatedAt<br/>- Set UpdatedAt"]
+        
+        Call --> Query
+        Query --> Check
+        Check -->|"Yes"| TypeCheck
+        Check -->|"No"| Create
+        TypeCheck -->|"Yes"| Update
+        TypeCheck -->|"No"| Create
+    end
+```
+
+**Rationale:** This prevents duplicate entities with identical content while updating the `LastSeen` timestamp to track recency. This is critical for time-based queries in discovery systems like OWASP Amass.
+
+**Test validation:** The test `TestLastSeenUpdates` verifies that calling `CreateAsset` twice with the same asset updates `LastSeen` while preserving `ID` and `CreatedAt` .
+
+**Sources:** , 
+
+## JSON Serialization
+
+### Encoding: Asset to JSON
+
+The `CreateEntity` method serializes `oam.Asset` to JSON:
+
+```go
+jsonContent, err := input.Asset.JSON()
+if err != nil {
+    return nil, err
+}
+```
+
+The JSON string is stored in the `Content` field of the database entity .
+
+### Decoding: JSON to Asset
+
+The `Parse()` method (implementation in `Entity` struct) deserializes JSON back to `oam.Asset`:
+
+```go
+assetData, err := entity.Parse()
+if err != nil {
+    return nil, err
+}
+```
+
+This method is called in all query operations to reconstruct the asset from database storage .
+
+### JSONQuery Method
+
+The `JSONQuery()` method builds database-specific WHERE clauses for JSON content matching. This is used by `FindEntitiesByContent` to efficiently query entities with specific content .
+
+**Sources:** , , 
+
+## Time Handling
+
+The SQL repository performs careful timezone conversions to ensure consistency:
+
+### Storage: Local/Input to UTC
+
+```go
+// For new entities
+if input.CreatedAt.IsZero() {
+    entity.CreatedAt = time.Now().UTC()
+} else {
+    entity.CreatedAt = input.CreatedAt.UTC()
+}
+
+if input.LastSeen.IsZero() {
+    entity.UpdatedAt = time.Now().UTC()
+} else {
+    entity.UpdatedAt = input.LastSeen.UTC()
+}
+```
+
+All timestamps are converted to UTC before storage .
+
+### Retrieval: UTC to Local
+
+```go
+return &types.Entity{
+    ID:        strconv.FormatUint(entity.ID, 10),
+    CreatedAt: entity.CreatedAt.In(time.UTC).Local(),
+    LastSeen:  entity.UpdatedAt.In(time.UTC).Local(),
+    Asset:     input.Asset,
+}
+```
+
+Timestamps are converted back to local time when returning entities .
+
+**Rationale:** Storing in UTC ensures consistency across different database servers and clients in different timezones. Converting to local time on retrieval maintains compatibility with client expectations.
+
+**Sources:** , 
+
+## Integration with GORM
+
+All SQL entity operations use GORM methods:
+
+| GORM Method | Purpose | Used In |
+|-------------|---------|---------|
+| `db.Save(&entity)` | Insert or update based on primary key | `CreateEntity` |
+| `db.First(&entity)` | Query single record by primary key | `FindEntityById` |
+| `db.Where(...).Find(&entities)` | Query multiple records with conditions | `FindEntitiesByContent`, `FindEntitiesByType` |
+| `db.Delete(&entity)` | Delete record by primary key | `DeleteEntity` |
+
+The `sqlRepository` struct contains a `*gorm.DB` field that executes these operations against PostgreSQL or SQLite databases configured at initialization.
+
+**Sources:** , , , , 

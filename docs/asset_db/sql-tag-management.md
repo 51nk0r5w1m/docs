@@ -1,0 +1,507 @@
+# SQL Tag Management
+
+This document details how the SQL repository implementation manages entity and edge tags. Tags are metadata containers that store OAM properties (from the Open Asset Model) as JSON content attached to entities and edges. This page covers tag creation, retrieval, content-based searching, duplicate handling, and deletion.
+
+For entity and edge operations themselves, see [SQL Entity Operations](#4.1) and [SQL Edge Operations](#4.2). For tag management in Neo4j, see [Neo4j Tag Management](#5.3).
+
+---
+
+## Overview
+
+Tags in the SQL repository serve as a flexible metadata system for attaching properties to both entities and edges. Each tag wraps an `oam.Property` object, serializes it to JSON, and stores it in the database with timestamp tracking. The system prevents duplicate tags and supports content-based queries.
+
+**Sources:** 
+
+---
+
+## Database Schema and Core Structures
+
+The SQL repository uses two separate tables for tags: `entity_tags` and `edge_tags`. Both follow a similar structure, storing the property type, JSON content, and foreign key references.
+
+```mermaid
+erDiagram
+    entities ||--o{ entity_tags : "has many"
+    edges ||--o{ edge_tags : "has many"
+    
+    entities {
+        uint64 id PK
+        string atype
+        string content
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    entity_tags {
+        uint64 id PK
+        string ttype
+        string content
+        uint64 entity_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    edges {
+        uint64 id PK
+        string rtype
+        string content
+        uint64 from_entity_id FK
+        uint64 to_entity_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    edge_tags {
+        uint64 id PK
+        string ttype
+        string content
+        uint64 edge_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+```
+
+### Internal Tag Structures
+
+The `EntityTag` and `EdgeTag` structs are internal GORM models that map to database tables:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `ID` | `uint64` | Auto-incrementing primary key |
+| `Type` | `string` | The property type (e.g., "simple_property") |
+| `Content` | `string` | JSON-serialized property data |
+| `EntityID` / `EdgeID` | `uint64` | Foreign key reference |
+| `CreatedAt` | `time.Time` | Initial creation timestamp |
+| `UpdatedAt` | `time.Time` | Last seen timestamp |
+
+These internal structs are converted to `types.EntityTag` and `types.EdgeTag` for external API consumption.
+
+**Sources:** , 
+
+---
+
+## Entity Tag Operations
+
+### Creating Entity Tags
+
+The `CreateEntityTag` function persists property metadata for an entity. It serializes the OAM property to JSON and implements duplicate detection logic.
+
+```mermaid
+flowchart TD
+    Start["CreateEntityTag(entity, input)"]
+    ParseID["Parse entity.ID to uint64"]
+    Serialize["Serialize input.Property to JSON"]
+    CreateStruct["Create EntityTag struct<br/>with Type, Content, EntityID"]
+    
+    CheckDup["GetEntityTags(entity, time.Time{}, prop.Name())"]
+    DupFound{"Duplicates<br/>found?"}
+    
+    IterateDups["Iterate through existing tags"]
+    MatchFound{"PropertyType &<br/>Value match?"}
+    UpdateID["Set tag.ID = existing.ID<br/>Set tag.CreatedAt = existing.CreatedAt<br/>Set tag.UpdatedAt = now()"]
+    
+    SetNew["Set tag.CreatedAt from input<br/>or now()<br/>Set tag.UpdatedAt from input.LastSeen<br/>or now()"]
+    
+    Save["sql.db.Save(&tag)"]
+    Return["Return types.EntityTag"]
+    
+    Start --> ParseID
+    ParseID --> Serialize
+    Serialize --> CreateStruct
+    CreateStruct --> CheckDup
+    CheckDup --> DupFound
+    
+    DupFound -->|Yes| IterateDups
+    IterateDups --> MatchFound
+    MatchFound -->|Yes| UpdateID
+    MatchFound -->|No| IterateDups
+    UpdateID --> Save
+    
+    DupFound -->|No| SetNew
+    SetNew --> Save
+    Save --> Return
+```
+
+**Key behaviors:**
+
+1. **Duplicate Prevention**: The function queries existing tags with the same name 
+2. **Type and Value Matching**: Duplicates are identified by matching `PropertyType()` and `Value()` 
+3. **Update vs Insert**: Duplicates update `UpdatedAt` while preserving `CreatedAt`; new tags set both timestamps 
+4. **GORM Save**: Uses `Save()` to perform INSERT or UPDATE based on whether `ID` is set 
+
+**Sources:** 
+
+### Convenience Wrapper
+
+The `CreateEntityProperty` function provides a simpler interface when you only have an `oam.Property`:
+
+```go
+// Wrapper that creates EntityTag from Property
+func (sql *sqlRepository) CreateEntityProperty(entity *types.Entity, prop oam.Property) (*types.EntityTag, error)
+```
+
+**Sources:** 
+
+### Finding Entity Tags by ID
+
+The `FindEntityTagById` function retrieves a single tag by its unique identifier:
+
+```mermaid
+flowchart LR
+    Input["id (string)"]
+    Parse["strconv.ParseUint(id, 10, 64)"]
+    Query["sql.db.First(&tag)"]
+    ParseContent["tag.Parse()"]
+    Convert["Convert to types.EntityTag"]
+    Output["Return *types.EntityTag"]
+    
+    Input --> Parse --> Query --> ParseContent --> Convert --> Output
+```
+
+**Sources:** 
+
+### Content-Based Tag Searching
+
+The `FindEntityTagsByContent` function enables searching for tags by property content. It uses JSON field extraction to query specific property values.
+
+```mermaid
+flowchart TD
+    Input["FindEntityTagsByContent(prop, since)"]
+    Serialize["prop.JSON()"]
+    CreateTag["Create EntityTag with<br/>Type and Content"]
+    
+    BuildQueries["tag.NameJSONQuery()<br/>tag.ValueJSONQuery()"]
+    
+    BaseQuery["tx = sql.db.Where('ttype = ?', tag.Type)"]
+    SinceCheck{"since.IsZero()?"}
+    AddSince["tx.Where('updated_at >= ?', since.UTC())"]
+    
+    Execute["tx.Where(nameQuery).Where(valueQuery).Find(&tags)"]
+    Parse["Parse each tag.Content to Property"]
+    Convert["Convert to []*types.EntityTag"]
+    Return["Return results"]
+    
+    Input --> Serialize --> CreateTag --> BuildQueries
+    BuildQueries --> BaseQuery --> SinceCheck
+    SinceCheck -->|No| AddSince
+    SinceCheck -->|Yes| Execute
+    AddSince --> Execute
+    Execute --> Parse --> Convert --> Return
+```
+
+The `NameJSONQuery()` and `ValueJSONQuery()` methods generate database-specific JSON extraction queries for PostgreSQL and SQLite. This allows efficient content filtering at the database level.
+
+**Sources:** 
+
+### Retrieving All Entity Tags
+
+The `GetEntityTags` function retrieves all tags for a specific entity with optional filtering:
+
+**Function Signature:**
+```go
+func (sql *sqlRepository) GetEntityTags(entity *types.Entity, since time.Time, names ...string) ([]*types.EntityTag, error)
+```
+
+**Parameters:**
+- `entity`: The entity whose tags to retrieve
+- `since`: If not zero, only returns tags with `updated_at >= since`
+- `names`: Optional property names to filter by
+
+**Query Logic:**
+
+| Condition | Query |
+|-----------|-------|
+| `since.IsZero()` | `WHERE entity_id = ?` |
+| `!since.IsZero()` | `WHERE entity_id = ? AND updated_at >= ?` |
+
+After database retrieval, the function filters results by property name if `names` are provided .
+
+**Sources:** 
+
+### Deleting Entity Tags
+
+The `DeleteEntityTag` function removes a tag by its ID:
+
+```go
+func (sql *sqlRepository) DeleteEntityTag(id string) error
+```
+
+It parses the string ID to `uint64`, creates an `EntityTag` struct with that ID, and uses GORM's `Delete()` method.
+
+**Sources:** 
+
+---
+
+## Edge Tag Operations
+
+Edge tag operations mirror entity tag operations but target edge relationships instead of entities.
+
+### Creating Edge Tags
+
+The `CreateEdgeTag` function follows the same pattern as `CreateEntityTag`:
+
+```mermaid
+graph TB
+    subgraph "CreateEdgeTag Flow"
+        A["Parse edge.ID"]
+        B["Serialize property to JSON"]
+        C["Create EdgeTag struct"]
+        D["Check for duplicates via GetEdgeTags"]
+        E["Duplicate found?"]
+        F["Update existing tag ID and timestamps"]
+        G["Set new timestamps"]
+        H["sql.db.Save(&tag)"]
+        I["Return types.EdgeTag"]
+    end
+    
+    A --> B --> C --> D --> E
+    E -->|Yes| F --> H
+    E -->|No| G --> H
+    H --> I
+```
+
+**Duplicate detection logic:**
+1. Queries existing edge tags with the same property name 
+2. Compares `PropertyType()` and `Value()` 
+3. Updates timestamp on match or creates new tag
+
+**Sources:** 
+
+### Edge Tag Convenience Functions
+
+Similar to entity tags, edge tags provide a convenience wrapper:
+
+```go
+func (sql *sqlRepository) CreateEdgeProperty(edge *types.Edge, prop oam.Property) (*types.EdgeTag, error)
+```
+
+**Sources:** 
+
+### Finding Edge Tags
+
+Edge tag retrieval functions parallel their entity counterparts:
+
+| Function | Purpose | Sources |
+|----------|---------|---------|
+| `FindEdgeTagById` | Retrieve by unique ID |  |
+| `FindEdgeTagsByContent` | Search by property content |  |
+| `GetEdgeTags` | Get all tags for an edge |  |
+| `DeleteEdgeTag` | Remove by ID |  |
+
+The implementation details match entity tag operations but operate on the `edge_tags` table with `edge_id` foreign keys instead of `entity_id`.
+
+**Sources:** 
+
+---
+
+## Tag Lifecycle and Timestamp Management
+
+Tags maintain two timestamps that track their lifecycle:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Created: CreateEntityTag/CreateEdgeTag<br/>with new property
+    Created --> Updated: CreateEntityTag/CreateEdgeTag<br/>with duplicate property
+    Updated --> Updated: Subsequent duplicate creates
+    Updated --> Deleted: DeleteEntityTag/DeleteEdgeTag
+    Deleted --> [*]
+    
+    note right of Created
+        created_at: Set once
+        updated_at: Set to now()
+    end note
+    
+    note right of Updated
+        created_at: Preserved
+        updated_at: Updated to now()
+    end note
+```
+
+### Timestamp Behavior
+
+**On Initial Creation** :
+- `created_at`: Set from `input.CreatedAt` if provided, otherwise `time.Now().UTC()`
+- `updated_at`: Set from `input.LastSeen` if provided, otherwise `time.Now().UTC()`
+
+**On Duplicate Update** :
+- `created_at`: Preserved from existing tag
+- `updated_at`: Set to `time.Now().UTC()`
+
+**Time Zone Handling:**
+All timestamps are stored in UTC but converted to local time when returned via `types.EntityTag` or `types.EdgeTag` .
+
+**Sources:** , 
+
+---
+
+## JSON Content Storage and Querying
+
+Tags store OAM properties as JSON strings in the `content` field. This enables flexible property storage while supporting content-based queries.
+
+### Serialization Process
+
+```mermaid
+flowchart LR
+    Property["oam.Property<br/>(Go struct)"]
+    JSON["property.JSON()<br/>(method call)"]
+    String["JSON string<br/>(database storage)"]
+    Parse["Parse()<br/>(method call)"]
+    PropertyOut["oam.Property<br/>(Go struct)"]
+    
+    Property -->|"Serialize"| JSON
+    JSON --> String
+    String -->|"Deserialize"| Parse
+    Parse --> PropertyOut
+```
+
+### JSON Query Methods
+
+The internal `EntityTag` and `EdgeTag` structs implement methods for generating database-specific JSON extraction queries:
+
+- `NameJSONQuery()`: Extracts the property name field
+- `ValueJSONQuery()`: Extracts the property value field
+
+These methods handle differences between PostgreSQL's `->>` operator and SQLite's `json_extract()` function, abstracting database-specific syntax.
+
+**Sources:** , , 
+
+---
+
+## Code Entity Mapping
+
+The following diagram maps the public API functions to their internal implementations and database operations:
+
+```mermaid
+flowchart TB
+    subgraph "Public API (repository.Repository interface)"
+        CreateEntityTag["CreateEntityTag(entity, tag)"]
+        CreateEntityProperty["CreateEntityProperty(entity, prop)"]
+        FindEntityTagById["FindEntityTagById(id)"]
+        FindEntityTagsByContent["FindEntityTagsByContent(prop, since)"]
+        GetEntityTags["GetEntityTags(entity, since, names...)"]
+        DeleteEntityTag["DeleteEntityTag(id)"]
+        
+        CreateEdgeTag["CreateEdgeTag(edge, tag)"]
+        CreateEdgeProperty["CreateEdgeProperty(edge, prop)"]
+        FindEdgeTagById["FindEdgeTagById(id)"]
+        FindEdgeTagsByContent["FindEdgeTagsByContent(prop, since)"]
+        GetEdgeTags["GetEdgeTags(edge, since, names...)"]
+        DeleteEdgeTag["DeleteEdgeTag(id)"]
+    end
+    
+    subgraph "sqlRepository Implementation"
+        CreateEntityTagImpl["sqlRepository.CreateEntityTag<br/>[tag.go:21-76]"]
+        CreateEntityPropertyImpl["sqlRepository.CreateEntityProperty<br/>[tag.go:82-84]"]
+        FindEntityTagByIdImpl["sqlRepository.FindEntityTagById<br/>[tag.go:89-113]"]
+        FindEntityTagsByContentImpl["sqlRepository.FindEntityTagsByContent<br/>[tag.go:120-169]"]
+        GetEntityTagsImpl["sqlRepository.GetEntityTags<br/>[tag.go:174-226]"]
+        DeleteEntityTagImpl["sqlRepository.DeleteEntityTag<br/>[tag.go:231-243]"]
+        
+        CreateEdgeTagImpl["sqlRepository.CreateEdgeTag<br/>[tag.go:249-304]"]
+        CreateEdgePropertyImpl["sqlRepository.CreateEdgeProperty<br/>[tag.go:310-312]"]
+        FindEdgeTagByIdImpl["sqlRepository.FindEdgeTagById<br/>[tag.go:317-346]"]
+        FindEdgeTagsByContentImpl["sqlRepository.FindEdgeTagsByContent<br/>[tag.go:353-402]"]
+        GetEdgeTagsImpl["sqlRepository.GetEdgeTags<br/>[tag.go:407-459]"]
+        DeleteEdgeTagImpl["sqlRepository.DeleteEdgeTag<br/>[tag.go:464-476]"]
+    end
+    
+    subgraph "GORM Database Operations"
+        Save["db.Save(&tag)"]
+        First["db.First(&tag)"]
+        Where["db.Where(...).Find(&tags)"]
+        Delete["db.Delete(&tag)"]
+    end
+    
+    CreateEntityTag --> CreateEntityTagImpl --> Save
+    CreateEntityProperty --> CreateEntityPropertyImpl --> CreateEntityTagImpl
+    FindEntityTagById --> FindEntityTagByIdImpl --> First
+    FindEntityTagsByContent --> FindEntityTagsByContentImpl --> Where
+    GetEntityTags --> GetEntityTagsImpl --> Where
+    DeleteEntityTag --> DeleteEntityTagImpl --> Delete
+    
+    CreateEdgeTag --> CreateEdgeTagImpl --> Save
+    CreateEdgeProperty --> CreateEdgePropertyImpl --> CreateEdgeTagImpl
+    FindEdgeTagById --> FindEdgeTagByIdImpl --> First
+    FindEdgeTagsByContent --> FindEdgeTagsByContentImpl --> Where
+    GetEdgeTags --> GetEdgeTagsImpl --> Where
+    DeleteEdgeTag --> DeleteEdgeTagImpl --> Delete
+```
+
+**Sources:** 
+
+---
+
+## Usage Examples from Tests
+
+The test suite demonstrates typical tag operations:
+
+### Entity Tag Test Flow
+
+```mermaid
+sequenceDiagram
+    participant Test as Test Code
+    participant Repo as sqlRepository
+    participant DB as Database
+    
+    Test->>Repo: CreateAsset(&dns.FQDN{Name: "utica.edu"})
+    Repo->>DB: INSERT entity
+    DB-->>Repo: entity with ID
+    Repo-->>Test: entity
+    
+    Test->>Repo: CreateEntityProperty(entity, SimpleProperty{Name:"test", Value:"foo"})
+    Repo->>DB: Check for duplicates via GetEntityTags
+    DB-->>Repo: No duplicates found
+    Repo->>DB: INSERT entity_tag
+    DB-->>Repo: tag with ID
+    Repo-->>Test: tag (CreatedAt and LastSeen set)
+    
+    Note over Test: Wait 1 second
+    
+    Test->>Repo: CreateEntityProperty(entity, same property)
+    Repo->>DB: Check for duplicates via GetEntityTags
+    DB-->>Repo: Duplicate found
+    Repo->>DB: UPDATE entity_tag (UpdatedAt only)
+    DB-->>Repo: updated tag
+    Repo-->>Test: tag (LastSeen updated, CreatedAt preserved)
+    
+    Test->>Repo: GetEntityTags(entity, since, "test")
+    Repo->>DB: SELECT entity_tags WHERE entity_id = ? AND name = 'test'
+    DB-->>Repo: matching tags
+    Repo-->>Test: []*types.EntityTag
+    
+    Test->>Repo: DeleteEntityTag(tag.ID)
+    Repo->>DB: DELETE entity_tag WHERE id = ?
+    DB-->>Repo: Success
+    Repo-->>Test: nil error
+```
+
+**Sources:** 
+
+### Edge Tag Test Flow
+
+Edge tags follow an identical pattern but require an edge to be created first:
+
+1. Create two entities (`CreateAsset`)
+2. Create an edge between them (`CreateEdge`)
+3. Attach properties to the edge via `CreateEdgeProperty`
+4. Query and verify tags via `GetEdgeTags`
+5. Clean up with `DeleteEdgeTag`
+
+**Sources:** 
+
+---
+
+## Error Handling
+
+The tag management system returns errors in the following scenarios:
+
+| Scenario | Error Source | Functions Affected |
+|----------|--------------|-------------------|
+| Invalid ID format | `strconv.ParseUint` | `FindEntityTagById`, `DeleteEntityTag`, `FindEdgeTagById`, `DeleteEdgeTag` |
+| JSON serialization failure | `property.JSON()` | `CreateEntityTag`, `CreateEdgeTag`, `FindEntityTagsByContent`, `FindEdgeTagsByContent` |
+| Tag not found | `gorm.First` | `FindEntityTagById`, `FindEdgeTagById` |
+| Database operation failure | `gorm.Save`, `gorm.Delete` | All create and delete operations |
+| Zero results | Custom check | `FindEntityTagsByContent`, `GetEntityTags`, `FindEdgeTagsByContent`, `GetEdgeTags` |
+
+The "zero tags found" error  is explicitly returned when queries produce no results, distinguishing between database errors and legitimate empty result sets.
+
+**Sources:** , , 

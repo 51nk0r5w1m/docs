@@ -57,8 +57,10 @@ nav = [
       { "Graph Database & Querying" = "architecture/graph-querying.md" },
       { "Network Mapping" = "architecture/network-mapping.md" },
     ]},
+    { "Core Concepts" = "architecture/core-concepts.md" },
     { "DNS" = [
       { "DNS System" = "architecture/dns-system.md" },
+      { "DNS Query Execution" = "architecture/dns-query-execution.md" },
       { "Wildcard Detection" = "architecture/dns-wildcard.md" },
       { "Caching" = "architecture/dns-caching.md" },
     ]},
@@ -126,6 +128,7 @@ nav = [
     ]},
     { "Implementation Guide" = "open_asset_model/implementation.md" },
     { "Use Cases & Examples" = "open_asset_model/use-cases.md" },
+    { "Contributing" = "open_asset_model/contributing.md" },
   ]},
   { "Asset Database" = [
     { "Overview" = "asset_db/index.md" },
@@ -144,6 +147,9 @@ nav = [
     { "Cache Interface" = "asset_db/api-reference-cache.md" },
     { "Core Data Types" = "asset_db/api-reference-types.md" },
     { "SQL Repository" = "asset_db/sql-repository.md" },
+    { "SQL Entity Operations" = "asset_db/sql-entity-operations.md" },
+    { "SQL Edge Operations" = "asset_db/sql-edge-operations.md" },
+    { "SQL Tag Management" = "asset_db/sql-tag-management.md" },
     { "SQL Schema & Migrations" = "asset_db/sql-schema.md" },
     { "Installation" = "asset_db/installation.md" },
     { "Database Configuration" = "asset_db/db-configuration.md" },

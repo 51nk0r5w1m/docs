@@ -1,0 +1,321 @@
+# DNS Query Execution
+
+This page documents the DNS query execution mechanism in Amass, specifically the `PerformQuery` function and its supporting infrastructure. This covers the process of submitting DNS queries to the resolver pool, handling retries, validating responses, and detecting wildcards. For information about the resolver pool infrastructure and selection strategies, see [DNS Resolver Infrastructure](#5.1). For details on wildcard detection algorithms, see [Wildcard Detection](#5.3).
+
+**Sources:** 
+
+---
+
+## Query Execution Architecture
+
+The DNS query execution system consists of four primary components working together to perform reliable DNS lookups with automatic retry and validation.
+
+```mermaid
+flowchart TD
+    PerformQuery["PerformQuery(name, qtype)"]
+    BuildMsg["Build DNS Message"]
+    TypeCheck{"qtype == PTR?"}
+    QueryMsg["utils.QueryMsg(name, qtype)"]
+    ReverseMsg["utils.ReverseMsg(name)"]
+    DnsQuery["dnsQuery(msg, trusted)"]
+    WildcardCheck["wildcardDetected(resp, detector)"]
+    ValidateAnswers["Validate Answer Records"]
+    ExtractRR["Extract RRs by Type"]
+    
+    PerformQuery --> BuildMsg
+    BuildMsg --> TypeCheck
+    TypeCheck -->|No| QueryMsg
+    TypeCheck -->|Yes| ReverseMsg
+    QueryMsg --> DnsQuery
+    ReverseMsg --> DnsQuery
+    DnsQuery --> WildcardCheck
+    WildcardCheck -->|Not Wildcard| ValidateAnswers
+    WildcardCheck -->|Wildcard| ErrorReturn["Return wildcard error"]
+    ValidateAnswers --> ExtractRR
+    ExtractRR -->|RRs Found| Success["Return []dns.RR"]
+    ExtractRR -->|No RRs| ErrorReturn
+    
+    subgraph "Retry Loop (up to 10 attempts)"
+        BuildMsg
+        TypeCheck
+        QueryMsg
+        ReverseMsg
+        DnsQuery
+        WildcardCheck
+        ValidateAnswers
+        ExtractRR
+    end
+```
+
+**Sources:** 
+
+---
+
+## The PerformQuery Function
+
+The `PerformQuery` function is the primary entry point for DNS resolution in Amass plugins. It implements a robust retry mechanism with wildcard detection and response validation.
+
+### Function Signature
+
+```go
+func PerformQuery(name string, qtype uint16) ([]dns.RR, error)
+```
+
+### Retry Logic
+
+The function attempts up to **10 query iterations** before giving up. This aggressive retry strategy ensures resilience against temporary network issues, rate limiting, and resolver failures.
+
+| Attempt | Action | Failure Handling |
+|---------|--------|------------------|
+| 1-9 | Execute DNS query via `dnsQuery` | Continue to next attempt |
+| 10 | Final attempt | Return error "no valid answers" |
+
+On each iteration:
+1. Construct a DNS message using `utils.QueryMsg` or `utils.ReverseMsg` for PTR records
+2. Submit query to the trusted resolver pool via `dnsQuery`
+3. Check for wildcard responses using `wildcardDetected`
+4. Validate that answers exist and match the requested type
+5. Return immediately on success, or continue to next attempt on failure
+
+**Sources:** 
+
+---
+
+## Low-Level Query Execution
+
+The `dnsQuery` function handles the actual network communication with DNS resolvers through the pool abstraction.
+
+```mermaid
+flowchart LR
+    Input["dns.Msg"]
+    Exchange["pool.Exchange(ctx, msg)"]
+    CheckRcode{"Check Rcode"}
+    NameError["RcodeNameError"]
+    Success["RcodeSuccess"]
+    CheckAnswers{"len(Answer) > 0?"}
+    
+    Input --> Exchange
+    Exchange --> CheckRcode
+    CheckRcode -->|NameError| NameError
+    CheckRcode -->|Success| Success
+    CheckRcode -->|Other| OtherError["Return unexpected response error"]
+    NameError --> ErrorNameNotExist["Error: name does not exist"]
+    Success --> CheckAnswers
+    CheckAnswers -->|Yes| ReturnResp["Return dns.Msg"]
+    CheckAnswers -->|No| ErrorNoRecord["Error: no record of this type"]
+```
+
+### Response Code Handling
+
+| Rcode | Value | Action | Error Message |
+|-------|-------|--------|---------------|
+| `RcodeNameError` | 3 | Return error | "name does not exist" |
+| `RcodeSuccess` | 0 | Validate answers exist | "no record of this type" if empty |
+| Other | Various | Return error | "unexpected response" |
+
+**Sources:** 
+
+---
+
+## Response Validation Flow
+
+DNS responses undergo two validation stages before being returned to callers.
+
+```mermaid
+flowchart TD
+    Response["DNS Response"]
+    ExtractName["Extract Question Name"]
+    GetETLD1["publicsuffix.EffectiveTLDPlusOne(name)"]
+    CallDetector["detector.WildcardDetected(ctx, resp, dom)"]
+    WildcardResult{"Is Wildcard?"}
+    CheckAnswers["Check len(resp.Answer) > 0"]
+    FilterByType["utils.AnswersByType(resp, qtype)"]
+    ValidateRRs{"len(rr) > 0?"}
+    
+    Response --> ExtractName
+    ExtractName --> GetETLD1
+    GetETLD1 --> CallDetector
+    CallDetector --> WildcardResult
+    WildcardResult -->|Yes| RejectWildcard["Reject: wildcard detected"]
+    WildcardResult -->|No| CheckAnswers
+    CheckAnswers --> FilterByType
+    FilterByType --> ValidateRRs
+    ValidateRRs -->|Yes| Accept["Accept Response"]
+    ValidateRRs -->|No| RejectNoRR["Reject: no matching RRs"]
+```
+
+### Stage 1: Wildcard Detection
+
+Before processing answers, the system checks for DNS wildcard responses:
+
+1. **Extract Domain**: The question name is converted to its EffectiveTLD+1 (e.g., "sub.example.com" → "example.com")
+2. **Invoke Detector**: The `detector.WildcardDetected` method analyzes the response against known wildcard patterns for the domain
+3. **Reject on Match**: If a wildcard is detected, the response is rejected with error "wildcard detected"
+
+**Sources:** 
+
+### Stage 2: Answer Type Validation
+
+After wildcard detection, the system validates that:
+- The response contains at least one answer record (`len(resp.Answer) > 0`)
+- At least one answer matches the requested type via `utils.AnswersByType(resp, qtype)`
+
+Only answers matching the exact query type are extracted and returned.
+
+**Sources:** 
+
+---
+
+## Resolver Pool Integration
+
+Query execution relies on the **trusted resolver pool**, a pre-configured `pool.Pool` instance that manages connections to baseline resolvers.
+
+```mermaid
+flowchart LR
+    subgraph "Query Execution Layer"
+        PQ["PerformQuery"]
+        DQ["dnsQuery"]
+    end
+    
+    subgraph "Pool Layer"
+        Pool["pool.Pool"]
+        Exchange["Exchange(ctx, msg)"]
+    end
+    
+    subgraph "Selection Layer"
+        Selector["selectors.Random"]
+        ChooseResolver["Select Nameserver"]
+    end
+    
+    subgraph "Connection Layer"
+        Conns["conn.Connections"]
+        TCPConn["TCP/UDP Socket"]
+    end
+    
+    subgraph "Nameserver Layer"
+        NS1["servers.Nameserver
+8.8.8.8"]
+        NS2["servers.Nameserver
+1.1.1.1"]
+        NSN["servers.Nameserver
+...78 total"]
+    end
+    
+    PQ --> DQ
+    DQ -->|"trusted pool"| Exchange
+    Exchange --> Pool
+    Pool --> Selector
+    Selector --> ChooseResolver
+    ChooseResolver --> Conns
+    Conns --> TCPConn
+    
+    ChooseResolver -.->|"Random selection"| NS1
+    ChooseResolver -.->|"Random selection"| NS2
+    ChooseResolver -.->|"Random selection"| NSN
+```
+
+### Trusted Pool Initialization
+
+The `trustedResolvers` function creates the pool during system startup:
+
+| Component | Type | Configuration |
+|-----------|------|---------------|
+| **Timeout** | `time.Duration` | 2 seconds per query |
+| **Worker Threads** | `int` | `runtime.NumCPU()` concurrent workers |
+| **Nameservers** | `[]types.Nameserver` | 78 baseline resolvers from `baselineResolvers` |
+| **Selector** | `selectors.Random` | Random selection among available resolvers |
+| **Connection Pool** | `conn.Connections` | CPU-count connection handlers |
+| **Rate Limiting** | `pool.Pool` | No explicit limit (pool-level management) |
+
+**Sources:** 
+
+---
+
+## Special Handling: PTR Queries
+
+Reverse DNS (PTR) queries require special message construction because they use a different question format (in-addr.arpa or ip6.arpa).
+
+```mermaid
+flowchart LR
+    Input["IP Address String"]
+    TypeCheck{"qtype == dns.TypePTR?"}
+    QueryMsg["utils.QueryMsg(name, qtype)"]
+    ReverseMsg["utils.ReverseMsg(name)
+Constructs *.in-addr.arpa"]
+    Result["dns.Msg"]
+    
+    Input --> TypeCheck
+    TypeCheck -->|No| QueryMsg
+    TypeCheck -->|Yes| ReverseMsg
+    QueryMsg --> Result
+    ReverseMsg --> Result
+```
+
+The distinction is made at :
+- Standard queries use `utils.QueryMsg(name, qtype)`
+- PTR queries use `utils.ReverseMsg(name)` which converts IPs to reverse lookup format
+
+**Sources:** 
+
+---
+
+## Error Conditions
+
+The query execution system returns specific errors to help callers distinguish between different failure modes.
+
+| Error Message | Source | Meaning | Retry Strategy |
+|---------------|--------|---------|----------------|
+| `"wildcard detected"` | `PerformQuery` | Response matched wildcard pattern | Immediate failure, no retry |
+| `"no valid answers"` | `PerformQuery` | All 10 attempts exhausted | Fatal after 10 attempts |
+| `"name does not exist"` | `dnsQuery` | DNS returned NXDOMAIN | Propagated up, triggers retry |
+| `"no record of this type"` | `dnsQuery` | Success but no answers | Propagated up, triggers retry |
+| `"unexpected response"` | `dnsQuery` | Non-standard Rcode | Propagated up, triggers retry |
+| Network errors | `pool.Exchange` | TCP/UDP failure | Propagated up, triggers retry |
+
+**Sources:** 
+
+---
+
+## Wildcard Detection Integration
+
+Query execution integrates with the wildcard detection system through a dedicated `wildcards.Detector` instance configured to use Google's `8.8.4.4` resolver.
+
+### Detector Configuration
+
+```mermaid
+flowchart TD
+    TrustedResolvers["trustedResolvers()"]
+    CreateDetectorNS["servers.NewNameserver(8.8.4.4)"]
+    CreateConns["conn.New(cpus, single_selector)"]
+    CreateDetector["wildcards.NewDetector(serv, wconns, nil)"]
+    
+    TrustedResolvers --> CreateDetectorNS
+    CreateDetectorNS --> CreateConns
+    CreateConns --> CreateDetector
+    CreateDetector --> DetectorInstance["detector (global var)"]
+```
+
+The detector is initialized once during pool creation:
+1. A dedicated `servers.Nameserver` is created for `8.8.4.4` (Google DNS Secondary)
+2. A separate connection pool is created with `selectors.NewSingle` (always uses 8.8.4.4)
+3. The detector is instantiated with these dedicated resources
+4. The detector is stored in the global `detector` variable for use by all queries
+
+This separation ensures wildcard detection doesn't interfere with normal resolver pool operations and always uses a consistent, reliable resolver.
+
+**Sources:** 
+
+---
+
+## Thread Safety and Concurrency
+
+All query execution components are designed for concurrent use by multiple goroutines:
+
+- **`PerformQuery`**: Stateless function, safe to call concurrently
+- **`pool.Pool`**: Thread-safe, manages internal connection pooling
+- **`wildcards.Detector`**: Thread-safe with internal caching and state management
+- **Global Variables**: `trusted` and `detector` are initialized once and read-only afterward
+
+Plugins can call `PerformQuery` from multiple event handlers without synchronization.
+
+**Sources:** [engine/plugins/support/resolvers.go:87-88, 134-150]()
