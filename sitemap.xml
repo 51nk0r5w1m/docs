@@ -112,10 +112,13 @@
         <loc>https://51nk0r5w1m.github.io/docs/plugins/support-utilities/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/plugins/gleif/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/data_sources/data_sources/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/plugins/aviato/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/data_sources/gleif/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/data_sources/aviato/</loc>
       </url>
       <url>
         <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/</loc>
@@ -128,12 +131,6 @@
       </url>
       <url>
         <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/property-interface/</loc>
-      </url>
-      <url>
-        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/package-organization/</loc>
-      </url>
-      <url>
-        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/testing/</loc>
       </url>
       <url>
         <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/assets/</loc>
@@ -247,13 +244,19 @@
         <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/properties/vuln_property/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/implementation/</loc>
-      </url>
-      <url>
         <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/use-cases/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/contributing/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/development/package-organization/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/development/implementation/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/development/testing/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/development/contributing/</loc>
       </url>
       <url>
         <loc>https://51nk0r5w1m.github.io/docs/asset_db/</loc>
