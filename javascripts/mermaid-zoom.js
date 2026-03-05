@@ -1,96 +1,118 @@
-/* Mermaid diagram zoom — click any diagram to open fullscreen with pan/zoom */
+/* Mermaid diagram zoom — click any diagram to open fullscreen lightbox.
+ * Works with Zensical/MkDocs Material which renders mermaid into closed
+ * Shadow DOM, so we re-render from source on click using mermaid.render(). */
 (function () {
   "use strict";
 
-  function initZoom() {
-    document.querySelectorAll(".mermaid svg").forEach(function (svg) {
-      if (svg.dataset.zoomInit) return;
-      svg.dataset.zoomInit = "1";
+  var _uid = 0;
 
-      // Make the SVG visually indicate it's clickable
-      svg.style.cursor = "zoom-in";
-      svg.setAttribute("title", "Click to zoom");
-
-      svg.addEventListener("click", function () {
-        openLightbox(svg);
+  function attachHandlers() {
+    // Target the outer container elements that hold mermaid source.
+    // Before rendering they are <pre class="mermaid">, after they become
+    // <div class="mermaid"> with a closed shadow root containing the SVG.
+    document.querySelectorAll(".mermaid").forEach(function (el) {
+      if (el.dataset.zoomInit) return;
+      el.dataset.zoomInit = "1";
+      el.style.cursor = "zoom-in";
+      el.title = "Click to zoom";
+      el.addEventListener("click", function () {
+        openLightbox(el);
       });
     });
   }
 
-  function openLightbox(originalSvg) {
-    // Clone SVG so we don't mutate the original
-    var clone = originalSvg.cloneNode(true);
-    clone.removeAttribute("width");
-    clone.removeAttribute("height");
-    clone.style.cursor = "default";
-    clone.style.maxWidth = "100%";
-    clone.style.maxHeight = "100%";
+  function openLightbox(sourceEl) {
+    // The diagram source text is stored in the element's textContent
+    // (set before mermaid replaces it with a shadow root).
+    var source = (sourceEl.dataset.mermaidSrc || sourceEl.textContent || "").trim();
+    if (!source) return;
 
-    // Overlay
     var overlay = document.createElement("div");
-    overlay.id = "mermaid-zoom-overlay";
     overlay.style.cssText = [
       "position:fixed", "inset:0", "z-index:9999",
       "background:rgba(0,0,0,0.82)",
       "display:flex", "align-items:center", "justify-content:center",
-      "padding:24px", "box-sizing:border-box",
-      "cursor:zoom-out"
+      "padding:24px", "box-sizing:border-box", "cursor:zoom-out"
     ].join(";");
 
-    // Inner container (white card)
     var card = document.createElement("div");
     card.style.cssText = [
-      "background:#fff", "border-radius:8px",
-      "padding:16px", "max-width:95vw", "max-height:92vh",
-      "overflow:auto", "position:relative",
-      "cursor:default", "box-shadow:0 8px 40px rgba(0,0,0,0.5)"
+      "background:#fff", "border-radius:8px", "padding:24px 20px 20px",
+      "max-width:95vw", "max-height:92vh", "overflow:auto",
+      "position:relative", "cursor:default",
+      "box-shadow:0 8px 40px rgba(0,0,0,0.5)"
     ].join(";");
 
-    // Close button
     var closeBtn = document.createElement("button");
-    closeBtn.textContent = "✕";
+    closeBtn.textContent = "\u2715";
+    closeBtn.setAttribute("aria-label", "Close");
     closeBtn.style.cssText = [
       "position:absolute", "top:8px", "right:12px",
       "background:none", "border:none", "font-size:20px",
       "cursor:pointer", "color:#555", "line-height:1", "padding:4px 8px"
     ].join(";");
-    closeBtn.setAttribute("aria-label", "Close");
+
+    var diagramHolder = document.createElement("div");
+    diagramHolder.style.cssText = "min-width:300px;min-height:100px;text-align:center";
+    diagramHolder.textContent = "Rendering\u2026";
 
     card.appendChild(closeBtn);
-    card.appendChild(clone);
+    card.appendChild(diagramHolder);
     overlay.appendChild(card);
     document.body.appendChild(overlay);
 
-    // Prevent card clicks from closing overlay
     card.addEventListener("click", function (e) { e.stopPropagation(); });
 
     function close() {
       if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
       document.removeEventListener("keydown", onKey);
     }
-
     overlay.addEventListener("click", close);
     closeBtn.addEventListener("click", close);
-
-    function onKey(e) {
-      if (e.key === "Escape") close();
-    }
+    function onKey(e) { if (e.key === "Escape") close(); }
     document.addEventListener("keydown", onKey);
+
+    // Re-render the diagram using mermaid API
+    if (window.mermaid && typeof mermaid.render === "function") {
+      var id = "mermaid-zoom-" + (++_uid);
+      Promise.resolve(mermaid.render(id, source)).then(function (result) {
+        var svgStr = (result && result.svg) ? result.svg : result;
+        diagramHolder.innerHTML = svgStr;
+        var svg = diagramHolder.querySelector("svg");
+        if (svg) {
+          svg.removeAttribute("width");
+          svg.removeAttribute("height");
+          svg.style.maxWidth = "100%";
+          svg.style.height = "auto";
+        }
+      }).catch(function () {
+        diagramHolder.textContent = "Could not render diagram.";
+      });
+    } else {
+      diagramHolder.textContent = "Mermaid not available.";
+    }
   }
 
-  // Run after mermaid renders (it renders asynchronously)
-  function observe() {
-    var observer = new MutationObserver(function () {
-      initZoom();
+  // Capture source text before mermaid replaces it, then attach handlers.
+  function captureAndAttach() {
+    document.querySelectorAll(".mermaid:not([data-zoom-init])").forEach(function (el) {
+      if (!el.dataset.mermaidSrc && el.textContent.trim()) {
+        el.dataset.mermaidSrc = el.textContent.trim();
+      }
     });
-    observer.observe(document.body, { childList: true, subtree: true });
-    // Also run immediately in case diagrams already rendered
-    initZoom();
+    attachHandlers();
+  }
+
+  // Poll until mermaid elements appear (they load async with the page)
+  var _attempts = 0;
+  function poll() {
+    captureAndAttach();
+    if (_attempts++ < 40) setTimeout(poll, 250);
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", observe);
+    document.addEventListener("DOMContentLoaded", poll);
   } else {
-    observe();
+    poll();
   }
 })();
