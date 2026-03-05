@@ -1,0 +1,848 @@
+# OAM Analysis Tools
+
+
+The OAM Analysis Tools are a suite of standalone command-line utilities that query and analyze data stored in the Asset-DB graph database after collection. These tools operate independently of the enumeration process and provide different views of the collected Open Asset Model (OAM) data. Each tool reads from the persistent graph database and outputs formatted results for specific analysis tasks.
+
+For information about the data collection process, see [Main CLI and Subcommands](#3.1). For details on the underlying data model, see [Open Asset Model (OAM)](#7.1).
+
+## Tool Suite Overview
+
+The OAM Analysis Tools consist of four primary utilities, each serving a distinct analysis purpose:
+
+| Tool | Purpose | Primary Output |
+|------|---------|----------------|
+| `oam_assoc` | Graph traversal using triple patterns | JSON results of association walks |
+| `oam_subs` | Subdomain enumeration with infrastructure data | Terminal tables with ASN/netblock information |
+| `oam_track` | Time-based discovery tracking | List of newly discovered assets since timestamp |
+| `oam_viz` | Graph visualization generation | D3.js HTML, Graphviz DOT, or GEXF files |
+
+All tools share a common architecture pattern: they accept configuration via YAML files and CLI arguments, connect to the Asset-DB graph database, query the OAM data, and format output for their specific use case.
+
+Sources: , , , 
+
+## Architecture Pattern
+
+```mermaid
+graph TB
+    subgraph "oam_assoc"
+        AssocMain["cmd/oam_assoc/main.go<br/>Entry Point"]
+        AssocCLI["internal/assoc/cli.go<br/>CLIWorkflow()"]
+        AssocArgs["Args Struct<br/>Triples[10], Help, Filepaths"]
+    end
+    
+    subgraph "oam_subs"
+        SubsMain["cmd/oam_subs/main.go<br/>Entry Point"]
+        SubsCLI["internal/subs/cli.go<br/>CLIWorkflow()"]
+        SubsArgs["Args Struct<br/>Domains, Options, Filepaths"]
+    end
+    
+    subgraph "oam_track"
+        TrackMain["cmd/oam_track/main.go<br/>Entry Point"]
+        TrackCLI["internal/track/cli.go<br/>CLIWorkflow()"]
+        TrackArgs["Args Struct<br/>Domains, Since, Filepaths"]
+    end
+    
+    subgraph "oam_viz"
+        VizMain["cmd/oam_viz/main.go<br/>Entry Point"]
+        VizCLI["internal/viz/cli.go<br/>CLIWorkflow()"]
+        VizArgs["Args Struct<br/>Domains, Since, Options"]
+    end
+    
+    subgraph "Shared Infrastructure"
+        ConfigSystem["config.AcquireConfig()<br/>YAML + CLI merge"]
+        DBTools["tools.OpenGraphDatabase()<br/>Connection mgmt"]
+        GraphDB[("Asset-DB<br/>repository.Repository")]
+        OutputFormatters["afmt Package<br/>Banner, Colors, Tables"]
+    end
+    
+    AssocMain --> AssocCLI
+    AssocCLI --> AssocArgs
+    AssocCLI --> ConfigSystem
+    AssocCLI --> DBTools
+    
+    SubsMain --> SubsCLI
+    SubsCLI --> SubsArgs
+    SubsCLI --> ConfigSystem
+    SubsCLI --> DBTools
+    
+    TrackMain --> TrackCLI
+    TrackCLI --> TrackArgs
+    TrackCLI --> ConfigSystem
+    TrackCLI --> DBTools
+    
+    VizMain --> VizCLI
+    VizCLI --> VizArgs
+    VizCLI --> ConfigSystem
+    VizCLI --> DBTools
+    
+    DBTools --> GraphDB
+    AssocCLI --> GraphDB
+    SubsCLI --> GraphDB
+    TrackCLI --> GraphDB
+    VizCLI --> GraphDB
+    
+    AssocCLI --> OutputFormatters
+    SubsCLI --> OutputFormatters
+    TrackCLI --> OutputFormatters
+    VizCLI --> OutputFormatters
+```
+
+**Common CLI Workflow Pattern**
+
+Each tool follows an identical architectural pattern for consistency. The `main.go` entry point extracts the command name using `path.Base(os.Args[0])` and delegates to the internal package's `CLIWorkflow()` function. This function handles flag parsing, configuration loading, database connection, and output formatting.
+
+Sources: , , , , , , , 
+
+## oam_assoc - Association Walk
+
+The `oam_assoc` tool performs graph traversal queries using "triples" - a pattern-based syntax for walking relationships in the Asset-DB graph. It outputs JSON-formatted results showing entities and relationships discovered along the walk path.
+
+### Command Structure
+
+```mermaid
+graph LR
+    User["User Input"] --> Flags["Flag Parsing<br/>NewFlagset()"]
+    Flags --> Triple1["-t1 triple"]
+    Flags --> Triple2["-t2...t10 triples"]
+    Flags --> TripleFile["-tf path<br/>File of triples"]
+    Flags --> Config["-config path<br/>-dir path"]
+    
+    Triple1 --> Parser["triples.ParseTriple()"]
+    Triple2 --> Parser
+    TripleFile --> FileLoader["config.GetListFromFile()"]
+    FileLoader --> Parser
+    
+    Config --> ConfigLoad["config.AcquireConfig()"]
+    ConfigLoad --> DBOpen["tools.OpenGraphDatabase()"]
+    
+    Parser --> TripleArray["[]*triples.Triple<br/>Array of parsed triples"]
+    TripleArray --> Extract["triples.Extract(db, tris)"]
+    DBOpen --> Extract
+    
+    Extract --> Results["JSON Results<br/>Entities + Relations"]
+    Results --> Output["json.MarshalIndent()<br/>Pretty-printed JSON"]
+```
+
+**Triple-Based Query System**
+
+The tool accepts up to 10 triples via individual flags (`-t1` through `-t10`) or from a file (`-tf`). Each triple defines a graph traversal step using the pattern `subject predicate object`, where wildcards can be used. The triples are parsed by `triples.ParseTriple()` and executed sequentially by `triples.Extract()`.
+
+Sources: , , 
+
+### Args Structure
+
+The `Args` struct in `internal/assoc/cli.go` defines the command-line arguments:
+
+```
+Args {
+    Help    bool
+    Triples []string              // Array of 10 triple strings
+    Options {
+        NoColor bool              // Disable colorized output
+        Silent  bool              // Disable all output
+    }
+    Filepaths {
+        ConfigFile string         // Path to YAML config
+        Directory  string         // Graph database directory
+        TripleFile string         // File containing triples list
+    }
+}
+```
+
+The `Triples` array is pre-allocated to 10 elements at . The tool requires at least one triple to be provided, validated at .
+
+Sources: , 
+
+### Workflow Execution
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant CLI as CLIWorkflow()
+    participant Parser as Flag Parser
+    participant Config as config.AcquireConfig()
+    participant DB as tools.OpenGraphDatabase()
+    participant Extractor as triples.Extract()
+    participant Output as JSON Marshaler
+    
+    User->>CLI: oam_assoc -t1 "..." -t2 "..."
+    CLI->>Parser: NewFlagset() + Parse()
+    Parser-->>CLI: Args struct populated
+    
+    CLI->>Config: Load YAML config
+    Config-->>CLI: cfg *config.Config
+    
+    CLI->>DB: OpenGraphDatabase(cfg)
+    DB-->>CLI: repository.Repository
+    
+    loop For each triple string
+        CLI->>Extractor: ParseTriple(tstr)
+        Extractor-->>CLI: *triples.Triple
+    end
+    
+    CLI->>Extractor: Extract(db, tris)
+    Extractor-->>CLI: results map
+    
+    CLI->>Output: json.MarshalIndent(results)
+    Output-->>CLI: Pretty JSON
+    
+    CLI->>User: Print to stdout
+```
+
+**Error Handling**
+
+The workflow includes multiple error exit points: failure to parse triples (), failure to extract associations (), and failure to marshal JSON (). Each error outputs a colored message to `color.Error` before calling `os.Exit(1)`.
+
+Sources: , 
+
+### Output Format
+
+The tool outputs indented JSON with two-space formatting specified at . The JSON structure contains the results from `triples.Extract()`, which returns entities and relationships discovered during the graph walk. The output is printed to `color.Output` at .
+
+Sources: 
+
+## oam_subs - Subdomain Analysis
+
+The `oam_subs` tool provides a formatted summary of discovered subdomains with optional IP address resolution and Autonomous System Number (ASN) infrastructure information. It displays results as colored terminal output with optional ASN summary tables.
+
+### Command Structure and Flags
+
+```mermaid
+graph TB
+    subgraph "Input Sources"
+        DomainFlag["-d domain<br/>Multiple allowed"]
+        DomainFile["-df path<br/>File of domains"]
+        ConfigFile["-config path<br/>YAML config"]
+    end
+    
+    subgraph "Display Options"
+        ShowIP["-ip<br/>IPv4 + IPv6"]
+        ShowIPv4["-ipv4<br/>IPv4 only"]
+        ShowIPv6["-ipv6<br/>IPv6 only"]
+        ShowNames["-names<br/>Names only"]
+        ShowSummary["-summary<br/>ASN table only"]
+        ShowAll["-show<br/>Both names + ASN"]
+    end
+    
+    subgraph "Output Options"
+        Demo["-demo<br/>Censor output"]
+        NoColor["-nocolor"]
+        Silent["-silent"]
+        Output["-o path<br/>Text file output"]
+    end
+    
+    subgraph "Processing"
+        Merge["Merge all sources"]
+        GetNames["getNames()<br/>Query FQDN entities"]
+        AddAddrs["addAddresses()<br/>Resolve IPs"]
+        AddInfra["addInfrastructureInfo()<br/>ASN lookup"]
+    end
+    
+    subgraph "Output Formatters"
+        LineFormatter["afmt.OutputLineParts()"]
+        TableFormatter["afmt.FprintEnumerationSummary()"]
+    end
+    
+    DomainFlag --> Merge
+    DomainFile --> Merge
+    ConfigFile --> Merge
+    
+    Merge --> GetNames
+    GetNames --> AddAddrs
+    AddAddrs --> AddInfra
+    
+    ShowIP --> AddAddrs
+    ShowIPv4 --> AddAddrs
+    ShowIPv6 --> AddAddrs
+    
+    AddInfra --> LineFormatter
+    AddInfra --> TableFormatter
+    
+    ShowNames --> LineFormatter
+    ShowSummary --> TableFormatter
+    ShowAll --> LineFormatter
+    ShowAll --> TableFormatter
+    
+    Demo --> LineFormatter
+    Demo --> TableFormatter
+    Output --> LineFormatter
+```
+
+**Display Mode Logic**
+
+The tool requires either `-names`, `-summary`, or `-show` to determine output mode (). The `-show` flag enables both modes by setting `DiscoveredNames` and `ASNTableSummary` to true (). The `-ip` flag is a convenience that enables both IPv4 and IPv6 ().
+
+Sources: , , 
+
+### Args Structure
+
+```
+Args {
+    Help    bool
+    Domains *stringset.Set
+    Options {
+        DemoMode        bool     // Censor sensitive data
+        IPs             bool     // Show all IP addresses
+        IPv4            bool     // Show IPv4 addresses
+        IPv6            bool     // Show IPv6 addresses
+        ASNTableSummary bool     // Print ASN table
+        DiscoveredNames bool     // Print subdomain list
+        NoColor         bool
+        ShowAll         bool     // Enable both names + ASN
+        Silent          bool
+    }
+    Filepaths {
+        ConfigFile string
+        Directory  string
+        Domains    string
+        TermOut    string        // Redirect output to file
+    }
+}
+```
+
+Sources: 
+
+### Data Retrieval Workflow
+
+```mermaid
+graph TB
+    Domains["Domain List<br/>[]string"] --> QueryRoot["db.FindEntitiesByContent()<br/>Find root FQDN entities"]
+    QueryRoot --> ScopeWalk["amassdb.FindByFQDNScope()<br/>Get in-scope subdomains"]
+    ScopeWalk --> NamesList["[]*amassnet.Output<br/>Name field only"]
+    
+    NamesList --> CheckFlags{"Need IP/ASN<br/>info?"}
+    
+    CheckFlags -->|No| OutputNames["Output names only"]
+    CheckFlags -->|Yes| ResolveIPs["addAddresses()<br/>amassnet.NamesToAddrs()"]
+    
+    ResolveIPs --> CheckASN{"ASN info<br/>needed?"}
+    CheckASN -->|No| OutputWithIPs["Output names + IPs"]
+    CheckASN -->|Yes| PopulateCache["amassnet.FillCache()<br/>Load ASN data"]
+    
+    PopulateCache --> EnrichInfra["addInfrastructureInfo()<br/>ASN, CIDR, Netblock"]
+    EnrichInfra --> UpdateSummary["afmt.UpdateSummaryData()<br/>Build ASN maps"]
+    UpdateSummary --> OutputFull["Output names + IPs + ASN table"]
+```
+
+**Database Query Strategy**
+
+The `getNames()` function at  queries for root domain FQDN entities, then uses `amassdb.FindByFQDNScope()` to retrieve all subdomains within scope. This returns `[]*dbt.Entity` containing `oamdns.FQDN` assets. The function uses a `stringset.Set` filter to deduplicate names.
+
+The `addAddresses()` function at  uses `amassnet.NamesToAddrs()` to bulk query DNS A/AAAA relationships, populating the `Addresses` field of each `amassnet.Output` struct.
+
+Sources: , 
+
+### ASN Information System
+
+```mermaid
+graph LR
+    subgraph "ASN Cache"
+        FillCache["amassnet.FillCache(cache, db)<br/>Load all ASN records"]
+        Cache["*amassnet.ASNCache<br/>In-memory lookup"]
+    end
+    
+    subgraph "Per-Address Enrichment"
+        AddrLoop["For each AddressInfo"]
+        CacheSearch["cache.AddrSearch(ip)<br/>Find ASN record"]
+        ParseCIDR["net.ParseCIDR(prefix)"]
+        BuildAddr["Populate ASN, CIDRStr,<br/>Netblock, Description"]
+    end
+    
+    subgraph "Summary Aggregation"
+        UpdateSummary["afmt.UpdateSummaryData()"]
+        ASNMap["map[int]*ASNSummaryData<br/>ASN -> Name, Netblocks"]
+        NetblockCount["Netblocks map[string]int<br/>CIDR -> IP count"]
+    end
+    
+    FillCache --> Cache
+    Cache --> AddrLoop
+    AddrLoop --> CacheSearch
+    CacheSearch --> ParseCIDR
+    ParseCIDR --> BuildAddr
+    BuildAddr --> UpdateSummary
+    UpdateSummary --> ASNMap
+    ASNMap --> NetblockCount
+```
+
+**ASN Cache Population**
+
+When ASN information is requested, the tool creates an `amassnet.ASNCache` at  and populates it using `amassnet.FillCache()` at . This loads all ASN records from the database into memory for efficient lookup.
+
+The `addInfrastructureInfo()` function at  iterates through each IP address, calls `cache.AddrSearch()` to find the corresponding ASN record, and enriches the `AddressInfo` struct with ASN number, CIDR prefix, netblock, and description.
+
+Sources: , 
+
+### Output Formatting
+
+The tool generates two types of output:
+
+1. **Name Listing**: Each subdomain is printed with optional IP addresses using `afmt.OutputLineParts()` at . Output goes to either a file specified by `-o` or to colored terminal output at .
+
+2. **ASN Summary Table**: Generated by `afmt.FprintEnumerationSummary()` at , this displays ASN numbers, descriptions, and netblock statistics with IP counts per CIDR. The table format is defined in .
+
+The `DemoMode` flag () censors sensitive data using functions like `censorDomain()` and `censorIP()` defined in .
+
+Sources: , , 
+
+## oam_track - Asset Tracking
+
+The `oam_track` tool identifies newly discovered assets by filtering the graph database based on creation timestamps. It outputs a simple list of FQDNs that were discovered after a specified time.
+
+### Command Structure
+
+```mermaid
+graph TB
+    subgraph "Input Parameters"
+        DomainInput["-d domain<br/>Multiple allowed"]
+        DomainFile["-df path"]
+        SinceTime["-since 'MM/DD HH:MM:SS YYYY TZ'<br/>TimeFormat"]
+        Config["-config path<br/>-dir path"]
+    end
+    
+    subgraph "Time Processing"
+        ParseTime["time.Parse(TimeFormat, args.Since)"]
+        DefaultTime["If no -since:<br/>Find latest asset timestamp<br/>Truncate to 24h boundary"]
+    end
+    
+    subgraph "Database Query"
+        FindRoot["db.FindEntitiesByContent()<br/>Root FQDN, since time"]
+        FindScope["amassdb.FindByFQDNScope()<br/>All in-scope assets, since time"]
+    end
+    
+    subgraph "Filtering"
+        CheckTime["CreatedAt >= since<br/>LastSeen >= since"]
+        Dedupe["stringset.Set<br/>Deduplication"]
+    end
+    
+    DomainInput --> FindRoot
+    DomainFile --> FindRoot
+    Config --> FindRoot
+    
+    SinceTime --> ParseTime
+    ParseTime --> FindRoot
+    ParseTime --> FindScope
+    ParseTime --> CheckTime
+    
+    FindRoot --> FindScope
+    FindScope --> CheckTime
+    CheckTime --> Dedupe
+    
+    DefaultTime --> CheckTime
+    
+    Dedupe --> Output["Print FQDNs<br/>One per line"]
+```
+
+**Time Format Specification**
+
+The tool uses a specific time format defined at : `"01/02 15:04:05 2006 MST"`. This format is used for both the `-since` flag and in error messages. If no `-since` is provided, the tool finds the latest asset timestamp and truncates it to a 24-hour boundary at .
+
+Sources: , , 
+
+### Args Structure
+
+```
+Args {
+    Help    bool
+    Domains *stringset.Set
+    Since   string              // Time string in TimeFormat
+    Options {
+        NoColor bool
+        Silent  bool
+    }
+    Filepaths {
+        ConfigFile string
+        Directory  string
+        Domains    string
+    }
+}
+```
+
+The `Since` field is a string that gets parsed using `time.Parse()` at . An empty string indicates no time filter was provided.
+
+Sources: 
+
+### Workflow Implementation
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant CLI as CLIWorkflow()
+    participant Parser as time.Parse()
+    participant DB as Graph Database
+    participant Filter as getNewNames()
+    participant Output as color.Output
+    
+    User->>CLI: oam_track -d example.com -since "..."
+    CLI->>Parser: Parse(TimeFormat, args.Since)
+    Parser-->>CLI: start time.Time
+    
+    CLI->>DB: config.AcquireConfig()
+    CLI->>DB: tools.OpenGraphDatabase(cfg)
+    DB-->>CLI: repository.Repository
+    
+    CLI->>Filter: getNewNames(domains, start, db)
+    
+    loop For each domain
+        Filter->>DB: FindEntitiesByContent(&FQDN, since)
+        DB-->>Filter: Root entity
+        Filter->>DB: FindByFQDNScope(root, since)
+        DB-->>Filter: []*dbt.Entity
+    end
+    
+    Filter->>Filter: Check CreatedAt >= since
+    Filter->>Filter: Check LastSeen >= since
+    Filter->>Filter: Deduplicate with stringset
+    Filter-->>CLI: []string names
+    
+    loop For each name
+        CLI->>Output: Print FQDN
+    end
+```
+
+**Database Query with Timestamp**
+
+The `getNewNames()` function at  queries the database twice per domain. First, `db.FindEntitiesByContent()` locates the root FQDN entity with the `since` timestamp parameter at . Second, `amassdb.FindByFQDNScope()` retrieves all related assets, also filtered by the timestamp at .
+
+**Timestamp Filtering Logic**
+
+Assets are included if both conditions are met at :
+- `CreatedAt` is equal to or after `since`
+- `LastSeen` is equal to or after `since`
+
+This ensures only assets created and validated within the time window are returned.
+
+Sources: , 
+
+### Default Time Calculation
+
+When no `-since` flag is provided, the tool calculates a default starting time:
+
+```
+// Find the latest LastSeen timestamp among all assets
+for _, a := range assets {
+    if _, ok := a.Asset.(*oamdns.FQDN); ok && a.LastSeen.After(latest) {
+        latest = a.LastSeen
+    }
+}
+// Truncate to 24-hour boundary
+since = latest.Truncate(24 * time.Hour)
+```
+
+This logic at  finds the most recently validated asset and sets the filter to the beginning of that day, effectively showing assets from the last 24 hours.
+
+Sources: 
+
+## oam_viz - Visualization Generation
+
+The `oam_viz` tool generates graph visualizations in three formats: D3.js force simulation HTML, Graphviz DOT, and GEXF (Gephi Exchange Format). It queries the database for nodes and edges, then renders them into the selected output format.
+
+### Command Structure and Format Selection
+
+```mermaid
+graph TB
+    subgraph "Input Specification"
+        Domains["-d domain<br/>Multiple allowed"]
+        DomainFile["-df path"]
+        Since["-since 'TimeFormat'<br/>Optional filter"]
+        Config["-config path<br/>-dir path"]
+    end
+    
+    subgraph "Format Selection"
+        D3Flag["-d3<br/>D3.js HTML"]
+        DOTFlag["-dot<br/>Graphviz DOT"]
+        GEXFFlag["-gexf<br/>GEXF XML"]
+        Required{"At least one<br/>format required"}
+    end
+    
+    subgraph "Output Location"
+        OutputDir["-o path<br/>Output directory"]
+        Prefix["-oA prefix<br/>Default: 'amass'"]
+        FileGen["Generate files:<br/>prefix.html<br/>prefix.dot<br/>prefix.gexf"]
+    end
+    
+    subgraph "Data Pipeline"
+        VizData["VizData(domains, since, db)<br/>Query nodes & edges"]
+        D3Writer["WriteD3Data(f, nodes, edges)"]
+        DOTWriter["WriteDOTData(f, nodes, edges)"]
+        GEXFWriter["WriteGEXFData(f, nodes, edges)"]
+    end
+    
+    Domains --> VizData
+    DomainFile --> VizData
+    Since --> VizData
+    Config --> VizData
+    
+    D3Flag --> Required
+    DOTFlag --> Required
+    GEXFFlag --> Required
+    
+    Required -->|Pass| VizData
+    VizData --> D3Writer
+    VizData --> DOTWriter
+    VizData --> GEXFWriter
+    
+    OutputDir --> FileGen
+    Prefix --> FileGen
+    
+    D3Writer --> FileGen
+    DOTWriter --> FileGen
+    GEXFWriter --> FileGen
+```
+
+**Format Requirement Validation**
+
+The tool requires at least one output format to be specified, validated at . If no format flags are provided, it outputs an error and exits. Each format flag triggers generation of a corresponding output file with the prefix from `-oA` (defaulting to "amass" at ).
+
+Sources: , , 
+
+### Args Structure
+
+```
+Args {
+    Help    bool
+    Domains *stringset.Set
+    Since   string              // TimeFormat timestamp
+    Options {
+        D3      bool            // Generate D3.js HTML
+        DOT     bool            // Generate Graphviz DOT
+        GEXF    bool            // Generate GEXF XML
+        NoColor bool
+        Silent  bool
+    }
+    Filepaths {
+        ConfigFile    string
+        Directory     string
+        Domains       string
+        Output        string    // Output directory
+        AllFilePrefix string    // Filename prefix (-oA)
+    }
+}
+```
+
+Sources: 
+
+### Visualization Data Retrieval
+
+```mermaid
+graph LR
+    subgraph "Query Phase"
+        Domains["Domain List"] --> VizData["VizData(domains, since, db)"]
+        Since["time.Time filter"] --> VizData
+        DB["repository.Repository"] --> VizData
+    end
+    
+    subgraph "Data Structures"
+        VizData --> Nodes["[]Node<br/>ID, Label, Type"]
+        VizData --> Edges["[]Edge<br/>From, To, Label, Type"]
+    end
+    
+    subgraph "Output Writers"
+        Nodes --> D3["WriteD3Data()<br/>Embed in HTML template"]
+        Edges --> D3
+        
+        Nodes --> DOT["WriteDOTData()<br/>Graph syntax"]
+        Edges --> DOT
+        
+        Nodes --> GEXF["WriteGEXFData()<br/>XML format"]
+        Edges --> GEXF
+    end
+    
+    subgraph "File Creation"
+        D3 --> HTMLFile["prefix.html<br/>Self-contained D3.js"]
+        DOT --> DOTFile["prefix.dot<br/>Graphviz source"]
+        GEXF --> GEXFFile["prefix.gexf<br/>Gephi import"]
+    end
+```
+
+**VizData Function**
+
+The `VizData()` function (referenced but not shown in provided files) queries the graph database for nodes and edges filtered by domain scope and timestamp. It returns two slices: `[]Node` containing graph vertices and `[]Edge` containing relationships.
+
+The `Node` structure likely contains fields for ID, label, and type. The `Edge` structure contains source/target IDs and relationship metadata. These are consumed by the format-specific writer functions.
+
+Sources: 
+
+### File Writing Pipeline
+
+```mermaid
+sequenceDiagram
+    participant CLI as CLIWorkflow()
+    participant VizData as VizData()
+    participant Writer as writeGraphOutputFile()
+    participant D3 as WriteD3Data()
+    participant DOT as WriteDOTData()
+    participant GEXF as WriteGEXFData()
+    participant File as os.File
+    
+    CLI->>VizData: Query graph data
+    VizData-->>CLI: nodes []Node, edges []Edge
+    
+    alt D3 format requested
+        CLI->>Writer: "d3", path, nodes, edges
+        Writer->>File: OpenFile(path)
+        Writer->>File: Truncate(0)
+        Writer->>D3: WriteD3Data(f, nodes, edges)
+        D3->>File: Write HTML + embedded JSON
+        Writer->>File: Sync() + Close()
+    end
+    
+    alt DOT format requested
+        CLI->>Writer: "dot", path, nodes, edges
+        Writer->>File: OpenFile(path)
+        Writer->>DOT: WriteDOTData(f, nodes, edges)
+        DOT->>File: Write DOT syntax
+        Writer->>File: Sync() + Close()
+    end
+    
+    alt GEXF format requested
+        CLI->>Writer: "gexf", path, nodes, edges
+        Writer->>File: OpenFile(path)
+        Writer->>GEXF: WriteGEXFData(f, nodes, edges)
+        GEXF->>File: Write XML
+        Writer->>File: Sync() + Close()
+    end
+```
+
+**File Management**
+
+The `writeGraphOutputFile()` function at  handles file creation and format dispatching. It opens the file with `os.O_WRONLY|os.O_CREATE` at , truncates to zero length at , writes the appropriate format, then syncs and closes at .
+
+A switch statement at  routes to the correct writer based on the format type string ("d3", "dot", or "gexf").
+
+Sources: , 
+
+### Output Format Characteristics
+
+| Format | File Extension | Purpose | Key Features |
+|--------|---------------|---------|--------------|
+| D3.js  | `.html` | Interactive web visualization | Self-contained HTML with embedded force simulation, requires browser |
+| DOT | `.dot` | Graphviz rendering | Text-based graph description, can be rendered with `dot` command |
+| GEXF | `.gexf` | Gephi import | XML format for loading into Gephi for advanced analysis |
+
+The D3 output generates a single HTML file with all JavaScript and data embedded, making it portable. The DOT format produces graph description language that can be rendered to PNG/SVG using Graphviz tools. The GEXF format creates XML compatible with the Gephi graph visualization platform.
+
+Sources: 
+
+## Common Infrastructure
+
+All OAM tools share common infrastructure components that provide consistent configuration loading, database access, and output formatting.
+
+### Configuration Loading Pattern
+
+```mermaid
+graph TB
+    subgraph "Configuration Sources"
+        CLIArgs["Command-line Args<br/>flag.FlagSet"]
+        YAMLFile["-config path<br/>YAML file"]
+        EnvVar["AMASS_CONFIG<br/>Environment var"]
+        DefaultDir["Default directory<br/>$HOME/.config/amass"]
+    end
+    
+    subgraph "Merge Logic"
+        NewConfig["config.NewConfig()<br/>Initialize defaults"]
+        AcquireConfig["config.AcquireConfig(dir, file, cfg)<br/>Load and merge"]
+        Priority["Priority:<br/>CLI args > YAML > defaults"]
+    end
+    
+    subgraph "Output Configuration"
+        ConfigStruct["*config.Config<br/>Dir, Domains, Resolvers"]
+        DBPath["cfg.Dir<br/>Database location"]
+    end
+    
+    CLIArgs --> AcquireConfig
+    YAMLFile --> AcquireConfig
+    EnvVar --> AcquireConfig
+    DefaultDir --> AcquireConfig
+    
+    NewConfig --> AcquireConfig
+    AcquireConfig --> Priority
+    Priority --> ConfigStruct
+    ConfigStruct --> DBPath
+```
+
+**AcquireConfig Function**
+
+Every tool calls `config.AcquireConfig()` with the directory path, config file path, and a `*config.Config` instance. This function, referenced at , , , and , loads YAML configuration and merges it with existing settings.
+
+If a config file is explicitly specified but fails to load, tools exit with an error. If no config is specified, the function attempts default locations without error.
+
+Sources: , , , 
+
+### Database Connection Pattern
+
+```mermaid
+graph LR
+    Config["*config.Config<br/>Dir field"] --> OpenDB["tools.OpenGraphDatabase(cfg)"]
+    OpenDB --> CheckNil{"db != nil?"}
+    CheckNil -->|Yes| Repo["repository.Repository<br/>Interface to Asset-DB"]
+    CheckNil -->|No| Error["Print error to stderr<br/>os.Exit(1)"]
+    
+    Repo --> Query["Database operations:<br/>FindEntitiesByContent()<br/>FindByFQDNScope()<br/>etc."]
+```
+
+**OpenGraphDatabase Function**
+
+The `tools.OpenGraphDatabase()` function, called by all tools, returns a `repository.Repository` interface. If the connection fails, it returns `nil`, prompting each tool to output an error message to `color.Error` and exit at , , , and .
+
+The repository interface provides methods like `FindEntitiesByContent()` for querying OAM entities and associated relationships stored in the Asset-DB graph database.
+
+Sources: , , , 
+
+### Output Formatting System
+
+```mermaid
+graph TB
+    subgraph "Color Management"
+        NoColorFlag["--nocolor flag"] --> DisableColor["color.NoColor = true"]
+        SilentFlag["--silent flag"] --> DiscardOut["color.Output = io.Discard<br/>color.Error = io.Discard"]
+    end
+    
+    subgraph "Formatters in afmt Package"
+        Banner["afmt.PrintBanner()<br/>ASCII art header"]
+        Colors["Color variables:<br/>R, G, B, Y (bright)<br/>FgR, FgY (foreground)"]
+        LineParts["afmt.OutputLineParts()<br/>Format name + IPs"]
+        Summary["afmt.FprintEnumerationSummary()<br/>ASN table with colors"]
+    end
+    
+    subgraph "Output Destinations"
+        ColorOut["color.Output<br/>Defaults to stdout"]
+        ColorErr["color.Error<br/>Defaults to stderr"]
+        FileOut["os.File<br/>Text file output"]
+    end
+    
+    DisableColor --> Colors
+    DiscardOut --> ColorOut
+    DiscardOut --> ColorErr
+    
+    Banner --> ColorErr
+    LineParts --> ColorOut
+    LineParts --> FileOut
+    Summary --> ColorOut
+    Summary --> ColorErr
+    Summary --> FileOut
+```
+
+**Color Package Integration**
+
+All tools use the `github.com/fatih/color` package for terminal output. The package is configured through global variables at the start of each workflow. The `--nocolor` flag disables colored output by setting `color.NoColor = true` at , , , and .
+
+The `--silent` flag redirects both `color.Output` and `color.Error` to `io.Discard`, suppressing all output at , , , and .
+
+**Banner Display**
+
+Every tool displays the Amass banner using `afmt.PrintBanner()` in its usage function. The banner is defined in  and includes version information, project attribution, and the Discord invitation link.
+
+Sources: , , , , , 
+
+### Error Handling Pattern
+
+All tools follow a consistent error handling approach:
+
+1. **Flag Parsing Errors**: Output error to `color.Error`, then `os.Exit(1)` at 
+2. **Config Loading Errors**: When explicit config file specified, output error and exit at 
+3. **Database Connection Errors**: Output to `color.Error` and exit at 
+4. **Operation Errors**: Tool-specific errors (parse failures, query failures) output and exit similarly
+
+The pattern ensures consistent error reporting across all tools, with colored error messages to `stderr` before termination.
+
+Sources: , , , , ,

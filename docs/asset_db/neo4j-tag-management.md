@@ -1,0 +1,416 @@
+# Neo4j Tag Management
+
+
+---
+
+## Tag Data Model
+
+### Core Tag Types
+
+Tags in Neo4j are represented as separate nodes with relationships to their parent entities or edges. The system supports two tag types:
+
+| Tag Type | Purpose | Parent Relationship | Node Label Pattern |
+|----------|---------|-------------------|-------------------|
+| `EntityTag` | Properties attached to entities | Links to Entity node via `entity_id` | `:EntityTag:{PropertyType}` |
+| `EdgeTag` | Properties attached to edges | Links to Edge relationship via `edge_id` | `:EdgeTag:{PropertyType}` |
+
+Both tag types share a common structure defined in the `types` package:
+
+```
+EntityTag {
+  ID        string         // Unique tag identifier (tag_id)
+  CreatedAt time.Time      // Initial creation timestamp
+  LastSeen  time.Time      // Most recent update timestamp
+  Property  oam.Property   // OAM property instance
+  Entity    *types.Entity  // Reference to parent entity
+}
+
+EdgeTag {
+  ID        string         // Unique tag identifier (tag_id)
+  CreatedAt time.Time      // Initial creation timestamp
+  LastSeen  time.Time      // Most recent update timestamp
+  Property  oam.Property   // OAM property instance
+  Edge      *types.Edge    // Reference to parent edge
+}
+```
+
+
+### Neo4j Node Structure
+
+Tags are stored as nodes with multiple labels for efficient querying:
+
+```mermaid
+graph TB
+    subgraph "EntityTag Node"
+        ET["EntityTag Node<br/>Labels: EntityTag, {PropertyType}<br/><br/>Properties:<br/>tag_id: UUID<br/>entity_id: string<br/>ttype: PropertyType<br/>created_at: LocalDateTime<br/>updated_at: LocalDateTime<br/>+ property-specific fields"]
+    end
+    
+    subgraph "EdgeTag Node"
+        EDT["EdgeTag Node<br/>Labels: EdgeTag, {PropertyType}<br/><br/>Properties:<br/>tag_id: UUID<br/>edge_id: string<br/>ttype: PropertyType<br/>created_at: LocalDateTime<br/>updated_at: LocalDateTime<br/>+ property-specific fields"]
+    end
+    
+    subgraph "Property Types"
+        Simple["SimpleProperty<br/>property_name: string<br/>property_value: string"]
+        DNS["DNSRecordProperty<br/>property_name: string<br/>header_rrtype: int<br/>header_class: int<br/>header_ttl: int<br/>data: string"]
+        Source["SourceProperty<br/>name: string<br/>confidence: int"]
+        Vuln["VulnProperty<br/>vuln_id: string<br/>desc: string<br/>source: string<br/>category: string<br/>enum: string<br/>ref: string"]
+    end
+    
+    ET -.->|"stores one of"| Simple
+    ET -.->|"stores one of"| DNS
+    ET -.->|"stores one of"| Source
+    ET -.->|"stores one of"| Vuln
+    
+    EDT -.->|"stores one of"| Simple
+    EDT -.->|"stores one of"| DNS
+    EDT -.->|"stores one of"| Source
+    EDT -.->|"stores one of"| Vuln
+```
+
+The dual-label system (`:EntityTag:{PropertyType}`) enables:
+- Fast filtering by tag type (EntityTag vs EdgeTag)
+- Type-specific queries without scanning all tags
+- Efficient property content matching
+
+
+---
+
+## Entity Tag Operations
+
+### Tag Creation with Duplicate Handling
+
+The `CreateEntityTag` and `CreateEntityProperty` functions implement sophisticated duplicate detection and timestamp updating:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Neo as "neoRepository"
+    participant DB as "Neo4j Database"
+    
+    Client->>Neo: CreateEntityProperty(entity, property)
+    Neo->>Neo: Wrap in EntityTag struct
+    
+    alt Check for duplicate
+        Neo->>DB: FindEntityTagsByContent(property)
+        
+        alt Tag exists with same content
+            DB-->>Neo: Existing tag found
+            Neo->>Neo: Update LastSeen timestamp
+            Neo->>Neo: Build props map from tag
+            Neo->>DB: MATCH (p:EntityTag) WHERE ...<br/>SET p = $props
+            DB-->>Neo: Updated node
+            Neo->>Neo: nodeToEntityTag(node)
+            Neo-->>Client: Updated EntityTag
+        else No duplicate found
+            Neo->>Neo: Generate unique tag_id
+            Neo->>Neo: Set CreatedAt and LastSeen
+            Neo->>Neo: Build props map
+            Neo->>DB: CREATE (p:EntityTag:{PropertyType} $props)
+            DB-->>Neo: New node created
+            Neo->>Neo: nodeToEntityTag(node)
+            Neo-->>Client: New EntityTag
+        end
+    end
+```
+
+**Key Implementation Details:**
+
+| Function | Purpose | Cypher Pattern |
+|----------|---------|----------------|
+| `CreateEntityTag` | Main tag creation | `CREATE (p:EntityTag:{PropertyType} $props)` |
+| `CreateEntityProperty` | Convenience wrapper | Delegates to `CreateEntityTag` |
+| `uniqueEntityTagID` | Generate unique UUID | Loop until `FindEntityTagById` fails |
+| `entityTagPropsMap` | Serialize tag to map | Flatten Property fields to node properties |
+
+The duplicate detection strategy at  ensures:
+1. Properties with identical content reuse existing tags
+2. `LastSeen` timestamp is updated on duplicates
+3. Property type must match for updates
+4. `CreatedAt` remains unchanged for duplicates
+
+
+### Finding Tags by ID
+
+`FindEntityTagById` retrieves a specific tag using its unique identifier:
+
+```
+Query: MATCH (p:EntityTag {tag_id: $tid}) RETURN p
+```
+
+The function at :
+1. Executes parameterized Cypher query with 30-second timeout
+2. Returns error if no records found
+3. Extracts node from result record
+4. Calls `nodeToEntityTag` for property deserialization
+
+
+### Content-Based Tag Search
+
+`FindEntityTagsByContent` searches for tags matching a specific property value:
+
+```mermaid
+graph LR
+    Input["oam.Property<br/>+ since timestamp"]
+    Query["queryNodeByPropertyKeyValue()"]
+    Match["MATCH (p:EntityTag:{Type})<br/>WHERE key='value'<br/>AND updated_at >= since"]
+    Results["[]*types.EntityTag"]
+    
+    Input --> Query
+    Query --> Match
+    Match --> Results
+```
+
+The `queryNodeByPropertyKeyValue` helper function (defined elsewhere in the codebase) constructs type-specific MATCH patterns. For example, a `SimpleProperty` with `name="test"` and `value="foo"` generates:
+
+```
+MATCH (p:EntityTag:SimpleProperty {property_name: 'test', property_value: 'foo'})
+```
+
+Time filtering is applied when `since` is non-zero:
+```
+WHERE p.updated_at >= localDateTime('2025-01-15T10:30:00')
+```
+
+
+### Retrieving All Entity Tags
+
+`GetEntityTags` fetches all tags for a specific entity with optional filtering:
+
+| Parameter | Type | Purpose |
+|-----------|------|---------|
+| `entity` | `*types.Entity` | Parent entity to query |
+| `since` | `time.Time` | Filter by update timestamp (ignored if zero) |
+| `names` | `...string` | Optional property names to filter (returns all if empty) |
+
+**Query Patterns:**
+
+```cypher
+# Without time filter
+MATCH (p:EntityTag {entity_id: '{entity.ID}'}) RETURN p
+
+# With time filter
+MATCH (p:EntityTag {entity_id: '{entity.ID}'})
+WHERE p.updated_at >= localDateTime('{since}')
+RETURN p
+```
+
+Post-query filtering at  applies the `names` parameter in-memory by comparing `Property.Name()` against the provided list.
+
+
+### Tag Deletion
+
+`DeleteEntityTag` removes a tag node completely:
+
+```cypher
+MATCH (n:EntityTag {tag_id: $tid})
+DETACH DELETE n
+```
+
+The `DETACH DELETE` ensures any relationships to the tag are also removed, maintaining graph integrity.
+
+
+---
+
+## Edge Tag Operations
+
+Edge tag operations mirror entity tag operations with different node labels and parent relationships. The implementation follows the same patterns but uses `:EdgeTag` labels and `edge_id` properties instead of `entity_id`.
+
+**Key Functions:**
+
+```mermaid
+graph TB
+    subgraph "Edge Tag API"
+        CreateEdgeTag["CreateEdgeTag(edge, tag)"]
+        CreateEdgeProp["CreateEdgeProperty(edge, prop)"]
+        FindById["FindEdgeTagById(id)"]
+        FindByContent["FindEdgeTagsByContent(prop, since)"]
+        GetTags["GetEdgeTags(edge, since, names...)"]
+        Delete["DeleteEdgeTag(id)"]
+    end
+    
+    subgraph "Shared Extraction Logic"
+        NodeToTag["nodeToEdgeTag(node)"]
+        NodeToProp["nodeToProperty(node, ptype)"]
+    end
+    
+    CreateEdgeTag --> NodeToTag
+    FindById --> NodeToTag
+    FindByContent --> NodeToTag
+    GetTags --> NodeToTag
+    NodeToTag --> NodeToProp
+```
+
+The implementation reuses the same property extraction logic as entity tags, differing only in:
+- Node label: `:EdgeTag` instead of `:EntityTag`
+- Parent reference field: `edge_id` instead of `entity_id`
+- Return type: `*types.EdgeTag` instead of `*types.EntityTag`
+
+
+---
+
+## Property Extraction System
+
+### Converting Neo4j Nodes to Tags
+
+The extraction functions transform Neo4j nodes back into Go structs:
+
+```mermaid
+graph TB
+    Node["neo4jdb.Node<br/>Raw Neo4j node"]
+    
+    subgraph "Tag Extraction"
+        EntityExtract["nodeToEntityTag()"]
+        EdgeExtract["nodeToEdgeTag()"]
+    end
+    
+    subgraph "Property Extraction"
+        PropExtract["nodeToProperty(node, ptype)"]
+    end
+    
+    subgraph "Type-Specific Extraction"
+        DNS["nodeToDNSRecordProperty()"]
+        Simple["nodeToSimpleProperty()"]
+        Source["nodeToSourceProperty()"]
+        Vuln["nodeToVulnProperty()"]
+    end
+    
+    Node --> EntityExtract
+    Node --> EdgeExtract
+    
+    EntityExtract --> PropExtract
+    EdgeExtract --> PropExtract
+    
+    PropExtract --> DNS
+    PropExtract --> Simple
+    PropExtract --> Source
+    PropExtract --> Vuln
+```
+
+**Extraction Flow:**
+
+1. **Read Common Fields** - Extract `tag_id`, `entity_id`/`edge_id`, timestamps
+2. **Determine Property Type** - Read `ttype` field to identify OAM property type
+3. **Dispatch to Type Handler** - Call appropriate `nodeTo{Type}Property` function
+4. **Assemble Tag Struct** - Combine extracted data into `EntityTag` or `EdgeTag`
+
+
+### Property Type Handlers
+
+Each OAM property type has a dedicated extraction function:
+
+| Property Type | Extractor Function | Key Fields Extracted |
+|---------------|-------------------|---------------------|
+| `DNSRecordProperty` | `nodeToDNSRecordProperty` | `property_name`, `header_rrtype`, `header_class`, `header_ttl`, `data` |
+| `SimpleProperty` | `nodeToSimpleProperty` | `property_name`, `property_value` |
+| `SourceProperty` | `nodeToSourceProperty` | `name`, `confidence` |
+| `VulnProperty` | `nodeToVulnProperty` | `vuln_id`, `desc`, `source`, `category`, `enum`, `ref` |
+
+**Example: SimpleProperty Extraction**
+
+ demonstrates the straightforward extraction:
+
+```
+1. Call neo4jdb.GetProperty[string](node, "property_name")
+2. Call neo4jdb.GetProperty[string](node, "property_value")
+3. Return &general.SimpleProperty with both fields
+```
+
+Each extractor uses `neo4jdb.GetProperty[T]` for type-safe property access. Errors propagate upward if required fields are missing.
+
+
+---
+
+## Time Management
+
+### Timestamp Fields
+
+Tags maintain two timestamps for tracking:
+
+| Field | Purpose | Update Strategy |
+|-------|---------|-----------------|
+| `CreatedAt` | Initial creation time | Set once, never updated |
+| `LastSeen` | Most recent observation | Updated on every duplicate detection |
+
+Both timestamps use Neo4j's `LocalDateTime` type for storage, converted via helper functions:
+
+```
+Go time.Time --> Neo4j LocalDateTime: timeToNeo4jTime(t)
+Neo4j LocalDateTime --> Go time.Time: neo4jTimeToTime(t)
+```
+
+**Timestamp Behavior in Queries:**
+
+```cypher
+# Time filter format
+WHERE p.updated_at >= localDateTime('2025-01-15T10:30:00.123456789')
+```
+
+The `since` parameter in query functions filters tags by `updated_at` (alias for `LastSeen`), enabling temporal queries for recently modified tags.
+
+
+---
+
+## Duplicate Detection Strategy
+
+### Content Matching Logic
+
+The duplicate detection system at  prevents redundant tag creation:
+
+```mermaid
+graph TD
+    Start["CreateEntityTag called"]
+    Query["FindEntityTagsByContent(property)"]
+    
+    Decision{"Existing tag<br/>found?"}
+    
+    TypeCheck{"Property type<br/>matches?"}
+    Update["Update LastSeen<br/>Build props map<br/>SET p = $props"]
+    Create["Generate new tag_id<br/>Set CreatedAt/LastSeen<br/>CREATE new node"]
+    
+    Error["Return error:<br/>type mismatch"]
+    Return["Return tag"]
+    
+    Start --> Query
+    Query --> Decision
+    
+    Decision -->|Yes| TypeCheck
+    Decision -->|No| Create
+    
+    TypeCheck -->|Yes| Update
+    TypeCheck -->|No| Error
+    
+    Update --> Return
+    Create --> Return
+    Error --> Return
+```
+
+**Property Type Validation:**
+
+The check at  ensures type consistency:
+```
+if input.Property.PropertyType() != t.Property.PropertyType() {
+    return error
+}
+```
+
+This prevents a `SimpleProperty` from updating a `DNSRecordProperty` with the same name, maintaining data integrity.
+
+
+---
+
+## Test Coverage
+
+The integration tests in [repository/neo4j/tag_test.go]() verify:
+
+| Test Case | Coverage |
+|-----------|----------|
+| `TestEntityTag` | Full lifecycle: create, find, duplicate handling, timestamp updates, query by name, deletion |
+| `TestEdgeTag` | Parallel verification for edge tags |
+
+**Key Test Scenarios:**
+
+1. **Initial Creation** - Verify `CreatedAt` and `LastSeen` are set correctly
+2. **Duplicate Detection** - Second creation with same property updates `LastSeen` only
+3. **Value Change** - New property value creates new tag with later `CreatedAt`
+4. **Filtered Retrieval** - `GetEntityTags` with name filter returns correct subset
+5. **Deletion** - Tag removal and subsequent lookup failure

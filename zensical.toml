@@ -36,6 +36,7 @@ nav = [
     { "assoc" = "cli/assoc.md" },
     { "track" = "cli/track.md" },
     { "viz" = "cli/viz.md" },
+    { "OAM Analysis Tools" = "cli/oam-tools.md" },
   ]},
   { "Configuration" = [
     { "Configuration" = "configuration/index.md" },
@@ -53,6 +54,7 @@ nav = [
     { "Data" = [
       { "Data Flow" = "architecture/data-flow.md" },
       { "Data Model" = "architecture/data-model.md" },
+      { "Graph Database & Querying" = "architecture/graph-querying.md" },
       { "Network Mapping" = "architecture/network-mapping.md" },
     ]},
     { "DNS" = [
@@ -66,7 +68,9 @@ nav = [
     { "DNS Discovery" = "plugins/dns-discovery.md" },
     { "API Integrations" = "plugins/api-integrations.md" },
     { "Service Discovery" = "plugins/service-discovery.md" },
+    { "Service Discovery Integration" = "plugins/service-discovery-integration.md" },
     { "Enrichment" = "plugins/enrichment.md" },
+    { "Support Utilities" = "plugins/support-utilities.md" },
   ]},
   { "Open Asset Model" = [
     { "Overview" = "open_asset_model/index.md" },
@@ -120,6 +124,10 @@ nav = [
     { "Caching" = "asset_db/caching.md" },
     { "Triples" = "asset_db/triples.md" },
     { "Neo4j Repository" = "asset_db/neo4j.md" },
+    { "Neo4j Entity Operations" = "asset_db/neo4j-entity-operations.md" },
+    { "Neo4j Edge Operations" = "asset_db/neo4j-edge-operations.md" },
+    { "Neo4j Tag Management" = "asset_db/neo4j-tag-management.md" },
+    { "Neo4j Schema" = "asset_db/neo4j-schema.md" },
     { "API Reference" = "asset_db/api-reference.md" },
     { "Repository Interface" = "asset_db/repository-interface.md" },
     { "Cache Interface" = "asset_db/api-reference-cache.md" },
@@ -129,6 +137,8 @@ nav = [
     { "Installation" = "asset_db/installation.md" },
     { "Database Configuration" = "asset_db/db-configuration.md" },
     { "Basic Usage" = "asset_db/basic-usage.md" },
+    { "Docker Deployment" = "asset_db/docker.md" },
+    { "Testing" = "asset_db/testing.md" },
   ]},
   { "Contributing" = [
     { "Contributing" = "contributing/contributing.md" },
