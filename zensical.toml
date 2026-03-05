@@ -44,16 +44,22 @@ nav = [
   ]},
   { "Architecture" = [
     { "Overview" = "architecture/index.md" },
-    { "Engine Core" = "architecture/engine-core.md" },
-    { "Event Dispatcher" = "architecture/event-dispatcher.md" },
-    { "Plugin Registry" = "architecture/plugin-registry.md" },
-    { "Sessions" = "architecture/sessions.md" },
-    { "Data Flow" = "architecture/data-flow.md" },
-    { "DNS System" = "architecture/dns-system.md" },
-    { "DNS Wildcard Detection" = "architecture/dns-wildcard.md" },
-    { "DNS Caching" = "architecture/dns-caching.md" },
-    { "Network Mapping" = "architecture/network-mapping.md" },
-    { "Data Model" = "architecture/data-model.md" },
+    { "Engine" = [
+      { "Engine Core" = "architecture/engine-core.md" },
+      { "Event Dispatcher" = "architecture/event-dispatcher.md" },
+      { "Plugin Registry" = "architecture/plugin-registry.md" },
+      { "Sessions" = "architecture/sessions.md" },
+    ]},
+    { "Data" = [
+      { "Data Flow" = "architecture/data-flow.md" },
+      { "Data Model" = "architecture/data-model.md" },
+      { "Network Mapping" = "architecture/network-mapping.md" },
+    ]},
+    { "DNS" = [
+      { "DNS System" = "architecture/dns-system.md" },
+      { "Wildcard Detection" = "architecture/dns-wildcard.md" },
+      { "Caching" = "architecture/dns-caching.md" },
+    ]},
   ]},
   { "Plugins" = [
     { "Overview" = "plugins/index.md" },
@@ -62,7 +68,7 @@ nav = [
     { "Service Discovery" = "plugins/service-discovery.md" },
     { "Enrichment" = "plugins/enrichment.md" },
   ]},
-  { "Data Model" = [
+  { "Open Asset Model" = [
     { "Overview" = "open_asset_model/index.md" },
     { "Assets" = [
       { "Assets" = "open_asset_model/assets/index.md" },
@@ -105,9 +111,15 @@ nav = [
     ]},
     { "Implementation Guide" = "open_asset_model/implementation.md" },
     { "Use Cases & Examples" = "open_asset_model/use-cases.md" },
-    { "Asset Database" = "asset_db/index.md" },
+  ]},
+  { "Asset Database" = [
+    { "Overview" = "asset_db/index.md" },
+    { "Getting Started" = "asset_db/getting-started.md" },
     { "PostgreSQL" = "asset_db/postgres.md" },
+    { "Migrations" = "asset_db/migrations.md" },
+    { "Caching" = "asset_db/caching.md" },
     { "Triples" = "asset_db/triples.md" },
+    { "API Reference" = "asset_db/api-reference.md" },
   ]},
   { "Contributing" = [
     { "Contributing" = "contributing/contributing.md" },
