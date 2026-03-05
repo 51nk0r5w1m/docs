@@ -3893,9 +3893,10 @@
 <li><code>exclude</code> (array of strings, optional): List of transforms to exclude.
 In this example, the TTL and confidence settings will only apply when the transformation is handled by the plugin named <code>myplugin</code>.</li>
 </ul>
-<blockquote>
-<p><strong>Tip:</strong> Use <code>ALL</code> as the transform to apply the rule to all transforms for a given entity.</p>
-</blockquote>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Use <code>ALL</code> as the transform to apply the rule to all transforms for a given entity.</p>
+</div>
 <p><strong>Example:</strong></p>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">transformations</span><span class="p">:</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">FQDN-&gt;DNS</span><span class="p">:</span>
@@ -3942,9 +3943,10 @@ In this example, the TTL and confidence settings will only apply when the transf
 <p><strong>Programmatic Access:</strong> If you use Amass as a Go library, you can read, modify, or extend the config structs directly, including any custom or experimental options you add to your YAML.</p>
 </li>
 </ul>
-<blockquote>
-<p><strong>Tip:</strong> This flexibility is powerful for advanced users and developers, but be careful—unsupported or misspelled options may be silently ignored unless handled in code.</p>
-</blockquote>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>This flexibility is powerful for advanced users and developers, but be careful—unsupported or misspelled options may be silently ignored unless handled in code.</p>
+</div>
 
 
 

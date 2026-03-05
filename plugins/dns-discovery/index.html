@@ -1685,17 +1685,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#purpose-and-scope" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Purpose and Scope
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3622,17 +3611,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#purpose-and-scope" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Purpose and Scope
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3906,7 +3884,6 @@
 
 
 <h1 id="dns-discovery-plugins">DNS Discovery Plugins<a class="headerlink" href="#dns-discovery-plugins" title="Permanent link">&para;</a></h1>
-<h2 id="purpose-and-scope">Purpose and Scope<a class="headerlink" href="#purpose-and-scope" title="Permanent link">&para;</a></h2>
 <p>The DNS Discovery Plugin suite is responsible for performing comprehensive DNS-based reconnaissance to discover FQDNs, IP addresses, and their relationships. This includes querying various DNS record types (TXT, CNAME, A/AAAA, NS, MX, SRV, PTR), managing the domain hierarchy, and triggering cascading discovery through event dispatch.</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
 <p>The DNS plugin consists of six specialized handlers that process different DNS record types in a priority-ordered pipeline. Each handler follows a consistent pattern: check incoming events, query or lookup DNS records, store results in the graph database, and dispatch new events for discovered assets.</p>

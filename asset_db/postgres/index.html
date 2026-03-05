@@ -3248,17 +3248,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#purpose-and-scope" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Purpose and Scope
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#repository-architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3916,7 +3905,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#purpose-and-scope_1" class="md-nav__link">
+  <a href="#purpose-and-scope" class="md-nav__link">
     <span class="md-ellipsis">
       
         Purpose and Scope
@@ -4598,17 +4587,6 @@
     <span class="md-ellipsis">
       
         Database Schema &amp; Migrations
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#purpose-and-scope_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Purpose and Scope
       
     </span>
   </a>
@@ -5439,17 +5417,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#purpose-and-scope" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Purpose and Scope
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#repository-architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6107,7 +6074,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#purpose-and-scope_1" class="md-nav__link">
+  <a href="#purpose-and-scope" class="md-nav__link">
     <span class="md-ellipsis">
       
         Purpose and Scope
@@ -6796,17 +6763,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#purpose-and-scope_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Purpose and Scope
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#migration-architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -7343,9 +7299,10 @@
 
 <h1 id="setting-up-a-postgresql-database-for-owasp-amass">Setting Up a PostgreSQL Database for OWASP Amass<a class="headerlink" href="#setting-up-a-postgresql-database-for-owasp-amass" title="Permanent link">&para;</a></h1>
 <p>The OWASP Amass framework can store collected data in a PostgreSQL database. This page walks you through the recommended setup process, including environment variables, database initialization, and configuration in your <code>config.yaml</code> file.</p>
-<blockquote>
-<p><strong>Note:</strong> These instructions assume PostgreSQL is already installed and running on your system (e.g., <code>localhost:5432</code>). You’ll need access to a user with sufficient privileges (typically <code>postgres</code>).</p>
-</blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These instructions assume PostgreSQL is already installed and running on your system (e.g., <code>localhost:5432</code>). You’ll need access to a user with sufficient privileges (typically <code>postgres</code>).</p>
+</div>
 <h2 id="1-define-environment-variables">1. Define Environment Variables<a class="headerlink" href="#1-define-environment-variables" title="Permanent link">&para;</a></h2>
 <p>Before running the setup commands, export the following environment variables to define your database, user, and passwords. These values will be used in the setup process and your Amass configuration.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">POSTGRES_USER</span><span class="o">=</span>postgres
@@ -7428,7 +7385,6 @@
 <li><a href="https://direnv.net/">Managing Environment Variables Securely</a></li>
 </ul>
 <h2 id="sql-repository-implementation">SQL Repository Implementation<a class="headerlink" href="#sql-repository-implementation" title="Permanent link">&para;</a></h2>
-<h2 id="purpose-and-scope">Purpose and Scope<a class="headerlink" href="#purpose-and-scope" title="Permanent link">&para;</a></h2>
 <p>The SQL Repository provides a relational database implementation of the <code>Repository</code> interface using GORM as the ORM layer. It supports PostgreSQL for production deployments and SQLite for embedded/development use cases. This document covers the architecture, initialization, and data storage approach of the SQL repository implementation.</p>
 <p>For detailed information about specific operations:
 - Entity CRUD operations: see <a href=".././postgres/#sql-entity-operations">SQL Entity Operations</a>
@@ -8152,7 +8108,7 @@
 </table>
 <p>The <code>sqlRepository</code> struct contains a <code>*gorm.DB</code> field that executes these operations against PostgreSQL or SQLite databases configured at initialization.</p>
 <h3 id="sql-edge-operations">SQL Edge Operations<a class="headerlink" href="#sql-edge-operations" title="Permanent link">&para;</a></h3>
-<h3 id="purpose-and-scope_1">Purpose and Scope<a class="headerlink" href="#purpose-and-scope_1" title="Permanent link">&para;</a></h3>
+<h3 id="purpose-and-scope">Purpose and Scope<a class="headerlink" href="#purpose-and-scope" title="Permanent link">&para;</a></h3>
 <p>This document details the SQL repository implementation for edge operations. Edges represent directed relationships between entities in the property graph model. The SQL implementation uses GORM to manage edges stored in relational databases (PostgreSQL and SQLite).</p>
 <p>This page covers edge creation, querying, retrieval, and deletion operations. For entity management, see <a href=".././postgres/#sql-entity-operations">SQL Entity Operations</a>. For edge tag operations, see <a href=".././postgres/#sql-tag-management">SQL Tag Management</a>. For the Neo4j graph database implementation of edge operations, see <a href=".././triples/#neo4j-edge-operations">Neo4j Edge Operations</a>.</p>
 <hr />
@@ -9001,7 +8957,6 @@ All timestamps are stored in UTC but converted to local time when returned via <
 </table>
 <p>The "zero tags found" error  is explicitly returned when queries produce no results, distinguishing between database errors and legitimate empty result sets.</p>
 <h2 id="database-schema-migrations">Database Schema &amp; Migrations<a class="headerlink" href="#database-schema-migrations" title="Permanent link">&para;</a></h2>
-<h2 id="purpose-and-scope_2">Purpose and Scope<a class="headerlink" href="#purpose-and-scope_2" title="Permanent link">&para;</a></h2>
 <p>This document covers the SQL schema migration system for PostgreSQL and SQLite databases in the asset-db repository. It details the migration scripts, table structures, indexes, constraints, and the execution mechanism using the <code>sql-migrate</code> library.</p>
 <p>For Neo4j graph database schema initialization, see <a href="#7.2">Neo4j Schema Initialization</a>.</p>
 <hr />

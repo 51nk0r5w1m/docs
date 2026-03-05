@@ -3261,17 +3261,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#purpose-and-scope" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Purpose and Scope
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#api-organization" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3504,17 +3493,6 @@
     <span class="md-ellipsis">
       
         Repository Interface
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#purpose-and-scope_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Purpose and Scope
       
     </span>
   </a>
@@ -4396,17 +4374,6 @@
     <span class="md-ellipsis">
       
         Core Data Types
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#purpose-and-scope_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Purpose and Scope
       
     </span>
   </a>
@@ -5020,17 +4987,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#purpose-and-scope" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Purpose and Scope
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#api-organization" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5263,17 +5219,6 @@
     <span class="md-ellipsis">
       
         Repository Interface
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#purpose-and-scope_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Purpose and Scope
       
     </span>
   </a>
@@ -6162,17 +6107,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#purpose-and-scope_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Purpose and Scope
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#type-overview" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6702,7 +6636,6 @@
 
 
 <h1 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h1>
-<h2 id="purpose-and-scope">Purpose and Scope<a class="headerlink" href="#purpose-and-scope" title="Permanent link">&para;</a></h2>
 <p>This page provides an overview of the asset-db API structure and conventions. It describes the main interfaces, factory methods, and type system that developers interact with when using asset-db as a library.</p>
 <p>For detailed documentation of specific methods, see:
 - <strong><a href=".././api-reference/#repository-interface">Repository Interface</a></strong> - Complete method signatures and behavior
@@ -7174,7 +7107,6 @@
 </ol>
 <p>For detailed method signatures and behaviors, see the child pages listed at the top of this document.</p>
 <h2 id="repository-interface">Repository Interface<a class="headerlink" href="#repository-interface" title="Permanent link">&para;</a></h2>
-<h2 id="purpose-and-scope_1">Purpose and Scope<a class="headerlink" href="#purpose-and-scope_1" title="Permanent link">&para;</a></h2>
 <p>The Repository interface is the central contract for all database operations in asset-db. It defines a unified API for creating, retrieving, and managing entities, edges, and tags across different database backends (PostgreSQL, SQLite, Neo4j). This page documents all methods in the <code>repository.Repository</code> interface.</p>
 <p>For implementation-specific details, see <a href=".././postgres/#sql-repository-implementation">SQL Repository</a> and <a href=".././triples/#neo4j-repository">Neo4j Repository</a>. For performance optimization using caching, see <a href=".././caching/">Caching System</a>.</p>
 <hr />
@@ -8243,7 +8175,6 @@
     CheckStart --&gt;|No| UseCache</code></pre>
 <p><strong>Rationale:</strong> If <code>since</code> is before the cache was created (<code>c.start</code>), the cache cannot contain the requested historical data, so the database must be queried.</p>
 <h2 id="core-data-types">Core Data Types<a class="headerlink" href="#core-data-types" title="Permanent link">&para;</a></h2>
-<h2 id="purpose-and-scope_2">Purpose and Scope<a class="headerlink" href="#purpose-and-scope_2" title="Permanent link">&para;</a></h2>
 <p>This page provides reference documentation for the four core data types defined in the <code>types</code> package: <code>Entity</code>, <code>Edge</code>, <code>EntityTag</code>, and <code>EdgeTag</code>. These types form the foundation of the asset-db data model and are used consistently across all repository implementations.</p>
 <p>For information about how these types are used in the Repository interface operations, see <a href=".././api-reference/#repository-interface">Repository Interface</a>. For details on Open Asset Model integration and asset/property/relation definitions, see <a href=".././#open-asset-model-integration">Open Asset Model Integration</a>.</p>
 <hr />
