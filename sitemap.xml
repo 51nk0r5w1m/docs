@@ -106,10 +106,37 @@
         <loc>https://51nk0r5w1m.github.io/docs/plugins/support-utilities/</loc>
       </url>
       <url>
+        <loc>https://51nk0r5w1m.github.io/docs/plugins/gleif/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/plugins/aviato/</loc>
+      </url>
+      <url>
         <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/</loc>
       </url>
       <url>
+        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/asset-interface/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/relation-interface/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/property-interface/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/package-organization/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/testing/</loc>
+      </url>
+      <url>
         <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/assets/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/assets/network-assets/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/assets/financial-assets/</loc>
       </url>
       <url>
         <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/assets/account/</loc>
@@ -176,6 +203,12 @@
       </url>
       <url>
         <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/relations/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/relations/taxonomy/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/relations/dns-relations/</loc>
       </url>
       <url>
         <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/relations/basic_dns_relation/</loc>
