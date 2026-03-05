@@ -1,0 +1,6205 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="In-depth OSINT collection and external attack surface mapping">
+      
+      
+        <meta name="author" content="OWASP Amass Contributors">
+      
+      
+        <link rel="canonical" href="https://51nk0r5w1m.github.io/docs/asset_db/sql/">
+      
+      
+        <link rel="prev" href="../api/data-types/">
+      
+      
+        <link rel="next" href="./entity-operations/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="zensical-0.0.24">
+    
+    
+      
+        <title>SQL Repository Implementation - OWASP Amass Project</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.28978c9b.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/modern/palette.dfe2e883.min.css">
+      
+      
+
+  
+  
+  
+  
+  <style>:root{--md-annotation-icon:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M17%2013h-4v4h-2v-4H7v-2h4V7h2v4h4m-5-9A10%2010%200%200%200%202%2012a10%2010%200%200%200%2010%2010%2010%2010%200%200%200%2010-10A10%2010%200%200%200%2012%202%22/%3E%3C/svg%3E');}</style>
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,500,500i,700,700i%7CFira+Code:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Lato";--md-code-font:"Fira Code"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,a=__md_scope)=>JSON.parse(t.getItem(a.pathname+"."+e)),__md_set=(e,t,a=localStorage,_=__md_scope)=>{try{a.setItem(_.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#sql-repository-implementation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="OWASP Amass Project" class="md-header__button md-logo" aria-label="OWASP Amass Project" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.897 20.503c-.384 0-1.782-2.489-1.97-3.198-.393-1.486-.308-2.114-.285-2.314.072-.613.667-.92.703-1.748.01-.256.14-1.535.243-2.534a1.7 1.7 0 0 1-.733-.343c.676.908-.32 1.995-1.767 3.443-1.536 1.536-4.945 2.961-4.945 2.961s1.425-3.41 2.961-4.945c1.13-1.129 2.04-1.983 2.816-1.983.22 0 .427.067.627.216a1.7 1.7 0 0 1-.343-.733c-.999.103-2.278.232-2.534.244-.829.036-1.135.63-1.747.702-.07.008-.194.024-.388.024-.36 0-.963-.054-1.926-.31-.772-.203-3.648-1.84-3.14-2.045.26-.105 1.087-.176 2.175-.176 1.047 0 2.337.066 3.596.23 1.57.205 3.01.463 3.992.656q.024-.08.058-.154l-1.004-.48s-.8-.92-.715-.984l.012-.003c.126 0 .767.733.829.816l.605.202-.284-.249s-.388-1.438-.287-1.472h.004c.106 0 .459 1.25.489 1.34.07.06.303.152.596.32l-.308-.79s.14-1.305.243-1.305h.003c.105.021-.02 1.089-.047 1.221l.51.783a1.3 1.3 0 0 1 .463-.082c.184 0 .374.036.558.107-.236-.502-.218-1.025.095-1.338a.84.84 0 0 1 .353-.209.46.46 0 0 1 .457-.383c.127 0 .254.05.352.148a.5.5 0 0 1 .147.335c.151-.311.329-.73.317-.867-.03-.307-.386-.852-.39-.857a.076.076 0 0 1 .064-.119c.025 0 .05.012.064.035.016.023.381.582.414.927.018.198-.21.696-.333.95a2.23 2.23 0 0 1 .873.874c.245-.12.715-.334.927-.334l.024.001c.345.033.904.399.927.414a.076.076 0 0 1-.084.128c-.005-.004-.55-.36-.857-.39h-.015c-.15 0-.552.171-.852.317.12.004.242.053.335.147a.48.48 0 0 1 .012.681.46.46 0 0 1-.247.128.85.85 0 0 1-.21.354.92.92 0 0 1-.67.255c-.212 0-.441-.055-.667-.16.132.343.142.708.025 1.02l.783.51c.095-.019.666-.088.993-.088.13 0 .222.011.228.04.02.106-1.305.247-1.305.247l-.79-.308c.168.293.26.527.32.596.091.03 1.374.392 1.34.493q-.007.018-.063.017c-.283 0-1.41-.304-1.41-.304l-.248-.284.202.605c.087.065.876.755.813.841q-.006.007-.016.007c-.139 0-.967-.722-.967-.722l-.481-1.004a1 1 0 0 1-.154.058c.193.982.451 2.422.656 3.992.335 2.569.26 5.261.054 5.77q-.024.06-.076.06M12 24C5.373 24 0 18.627 0 12S5.373 0 12 0s12 5.373 12 12-5.373 12-12 12m0-22.153C6.393 1.847 1.847 6.393 1.847 12S6.393 22.153 12 22.153 22.153 17.607 22.153 12 17.607 1.847 12 1.847"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OWASP Amass Project
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              SQL Repository Implementation
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/51nk0r5w1m/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    OWASP Amass
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../.." class="md-tabs__link">
+          
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../cli/" class="md-tabs__link">
+          
+  
+  CLI
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../configuration/" class="md-tabs__link">
+          
+  
+  Configuration
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/" class="md-tabs__link">
+          
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../plugins/" class="md-tabs__link">
+          
+  
+  Plugins
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../open_asset_model/" class="md-tabs__link">
+          
+  
+  Open Asset Model
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  Asset Database
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../contributing/contributing/" class="md-tabs__link">
+          
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="OWASP Amass Project" class="md-nav__button md-logo" aria-label="OWASP Amass Project" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.897 20.503c-.384 0-1.782-2.489-1.97-3.198-.393-1.486-.308-2.114-.285-2.314.072-.613.667-.92.703-1.748.01-.256.14-1.535.243-2.534a1.7 1.7 0 0 1-.733-.343c.676.908-.32 1.995-1.767 3.443-1.536 1.536-4.945 2.961-4.945 2.961s1.425-3.41 2.961-4.945c1.13-1.129 2.04-1.983 2.816-1.983.22 0 .427.067.627.216a1.7 1.7 0 0 1-.343-.733c-.999.103-2.278.232-2.534.244-.829.036-1.135.63-1.747.702-.07.008-.194.024-.388.024-.36 0-.963-.054-1.926-.31-.772-.203-3.648-1.84-3.14-2.045.26-.105 1.087-.176 2.175-.176 1.047 0 2.337.066 3.596.23 1.57.205 3.01.463 3.992.656q.024-.08.058-.154l-1.004-.48s-.8-.92-.715-.984l.012-.003c.126 0 .767.733.829.816l.605.202-.284-.249s-.388-1.438-.287-1.472h.004c.106 0 .459 1.25.489 1.34.07.06.303.152.596.32l-.308-.79s.14-1.305.243-1.305h.003c.105.021-.02 1.089-.047 1.221l.51.783a1.3 1.3 0 0 1 .463-.082c.184 0 .374.036.558.107-.236-.502-.218-1.025.095-1.338a.84.84 0 0 1 .353-.209.46.46 0 0 1 .457-.383c.127 0 .254.05.352.148a.5.5 0 0 1 .147.335c.151-.311.329-.73.317-.867-.03-.307-.386-.852-.39-.857a.076.076 0 0 1 .064-.119c.025 0 .05.012.064.035.016.023.381.582.414.927.018.198-.21.696-.333.95a2.23 2.23 0 0 1 .873.874c.245-.12.715-.334.927-.334l.024.001c.345.033.904.399.927.414a.076.076 0 0 1-.084.128c-.005-.004-.55-.36-.857-.39h-.015c-.15 0-.552.171-.852.317.12.004.242.053.335.147a.48.48 0 0 1 .012.681.46.46 0 0 1-.247.128.85.85 0 0 1-.21.354.92.92 0 0 1-.67.255c-.212 0-.441-.055-.667-.16.132.343.142.708.025 1.02l.783.51c.095-.019.666-.088.993-.088.13 0 .222.011.228.04.02.106-1.305.247-1.305.247l-.79-.308c.168.293.26.527.32.596.091.03 1.374.392 1.34.493q-.007.018-.063.017c-.283 0-1.41-.304-1.41-.304l-.248-.284.202.605c.087.065.876.755.813.841q-.006.007-.016.007c-.139 0-.967-.722-.967-.722l-.481-1.004a1 1 0 0 1-.154.058c.193.982.451 2.422.656 3.992.335 2.569.26 5.261.054 5.77q-.024.06-.076.06M12 24C5.373 24 0 18.627 0 12S5.373 0 12 0s12 5.373 12 12-5.373 12-12 12m0-22.153C6.393 1.847 1.847 6.393 1.847 12S6.393 22.153 12 22.153 22.153 17.607 22.153 12 17.607 1.847 12 1.847"/></svg>
+
+    </a>
+    OWASP Amass Project
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/51nk0r5w1m/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    OWASP Amass
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deployment/docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deployment/config-best-practices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Best Practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CLI
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/enum/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    enum
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/subs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    subs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/assoc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    assoc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/track/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    track
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/viz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    viz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/oam-tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OAM Analysis Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Configuration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/data_sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Sources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/transformations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transformations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Engine
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/engine-core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/event-dispatcher/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Dispatcher
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/plugin-registry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin Registry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/sessions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sessions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/data-flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/data-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/graph-querying/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Graph Database & Querying
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/network-mapping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network Mapping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/core-concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DNS
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/dns-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/dns-query-execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Query Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/dns-wildcard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wildcard Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/dns-caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/dns-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/api-integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Integrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/service-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/service-discovery-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service Discovery Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/enrichment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enrichment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/support-utilities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Support Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/gleif/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GLEIF
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/aviato/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aviato
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Asset Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Open Asset Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/asset-interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset Interface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relation-interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relation Interface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/property-interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Property Interface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/package-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_7" id="__nav_6_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assets
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Assets
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/network-assets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network Assets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/financial-assets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Financial Assets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/account/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Account
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/autnum_record/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AutnumRecord
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/autonomous_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AutonomousSystem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/contact_record/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ContactRecord
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/domain_record/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DomainRecord
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/file/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    File
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/fqdn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FQDN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/funds_transfer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FundsTransfer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/identifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/ip_address/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IPAddress
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/ipnet_record/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IPNetRecord
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/location/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Location
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/netblock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Netblock
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/person/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/phone/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/product/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/product_release/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ProductRelease
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/tls_certificate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TLSCertificate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/url/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    URL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_8" id="__nav_6_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Relations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/taxonomy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relation Taxonomy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/dns-relations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Relations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/basic_dns_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BasicDNSRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/port_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PortRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/pref_dns_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PrefDNSRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/simple_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SimpleRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/srv_dns_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SRVDNSRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_9" id="__nav_6_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Properties
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Properties
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/properties/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Properties
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/properties/dns_property/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNSRecordProperty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/properties/simple_property/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SimpleProperty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/properties/source_property/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SourceProperty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/properties/vuln_property/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VulnProperty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/use-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Use Cases & Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset Database
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Asset Database
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../postgres/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PostgreSQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../triples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Triples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../neo4j/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Neo4j Repository
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../neo4j/entity-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Neo4j Entity Operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../neo4j/edge-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Neo4j Edge Operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../neo4j/tag-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Neo4j Tag Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../neo4j/schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Neo4j Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/repository-interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository Interface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/cache-interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cache Interface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/data-types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Data Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL Repository
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./entity-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL Entity Operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./edge-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL Edge Operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./tag-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL Tag Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="./schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL Schema & Migrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup/basic-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Basic Usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Amass Docs
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Asset Database
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+    <a href="https://github.com/51nk0r5w1m/docs/edit/main/docs/asset_db/sql/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-file-pen" viewBox="0 0 24 24"><path d="M12.659 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v9.34"/><path d="M14 2v5a1 1 0 0 0 1 1h5M10.378 12.622a1 1 0 0 1 3 3.003L8.36 20.637a2 2 0 0 1-.854.506l-2.867.837a.5.5 0 0 1-.62-.62l.836-2.869a2 2 0 0 1 .506-.853z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/51nk0r5w1m/docs/raw/main/docs/asset_db/sql/index.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-file-code-2" viewBox="0 0 24 24"><path d="M4 12.15V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.706.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2h-3.35"/><path d="M14 2v5a1 1 0 0 0 1 1h5M5 16l-3 3 3 3M9 22l3-3-3-3"/></svg>
+    </a>
+  
+
+
+<h1 id="sql-repository-implementation">SQL Repository Implementation<a class="headerlink" href="#sql-repository-implementation" title="Permanent link">&para;</a></h1>
+<p>The SQL Repository provides a relational database implementation of the <code>Repository</code> interface using GORM as the ORM layer. It supports PostgreSQL for production deployments and SQLite for embedded/development use cases. This document covers the architecture, initialization, and data storage approach of the SQL repository implementation.</p>
+<p>For detailed information about specific operations:
+- Entity CRUD operations: see <a href="./postgres/#sql-entity-operations">SQL Entity Operations</a>
+- Edge management and querying: see <a href="./postgres/#sql-edge-operations">SQL Edge Operations</a><br />
+- Tag creation and retrieval: see <a href="./postgres/#sql-tag-management">SQL Tag Management</a></p>
+<p>For the Neo4j graph database implementation, see <a href="./triples/#neo4j-repository">Neo4j Repository</a>.</p>
+<hr />
+<h1 id="repository-architecture">Repository Architecture<a class="headerlink" href="#repository-architecture" title="Permanent link">&para;</a></h1>
+<p>The SQL repository is implemented by the <code>sqlRepository</code> struct defined in . It wraps a GORM database connection and implements all methods of the <code>Repository</code> interface.</p>
+<h2 id="core-components">Core Components<a class="headerlink" href="#core-components" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>graph TB
+    RepositoryInterface["repository.Repository&lt;br/&gt;Interface"]
+    sqlRepository["sqlRepository&lt;br/&gt;struct"]
+    GORMDB["*gorm.DB&lt;br/&gt;ORM Connection"]
+
+    subgraph "Database Backends"
+        PostgresDriver["postgres.Open()&lt;br/&gt;PostgreSQL Driver"]
+        SQLiteDriver["sqlite.Open()&lt;br/&gt;SQLite Driver"]
+    end
+
+    subgraph "Storage Layer"
+        PostgresDB[("PostgreSQL&lt;br/&gt;Database")]
+        SQLiteDB[("SQLite&lt;br/&gt;File or Memory")]
+    end
+
+    RepositoryInterface -.-&gt;|"implements"| sqlRepository
+    sqlRepository --&gt;|"sql.db"| GORMDB
+    sqlRepository --&gt;|"sql.dbtype"| DBType["dbtype: string&lt;br/&gt;'postgres', 'sqlite', 'sqlite_memory'"]
+
+    GORMDB --&gt;|"uses"| PostgresDriver
+    GORMDB --&gt;|"uses"| SQLiteDriver
+
+    PostgresDriver --&gt; PostgresDB
+    SQLiteDriver --&gt; SQLiteDB</code></pre>
+<hr />
+<h1 id="database-type-constants">Database Type Constants<a class="headerlink" href="#database-type-constants" title="Permanent link">&para;</a></h1>
+<p>The SQL repository supports three database configurations, identified by string constants:</p>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Postgres</code></td>
+<td><code>"postgres"</code></td>
+<td>Production PostgreSQL deployment</td>
+</tr>
+<tr>
+<td><code>SQLite</code></td>
+<td><code>"sqlite"</code></td>
+<td>File-based SQLite database</td>
+</tr>
+<tr>
+<td><code>SQLiteMemory</code></td>
+<td><code>"sqlite_memory"</code></td>
+<td>In-memory SQLite for testing</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="initialization-process">Initialization Process<a class="headerlink" href="#initialization-process" title="Permanent link">&para;</a></h1>
+<p>The <code>New</code> function creates and configures a SQL repository instance. It establishes the database connection with appropriate driver settings and connection pooling parameters.</p>
+<h2 id="factory-function">Factory Function<a class="headerlink" href="#factory-function" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>graph LR
+    Client["Client Code"]
+    NewFunc["sqlrepo.New(dbtype, dsn)"]
+    NewDatabase["newDatabase(dbtype, dsn)"]
+
+    subgraph "Database Creation"
+        PostgresFunc["postgresDatabase(dsn)"]
+        SQLiteFunc["sqliteDatabase(dsn, conns, idles)"]
+    end
+
+    sqlRepo["sqlRepository{&lt;br/&gt;db: *gorm.DB&lt;br/&gt;dbtype: string&lt;br/&gt;}"]
+
+    Client --&gt;|"'postgres', dsn"| NewFunc
+    NewFunc --&gt; NewDatabase
+    NewDatabase --&gt;|"dbtype='postgres'"| PostgresFunc
+    NewDatabase --&gt;|"dbtype='sqlite'&lt;br/&gt;dbtype='sqlite_memory'"| SQLiteFunc
+    PostgresFunc --&gt;|"*gorm.DB"| NewFunc
+    SQLiteFunc --&gt;|"*gorm.DB"| NewFunc
+    NewFunc --&gt; sqlRepo
+    sqlRepo --&gt;|"return"| Client</code></pre>
+<p><strong>Key Implementation Details:</strong></p>
+<p>The factory function routes to database-specific initialization based on the <code>dbtype</code> parameter :</p>
+<ul>
+<li><strong>PostgreSQL</strong>: Uses <code>gorm.Open(postgres.Open(dsn))</code> with connection pooling configured for production workloads </li>
+<li><strong>SQLite (file)</strong>: Uses <code>gorm.Open(sqlite.Open(dsn))</code> with 3 max connections and 5 max idle connections </li>
+<li><strong>SQLite (memory)</strong>: Uses the same driver but with increased limits (50 max connections, 100 max idle) for test performance </li>
+</ul>
+<hr />
+<h1 id="connection-pooling-configuration">Connection Pooling Configuration<a class="headerlink" href="#connection-pooling-configuration" title="Permanent link">&para;</a></h1>
+<p>Each database backend is configured with specific connection pooling parameters to optimize performance and resource usage.</p>
+<h2 id="postgresql-connection-pool">PostgreSQL Connection Pool<a class="headerlink" href="#postgresql-connection-pool" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MaxIdleConns</code></td>
+<td>5</td>
+<td>Maintains 5 idle connections for quick reuse</td>
+</tr>
+<tr>
+<td><code>MaxOpenConns</code></td>
+<td>10</td>
+<td>Limits concurrent connections to 10</td>
+</tr>
+<tr>
+<td><code>ConnMaxLifetime</code></td>
+<td>1 hour</td>
+<td>Recycles connections after 1 hour</td>
+</tr>
+<tr>
+<td><code>ConnMaxIdleTime</code></td>
+<td>10 minutes</td>
+<td>Closes idle connections after 10 minutes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sqlite-connection-pool">SQLite Connection Pool<a class="headerlink" href="#sqlite-connection-pool" title="Permanent link">&para;</a></h2>
+<p><strong>File-based SQLite:</strong>
+- <code>MaxOpenConns</code>: 3
+- <code>MaxIdleConns</code>: 5
+- Same lifetime settings as PostgreSQL</p>
+<p><strong>In-memory SQLite:</strong>
+- <code>MaxOpenConns</code>: 50
+- <code>MaxIdleConns</code>: 100<br />
+- Optimized for high-throughput testing scenarios</p>
+<hr />
+<h1 id="data-storage-model">Data Storage Model<a class="headerlink" href="#data-storage-model" title="Permanent link">&para;</a></h1>
+<p>The SQL repository stores graph data (entities and edges) in relational tables using JSON serialization for flexible content storage.</p>
+<h2 id="table-structure">Table Structure<a class="headerlink" href="#table-structure" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>erDiagram
+    entities ||--o{ edges : "from_entity_id"
+    entities ||--o{ edges : "to_entity_id"
+    entities ||--o{ entity_tags : "entity_id"
+    edges ||--o{ edge_tags : "edge_id"
+
+    entities {
+        uint64 entity_id PK
+        string etype
+        string content
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    edges {
+        uint64 edge_id PK
+        string type
+        string content
+        uint64 from_entity_id FK
+        uint64 to_entity_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    entity_tags {
+        uint64 tag_id PK
+        uint64 entity_id FK
+        string ttype
+        string content
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    edge_tags {
+        uint64 tag_id PK
+        uint64 edge_id FK
+        string ttype
+        string content
+        timestamp created_at
+        timestamp updated_at
+    }</code></pre>
+<h2 id="gorm-model-structs">GORM Model Structs<a class="headerlink" href="#gorm-model-structs" title="Permanent link">&para;</a></h2>
+<p>The repository uses internal GORM model structs (not shown in provided files but referenced by operations) that map to these tables:</p>
+<ul>
+<li><code>Entity</code> struct: Maps to <code>entities</code> table</li>
+<li><code>Edge</code> struct: Maps to <code>edges</code> table with foreign key constraints</li>
+<li><code>EntityTag</code> struct: Maps to <code>entity_tags</code> table</li>
+<li><code>EdgeTag</code> struct: Maps to <code>edge_tags</code> table</li>
+</ul>
+<hr />
+<h1 id="json-content-serialization">JSON Content Serialization<a class="headerlink" href="#json-content-serialization" title="Permanent link">&para;</a></h1>
+<p>All Open Asset Model objects (Assets, Relations, Properties) are serialized to JSON for storage in the <code>content</code> fields. This approach provides:</p>
+<ol>
+<li><strong>Schema Flexibility</strong>: Supports arbitrary asset types without schema migrations</li>
+<li><strong>OAM Compatibility</strong>: Preserves full fidelity of OAM objects</li>
+<li><strong>Query Capability</strong>: JSON operators enable content-based queries</li>
+</ol>
+<h2 id="serialization-flow">Serialization Flow<a class="headerlink" href="#serialization-flow" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>graph LR
+    Asset["oam.Asset&lt;br/&gt;(Go struct)"]
+    JSON1["asset.JSON()"]
+    Content1["content: string&lt;br/&gt;(JSON)"]
+
+    Relation["oam.Relation&lt;br/&gt;(Go struct)"]
+    JSON2["relation.JSON()"]
+    Content2["content: string&lt;br/&gt;(JSON)"]
+
+    Property["oam.Property&lt;br/&gt;(Go struct)"]
+    JSON3["property.JSON()"]
+    Content3["content: string&lt;br/&gt;(JSON)"]
+
+    Asset --&gt; JSON1 --&gt; Content1
+    Relation --&gt; JSON2 --&gt; Content2
+    Property --&gt; JSON3 --&gt; Content3
+
+    Content1 --&gt; Store1["Entity.Content"]
+    Content2 --&gt; Store2["Edge.Content"]
+    Content3 --&gt; Store3["EntityTag.Content&lt;br/&gt;EdgeTag.Content"]</code></pre>
+<p><strong>Examples in Code:</strong></p>
+<ul>
+<li>Entity serialization: </li>
+<li>Edge serialization: </li>
+<li>Deserialization: </li>
+</ul>
+<hr />
+<h1 id="gorm-query-patterns">GORM Query Patterns<a class="headerlink" href="#gorm-query-patterns" title="Permanent link">&para;</a></h1>
+<p>The SQL repository uses GORM's query builder extensively throughout its operations. Common patterns include:</p>
+<h2 id="basic-crud-operations">Basic CRUD Operations<a class="headerlink" href="#basic-crud-operations" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>GORM Method</th>
+<th>Example Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Create</td>
+<td><code>db.Create(&amp;model)</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Read by ID</td>
+<td><code>db.First(&amp;model)</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Update</td>
+<td><code>db.Save(&amp;model)</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Delete</td>
+<td><code>db.Delete(&amp;model)</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="query-chaining">Query Chaining<a class="headerlink" href="#query-chaining" title="Permanent link">&para;</a></h2>
+<p>The repository builds complex queries by chaining GORM methods:</p>
+<pre class="mermaid"><code>graph LR
+    DB["sql.db"]
+    Where1["Where('etype = ?', type)"]
+    Where2["Where('updated_at &gt;= ?', since)"]
+    Find["Find(&amp;entities)"]
+
+    DB --&gt; Where1
+    Where1 --&gt; Where2
+    Where2 --&gt; Find</code></pre>
+<p><strong>Example:</strong> Finding entities by type with temporal filtering at </p>
+<hr />
+<h1 id="duplicate-prevention">Duplicate Prevention<a class="headerlink" href="#duplicate-prevention" title="Permanent link">&para;</a></h1>
+<p>The SQL repository implements duplicate detection logic to prevent redundant data storage.</p>
+<h2 id="entity-deduplication">Entity Deduplication<a class="headerlink" href="#entity-deduplication" title="Permanent link">&para;</a></h2>
+<p>When creating an entity, the repository:</p>
+<ol>
+<li>Searches for existing entities with matching content </li>
+<li>If found, updates the existing entity's timestamp instead of creating a new one </li>
+<li>Uses GORM's <code>Save</code> method which performs an upsert operation </li>
+</ol>
+<h2 id="edge-deduplication">Edge Deduplication<a class="headerlink" href="#edge-deduplication" title="Permanent link">&para;</a></h2>
+<p>Edge creation uses the <code>isDuplicateEdge</code> helper function :</p>
+<ol>
+<li>Queries existing outgoing edges from the source entity</li>
+<li>Checks for matching destination entity and relation content using <code>reflect.DeepEqual</code></li>
+<li>If duplicate found, updates the timestamp via <code>edgeSeen</code> </li>
+<li>Returns the existing edge instead of creating a new one</li>
+</ol>
+<hr />
+<h1 id="timestamp-management">Timestamp Management<a class="headerlink" href="#timestamp-management" title="Permanent link">&para;</a></h1>
+<p>All entities and edges track two timestamps:</p>
+<ul>
+<li><code>created_at</code>: When the record was first created (immutable after creation)</li>
+<li><code>updated_at</code>: When the record was last seen/updated (modified on subsequent observations)</li>
+</ul>
+<p>The repository uses UTC timezone consistently and converts to local time when returning results to clients .</p>
+<hr />
+<h1 id="repository-interface-methods">Repository Interface Methods<a class="headerlink" href="#repository-interface-methods" title="Permanent link">&para;</a></h1>
+<p>The <code>sqlRepository</code> implements all methods defined by the <code>Repository</code> interface. Operations are organized into three categories:</p>
+<h2 id="entity-operations">Entity Operations<a class="headerlink" href="#entity-operations" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>CreateEntity(*types.Entity) (*types.Entity, error)</code></li>
+<li><code>CreateAsset(oam.Asset) (*types.Entity, error)</code> - Convenience wrapper</li>
+<li><code>FindEntityById(string) (*types.Entity, error)</code></li>
+<li><code>FindEntitiesByContent(oam.Asset, time.Time) ([]*types.Entity, error)</code></li>
+<li><code>FindEntitiesByType(oam.AssetType, time.Time) ([]*types.Entity, error)</code></li>
+<li><code>DeleteEntity(string) error</code></li>
+</ul>
+<p>Detailed documentation: <a href="./postgres/#sql-entity-operations">SQL Entity Operations</a></p>
+<h2 id="edge-operations">Edge Operations<a class="headerlink" href="#edge-operations" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>CreateEdge(*types.Edge) (*types.Edge, error)</code></li>
+<li><code>FindEdgeById(string) (*types.Edge, error)</code></li>
+<li><code>IncomingEdges(*types.Entity, time.Time, ...string) ([]*types.Edge, error)</code></li>
+<li><code>OutgoingEdges(*types.Entity, time.Time, ...string) ([]*types.Edge, error)</code></li>
+<li><code>DeleteEdge(string) error</code></li>
+</ul>
+<p>Detailed documentation: <a href="./postgres/#sql-edge-operations">SQL Edge Operations</a></p>
+<h2 id="tag-operations">Tag Operations<a class="headerlink" href="#tag-operations" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>CreateEntityTag(*types.EntityTag) (*types.EntityTag, error)</code></li>
+<li><code>GetEntityTags(*types.Entity, time.Time) ([]*types.EntityTag, error)</code></li>
+<li><code>CreateEdgeTag(*types.EdgeTag) (*types.EdgeTag, error)</code></li>
+<li><code>GetEdgeTags(*types.Edge, time.Time) ([]*types.EdgeTag, error)</code></li>
+</ul>
+<p>Detailed documentation: <a href="./postgres/#sql-tag-management">SQL Tag Management</a></p>
+<h2 id="utility-methods">Utility Methods<a class="headerlink" href="#utility-methods" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>Close() error</code> - Closes the database connection </li>
+<li><code>GetDBType() string</code> - Returns the database type constant </li>
+</ul>
+<hr />
+<h1 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h1>
+<p>The SQL repository propagates GORM errors to callers with minimal wrapping. Common error scenarios include:</p>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Error Source</th>
+<th>Example Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Record not found</td>
+<td><code>gorm.ErrRecordNotFound</code></td>
+<td></td>
+</tr>
+<tr>
+<td>ID parsing failure</td>
+<td><code>strconv.ParseUint</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Database constraint violation</td>
+<td>GORM/database driver</td>
+<td></td>
+</tr>
+<tr>
+<td>JSON serialization failure</td>
+<td><code>asset.JSON()</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>The repository also returns custom errors for semantic issues:
+- <code>"zero entities found"</code> when queries return no results 
+- <code>"failed input validation checks"</code> for nil parameters 
+- OAM validation errors for invalid relationships </p>
+<hr />
+<h1 id="performance-considerations">Performance Considerations<a class="headerlink" href="#performance-considerations" title="Permanent link">&para;</a></h1>
+<h2 id="query-optimization">Query Optimization<a class="headerlink" href="#query-optimization" title="Permanent link">&para;</a></h2>
+<p>The SQL repository relies on proper database indexing for performance. Key indexes should include:</p>
+<ul>
+<li>Primary keys on <code>entity_id</code>, <code>edge_id</code>, <code>tag_id</code></li>
+<li>Foreign key indexes on <code>from_entity_id</code>, <code>to_entity_id</code> in edges table</li>
+<li>Index on <code>etype</code> column for type-based queries</li>
+<li>Index on <code>updated_at</code> for temporal queries</li>
+<li>JSON path indexes for content-based queries (database-specific)</li>
+</ul>
+<p>These indexes are created by the migration system (see <a href="./migrations/#sql-schema-migrations">SQL Schema Migrations</a>).</p>
+<h2 id="connection-pooling">Connection Pooling<a class="headerlink" href="#connection-pooling" title="Permanent link">&para;</a></h2>
+<p>The conservative connection limits (5-10 for PostgreSQL, 3 for SQLite) balance resource usage with throughput. For high-concurrency scenarios, consider:</p>
+<ul>
+<li>Wrapping the repository with the caching layer (see <a href="./caching/">Caching System</a>)</li>
+<li>Adjusting pool sizes at</li>
+</ul>
+<h2 id="sql-entity-operations">SQL Entity Operations<a class="headerlink" href="#sql-entity-operations" title="Permanent link">&para;</a></h2>
+<p>This page documents entity CRUD (Create, Read, Delete) operations in the SQL repository implementation. It covers how entities representing assets are created, queried, and managed in PostgreSQL and SQLite databases using GORM. For edge (relationship) operations, see <a href="./postgres/#sql-edge-operations">SQL Edge Operations</a>. For entity tag management, see <a href="./postgres/#sql-tag-management">SQL Tag Management</a>.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>The SQL repository implements entity operations defined in the <code>Repository</code> interface using GORM as the ORM layer. Entities are stored in the <code>entities</code> table with JSON-serialized content. The implementation handles duplicate detection, timestamp management, and conversion between database records and <code>types.Entity</code> objects.</p>
+<h2 id="entity-storage-model">Entity Storage Model<a class="headerlink" href="#entity-storage-model" title="Permanent link">&para;</a></h2>
+<h3 id="database-schema">Database Schema<a class="headerlink" href="#database-schema" title="Permanent link">&para;</a></h3>
+<p>Entities in SQL repositories are stored using the <code>Entity</code> struct, which maps to the <code>entities</code> table:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ID</code></td>
+<td><code>uint64</code></td>
+<td>Auto-incrementing primary key</td>
+</tr>
+<tr>
+<td><code>Type</code></td>
+<td><code>string</code></td>
+<td>Asset type (e.g., "FQDN", "IPAddress") from <code>oam.AssetType()</code></td>
+</tr>
+<tr>
+<td><code>Content</code></td>
+<td><code>string</code></td>
+<td>JSON-serialized asset data from <code>oam.Asset.JSON()</code></td>
+</tr>
+<tr>
+<td><code>CreatedAt</code></td>
+<td><code>time.Time</code></td>
+<td>First creation timestamp</td>
+</tr>
+<tr>
+<td><code>UpdatedAt</code></td>
+<td><code>time.Time</code></td>
+<td>Last seen/update timestamp</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>Content</code> field stores the complete asset as JSON, allowing flexible storage of any asset type defined in the Open Asset Model.</p>
+<pre class="mermaid"><code>graph TB
+    subgraph "types Package"
+        TypesEntity["types.Entity&lt;br/&gt;ID: string&lt;br/&gt;CreatedAt: time.Time&lt;br/&gt;LastSeen: time.Time&lt;br/&gt;Asset: oam.Asset"]
+    end
+
+    subgraph "sqlrepo Package"
+        SQLEntity["Entity struct&lt;br/&gt;ID: uint64&lt;br/&gt;Type: string&lt;br/&gt;Content: string (JSON)&lt;br/&gt;CreatedAt: time.Time&lt;br/&gt;UpdatedAt: time.Time"]
+
+        Parse["Parse() method&lt;br/&gt;Deserializes JSON&lt;br/&gt;to oam.Asset"]
+
+        JSONQuery["JSONQuery() method&lt;br/&gt;Builds GORM where clause"]
+    end
+
+    subgraph "Database"
+        EntitiesTable["entities table&lt;br/&gt;PostgreSQL or SQLite"]
+    end
+
+    TypesEntity --&gt;|"CreateEntity()"| SQLEntity
+    SQLEntity --&gt;|"GORM Save()"| EntitiesTable
+    EntitiesTable --&gt;|"GORM Find()"| SQLEntity
+    SQLEntity --&gt;|"Parse()"| TypesEntity
+
+    SQLEntity -.-&gt;|"Uses"| Parse
+    SQLEntity -.-&gt;|"Uses"| JSONQuery</code></pre>
+<h2 id="create-operations">Create Operations<a class="headerlink" href="#create-operations" title="Permanent link">&para;</a></h2>
+<h3 id="createentity">CreateEntity<a class="headerlink" href="#createentity" title="Permanent link">&para;</a></h3>
+<p>The <code>CreateEntity</code> method persists a <code>types.Entity</code> to the database. It includes sophisticated duplicate detection logic that updates existing entities rather than creating duplicates.</p>
+<pre class="mermaid"><code>flowchart TD
+    Start["CreateEntity(input *types.Entity)"]
+    Serialize["Serialize input.Asset to JSON&lt;br/&gt;jsonContent, err := input.Asset.JSON()"]
+    CreateStruct["Create Entity struct&lt;br/&gt;Type = input.Asset.AssetType()&lt;br/&gt;Content = jsonContent"]
+    CheckDup["FindEntitiesByContent()&lt;br/&gt;Check for existing entity"]
+
+    DupExists{{"Duplicate&lt;br/&gt;exists?"}}
+    SameType{{"Same&lt;br/&gt;AssetType?"}}
+    UpdateExisting["Update existing:&lt;br/&gt;entity.ID = existing.ID&lt;br/&gt;entity.UpdatedAt = now"]
+    SetNew["Set timestamps:&lt;br/&gt;entity.CreatedAt = now or input.CreatedAt&lt;br/&gt;entity.UpdatedAt = now or input.LastSeen"]
+
+    Save["db.Save(&amp;entity)&lt;br/&gt;GORM upsert operation"]
+    Convert["Convert to types.Entity&lt;br/&gt;ID: strconv.FormatUint()&lt;br/&gt;Timestamps: UTC to Local"]
+    Return["Return *types.Entity"]
+
+    Start --&gt; Serialize
+    Serialize --&gt; CreateStruct
+    CreateStruct --&gt; CheckDup
+    CheckDup --&gt; DupExists
+    DupExists --&gt;|"Yes"| SameType
+    DupExists --&gt;|"No"| SetNew
+    SameType --&gt;|"Yes"| UpdateExisting
+    SameType --&gt;|"No"| SetNew
+    UpdateExisting --&gt; Save
+    SetNew --&gt; Save
+    Save --&gt; Convert
+    Convert --&gt; Return</code></pre>
+<p><strong>Key behaviors:</strong>
+- <strong>Duplicate detection:</strong> Queries <code>FindEntitiesByContent</code> to check if entity already exists 
+- <strong>Update vs Insert:</strong> If duplicate found with matching <code>AssetType</code>, updates <code>UpdatedAt</code> timestamp but preserves <code>ID</code> and <code>CreatedAt</code> 
+- <strong>GORM Save:</strong> Uses <code>db.Save()</code> which performs upsert (insert or update based on primary key) 
+- <strong>ID conversion:</strong> Database <code>uint64</code> ID converted to string for <code>types.Entity</code> 
+- <strong>Timezone handling:</strong> Timestamps stored in UTC, returned in local time </p>
+<h3 id="createasset">CreateAsset<a class="headerlink" href="#createasset" title="Permanent link">&para;</a></h3>
+<p>The <code>CreateAsset</code> method is a convenience wrapper around <code>CreateEntity</code>:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">sql</span><span class="w"> </span><span class="o">*</span><span class="nx">sqlRepository</span><span class="p">)</span><span class="w"> </span><span class="nx">CreateAsset</span><span class="p">(</span><span class="nx">asset</span><span class="w"> </span><span class="nx">oam</span><span class="p">.</span><span class="nx">Asset</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Entity</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">sql</span><span class="p">.</span><span class="nx">CreateEntity</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">types</span><span class="p">.</span><span class="nx">Entity</span><span class="p">{</span><span class="nx">Asset</span><span class="p">:</span><span class="w"> </span><span class="nx">asset</span><span class="p">})</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>It accepts an <code>oam.Asset</code> directly and wraps it in a <code>types.Entity</code> before calling <code>CreateEntity</code>.</p>
+<h2 id="query-operations">Query Operations<a class="headerlink" href="#query-operations" title="Permanent link">&para;</a></h2>
+<h3 id="findentitybyid">FindEntityById<a class="headerlink" href="#findentitybyid" title="Permanent link">&para;</a></h3>
+<p>Retrieves a single entity by its string ID.</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Input</strong></td>
+<td><code>id string</code> - Entity ID as string</td>
+</tr>
+<tr>
+<td><strong>Conversion</strong></td>
+<td><code>strconv.ParseUint(id, 10, 64)</code> to convert to <code>uint64</code></td>
+</tr>
+<tr>
+<td><strong>Query</strong></td>
+<td><code>db.First(&amp;entity)</code> - GORM query by primary key</td>
+</tr>
+<tr>
+<td><strong>Parsing</strong></td>
+<td><code>entity.Parse()</code> - Deserializes JSON content to <code>oam.Asset</code></td>
+</tr>
+<tr>
+<td><strong>Output</strong></td>
+<td><code>*types.Entity</code> with populated <code>Asset</code> field</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Error cases:</strong>
+- Invalid ID format (not a valid uint64)
+- Entity not found in database
+- JSON parsing failure</p>
+<h3 id="findentitiesbycontent">FindEntitiesByContent<a class="headerlink" href="#findentitiesbycontent" title="Permanent link">&para;</a></h3>
+<p>Searches for entities matching specific asset content, with optional time filtering.</p>
+<pre class="mermaid"><code>graph TD
+    Input["FindEntitiesByContent(assetData, since)"]
+    SerializeInput["Serialize input asset to JSON"]
+    BuildQuery["entity.JSONQuery()&lt;br/&gt;Build JSON matching query"]
+
+    ApplyFilters["tx.Where('etype = ?', type)"]
+    CheckSince{{"since.IsZero()?"}}
+    AddTimeFilter["tx.Where('updated_at &gt;= ?', since.UTC())"]
+
+    Execute["tx.Find(&amp;entities)&lt;br/&gt;Execute GORM query"]
+    Parse["Parse each Entity.Content&lt;br/&gt;to oam.Asset"]
+    BuildResults["Build []*types.Entity slice"]
+    Return["Return results"]
+
+    Input --&gt; SerializeInput
+    SerializeInput --&gt; BuildQuery
+    BuildQuery --&gt; ApplyFilters
+    ApplyFilters --&gt; CheckSince
+    CheckSince --&gt;|"No"| AddTimeFilter
+    CheckSince --&gt;|"Yes"| Execute
+    AddTimeFilter --&gt; Execute
+    Execute --&gt; Parse
+    Parse --&gt; BuildResults
+    BuildResults --&gt; Return</code></pre>
+<p><strong>Key features:</strong>
+- <strong>Content matching:</strong> Uses <code>JSONQuery()</code> method to build database-specific JSON query 
+- <strong>Type filtering:</strong> Always filters by <code>etype</code> field 
+- <strong>Time filtering:</strong> Optional <code>since</code> parameter filters by <code>updated_at &gt;= since</code> 
+- <strong>Zero value handling:</strong> If <code>since.IsZero()</code>, time filter is skipped </p>
+<h3 id="findentitiesbytype">FindEntitiesByType<a class="headerlink" href="#findentitiesbytype" title="Permanent link">&para;</a></h3>
+<p>Retrieves all entities of a specific asset type, with optional time filtering.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>atype</code></td>
+<td><code>oam.AssetType</code></td>
+<td>Asset type to filter (e.g., "FQDN", "IPAddress")</td>
+</tr>
+<tr>
+<td><code>since</code></td>
+<td><code>time.Time</code></td>
+<td>Optional time filter for <code>updated_at &gt;= since</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Query variations:</strong></p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// Without time filter (since.IsZero())</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nx">db</span><span class="p">.</span><span class="nx">Where</span><span class="p">(</span><span class="s">&quot;etype = ?&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">atype</span><span class="p">).</span><span class="nx">Find</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">entities</span><span class="p">)</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1">// With time filter</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nx">db</span><span class="p">.</span><span class="nx">Where</span><span class="p">(</span><span class="s">&quot;etype = ? AND updated_at &gt;= ?&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">atype</span><span class="p">,</span><span class="w"> </span><span class="nx">since</span><span class="p">.</span><span class="nx">UTC</span><span class="p">()).</span><span class="nx">Find</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">entities</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="delete-operations">Delete Operations<a class="headerlink" href="#delete-operations" title="Permanent link">&para;</a></h2>
+<h3 id="deleteentity">DeleteEntity<a class="headerlink" href="#deleteentity" title="Permanent link">&para;</a></h3>
+<p>Removes an entity by ID from the database.</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Client
+    participant DeleteEntity
+    participant GORM
+    participant Database
+
+    Client-&gt;&gt;DeleteEntity: DeleteEntity(id string)
+    DeleteEntity-&gt;&gt;DeleteEntity: strconv.ParseUint(id, 10, 64)
+    DeleteEntity-&gt;&gt;GORM: db.Delete(&amp;Entity{ID: entityId})
+    GORM-&gt;&gt;Database: DELETE FROM entities WHERE id = ?
+    Database--&gt;&gt;GORM: Rows affected
+    GORM--&gt;&gt;DeleteEntity: result.Error
+    DeleteEntity--&gt;&gt;Client: error or nil</code></pre>
+<p><strong>Implementation details:</strong>
+- Converts string ID to <code>uint64</code> 
+- Uses GORM's <code>Delete()</code> method with primary key 
+- Returns error if conversion fails or deletion fails
+- Does not check if entity exists before deletion</p>
+<h2 id="duplicate-handling-strategy">Duplicate Handling Strategy<a class="headerlink" href="#duplicate-handling-strategy" title="Permanent link">&para;</a></h2>
+<p>The SQL repository implements intelligent duplicate detection in <code>CreateEntity</code>:</p>
+<pre class="mermaid"><code>graph LR
+    subgraph "Duplicate Detection Flow"
+        Call["CreateEntity called&lt;br/&gt;with new asset"]
+        Query["FindEntitiesByContent()&lt;br/&gt;Search existing"]
+
+        Check{{"Matching entity&lt;br/&gt;found?"}}
+        TypeCheck{{"Same&lt;br/&gt;AssetType?"}}
+
+        Update["Update existing:&lt;br/&gt;- Keep same ID&lt;br/&gt;- Keep CreatedAt&lt;br/&gt;- Update UpdatedAt"]
+        Create["Create new:&lt;br/&gt;- New ID&lt;br/&gt;- Set CreatedAt&lt;br/&gt;- Set UpdatedAt"]
+
+        Call --&gt; Query
+        Query --&gt; Check
+        Check --&gt;|"Yes"| TypeCheck
+        Check --&gt;|"No"| Create
+        TypeCheck --&gt;|"Yes"| Update
+        TypeCheck --&gt;|"No"| Create
+    end</code></pre>
+<p><strong>Rationale:</strong> This prevents duplicate entities with identical content while updating the <code>LastSeen</code> timestamp to track recency. This is critical for time-based queries in discovery systems like OWASP Amass.</p>
+<p><strong>Test validation:</strong> The test <code>TestLastSeenUpdates</code> verifies that calling <code>CreateAsset</code> twice with the same asset updates <code>LastSeen</code> while preserving <code>ID</code> and <code>CreatedAt</code> .</p>
+<h2 id="json-serialization">JSON Serialization<a class="headerlink" href="#json-serialization" title="Permanent link">&para;</a></h2>
+<h3 id="encoding-asset-to-json">Encoding: Asset to JSON<a class="headerlink" href="#encoding-asset-to-json" title="Permanent link">&para;</a></h3>
+<p>The <code>CreateEntity</code> method serializes <code>oam.Asset</code> to JSON:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nx">jsonContent</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">input</span><span class="p">.</span><span class="nx">Asset</span><span class="p">.</span><span class="nx">JSON</span><span class="p">()</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The JSON string is stored in the <code>Content</code> field of the database entity .</p>
+<h3 id="decoding-json-to-asset">Decoding: JSON to Asset<a class="headerlink" href="#decoding-json-to-asset" title="Permanent link">&para;</a></h3>
+<p>The <code>Parse()</code> method (implementation in <code>Entity</code> struct) deserializes JSON back to <code>oam.Asset</code>:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nx">assetData</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">entity</span><span class="p">.</span><span class="nx">Parse</span><span class="p">()</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>This method is called in all query operations to reconstruct the asset from database storage .</p>
+<h3 id="jsonquery-method">JSONQuery Method<a class="headerlink" href="#jsonquery-method" title="Permanent link">&para;</a></h3>
+<p>The <code>JSONQuery()</code> method builds database-specific WHERE clauses for JSON content matching. This is used by <code>FindEntitiesByContent</code> to efficiently query entities with specific content .</p>
+<h2 id="time-handling">Time Handling<a class="headerlink" href="#time-handling" title="Permanent link">&para;</a></h2>
+<p>The SQL repository performs careful timezone conversions to ensure consistency:</p>
+<h3 id="storage-localinput-to-utc">Storage: Local/Input to UTC<a class="headerlink" href="#storage-localinput-to-utc" title="Permanent link">&para;</a></h3>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// For new entities</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">if</span><span class="w"> </span><span class="nx">input</span><span class="p">.</span><span class="nx">CreatedAt</span><span class="p">.</span><span class="nx">IsZero</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="nx">entity</span><span class="p">.</span><span class="nx">CreatedAt</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">().</span><span class="nx">UTC</span><span class="p">()</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="nx">entity</span><span class="p">.</span><span class="nx">CreatedAt</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">input</span><span class="p">.</span><span class="nx">CreatedAt</span><span class="p">.</span><span class="nx">UTC</span><span class="p">()</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="p">}</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="k">if</span><span class="w"> </span><span class="nx">input</span><span class="p">.</span><span class="nx">LastSeen</span><span class="p">.</span><span class="nx">IsZero</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="nx">entity</span><span class="p">.</span><span class="nx">UpdatedAt</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">().</span><span class="nx">UTC</span><span class="p">()</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="nx">entity</span><span class="p">.</span><span class="nx">UpdatedAt</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">input</span><span class="p">.</span><span class="nx">LastSeen</span><span class="p">.</span><span class="nx">UTC</span><span class="p">()</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>All timestamps are converted to UTC before storage .</p>
+<h3 id="retrieval-utc-to-local">Retrieval: UTC to Local<a class="headerlink" href="#retrieval-utc-to-local" title="Permanent link">&para;</a></h3>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">return</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">types</span><span class="p">.</span><span class="nx">Entity</span><span class="p">{</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="nx">ID</span><span class="p">:</span><span class="w">        </span><span class="nx">strconv</span><span class="p">.</span><span class="nx">FormatUint</span><span class="p">(</span><span class="nx">entity</span><span class="p">.</span><span class="nx">ID</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">),</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="nx">CreatedAt</span><span class="p">:</span><span class="w"> </span><span class="nx">entity</span><span class="p">.</span><span class="nx">CreatedAt</span><span class="p">.</span><span class="nx">In</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">UTC</span><span class="p">).</span><span class="nx">Local</span><span class="p">(),</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="nx">LastSeen</span><span class="p">:</span><span class="w">  </span><span class="nx">entity</span><span class="p">.</span><span class="nx">UpdatedAt</span><span class="p">.</span><span class="nx">In</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">UTC</span><span class="p">).</span><span class="nx">Local</span><span class="p">(),</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="nx">Asset</span><span class="p">:</span><span class="w">     </span><span class="nx">input</span><span class="p">.</span><span class="nx">Asset</span><span class="p">,</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Timestamps are converted back to local time when returning entities .</p>
+<p><strong>Rationale:</strong> Storing in UTC ensures consistency across different database servers and clients in different timezones. Converting to local time on retrieval maintains compatibility with client expectations.</p>
+<h2 id="integration-with-gorm">Integration with GORM<a class="headerlink" href="#integration-with-gorm" title="Permanent link">&para;</a></h2>
+<p>All SQL entity operations use GORM methods:</p>
+<table>
+<thead>
+<tr>
+<th>GORM Method</th>
+<th>Purpose</th>
+<th>Used In</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>db.Save(&amp;entity)</code></td>
+<td>Insert or update based on primary key</td>
+<td><code>CreateEntity</code></td>
+</tr>
+<tr>
+<td><code>db.First(&amp;entity)</code></td>
+<td>Query single record by primary key</td>
+<td><code>FindEntityById</code></td>
+</tr>
+<tr>
+<td><code>db.Where(...).Find(&amp;entities)</code></td>
+<td>Query multiple records with conditions</td>
+<td><code>FindEntitiesByContent</code>, <code>FindEntitiesByType</code></td>
+</tr>
+<tr>
+<td><code>db.Delete(&amp;entity)</code></td>
+<td>Delete record by primary key</td>
+<td><code>DeleteEntity</code></td>
+</tr>
+</tbody>
+</table>
+<p>The <code>sqlRepository</code> struct contains a <code>*gorm.DB</code> field that executes these operations against PostgreSQL or SQLite databases configured at initialization.</p>
+<h2 id="sql-edge-operations">SQL Edge Operations<a class="headerlink" href="#sql-edge-operations" title="Permanent link">&para;</a></h2>
+<p>This document details the SQL repository implementation for edge operations. Edges represent directed relationships between entities in the property graph model. The SQL implementation uses GORM to manage edges stored in relational databases (PostgreSQL and SQLite).</p>
+<p>This page covers edge creation, querying, retrieval, and deletion operations. For entity management, see <a href="./postgres/#sql-entity-operations">SQL Entity Operations</a>. For edge tag operations, see <a href="./postgres/#sql-tag-management">SQL Tag Management</a>. For the Neo4j graph database implementation of edge operations, see <a href="./triples/#neo4j-edge-operations">Neo4j Edge Operations</a>.</p>
+<hr />
+<h2 id="edge-table-structure">Edge Table Structure<a class="headerlink" href="#edge-table-structure" title="Permanent link">&para;</a></h2>
+<p>The SQL repository stores edges in an <code>edges</code> table with the following structure:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>edge_id</code></td>
+<td>uint64</td>
+<td>Primary key, auto-incremented</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>string</td>
+<td>Relation type from OAM</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td>JSON</td>
+<td>Serialized relation data</td>
+</tr>
+<tr>
+<td><code>from_entity_id</code></td>
+<td>uint64</td>
+<td>Foreign key to source entity</td>
+</tr>
+<tr>
+<td><code>to_entity_id</code></td>
+<td>uint64</td>
+<td>Foreign key to destination entity</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>timestamp</td>
+<td>When the edge was first created</td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td>timestamp</td>
+<td>Last seen timestamp</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>Edge</code> struct in the SQL repository maps to this table structure:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>type Edge struct {
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    ID           uint64
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    Type         string
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    Content      []byte
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    FromEntityID uint64
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    ToEntityID   uint64
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    CreatedAt    time.Time
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    UpdatedAt    time.Time
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>}
+</span></code></pre></div>
+<hr />
+<h2 id="edge-creation-flow">Edge Creation Flow<a class="headerlink" href="#edge-creation-flow" title="Permanent link">&para;</a></h2>
+<h3 id="createedge-method">CreateEdge Method<a class="headerlink" href="#createedge-method" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    Start["CreateEdge(edge)"]
+    Validate["Validate input fields&lt;br/&gt;(line 23-26)"]
+    TaxCheck["Validate against OAM taxonomy&lt;br/&gt;oam.ValidRelationship()&lt;br/&gt;(line 28-32)"]
+    DupCheck["isDuplicateEdge()&lt;br/&gt;(line 41-43)"]
+    Found{{"Duplicate&lt;br/&gt;found?"}}
+    ParseFrom["Parse FromEntity.ID&lt;br/&gt;(line 45-48)"]
+    ParseTo["Parse ToEntity.ID&lt;br/&gt;(line 50-53)"]
+    Serialize["Serialize Relation to JSON&lt;br/&gt;(line 55-58)"]
+    Create["Create Edge struct&lt;br/&gt;with timestamps&lt;br/&gt;(line 60-71)"]
+    Insert["sql.db.Create(&amp;r)&lt;br/&gt;(line 73-76)"]
+    Convert["toEdge(r)&lt;br/&gt;(line 77)"]
+    Return["Return edge"]
+
+    Start --&gt; Validate
+    Validate --&gt; TaxCheck
+    TaxCheck --&gt; DupCheck
+    DupCheck --&gt; Found
+    Found --&gt;|"Yes"| Return
+    Found --&gt;|"No"| ParseFrom
+    ParseFrom --&gt; ParseTo
+    ParseTo --&gt; Serialize
+    Serialize --&gt; Create
+    Create --&gt; Insert
+    Insert --&gt; Convert
+    Convert --&gt; Return
+
+    style DupCheck fill:#f9f9f9
+    style Found fill:#f9f9f9</code></pre>
+<p><strong>Diagram: Edge Creation Process</strong></p>
+<p>The <code>CreateEdge</code> method implements comprehensive validation and duplicate detection:</p>
+<ol>
+<li><strong>Input Validation</strong> : Verifies that the edge, relation, and both entities are non-nil</li>
+<li><strong>Taxonomy Validation</strong> : Calls <code>oam.ValidRelationship()</code> to ensure the relationship is valid according to the Open Asset Model taxonomy</li>
+<li><strong>Duplicate Detection</strong> : Checks if an identical edge already exists</li>
+<li><strong>Timestamp Management</strong> : Uses provided <code>LastSeen</code> timestamp or defaults to current UTC time</li>
+<li><strong>Entity ID Parsing</strong> : Converts string entity IDs to uint64</li>
+<li><strong>Content Serialization</strong> : Serializes the relation to JSON format</li>
+<li><strong>Database Insert</strong> : Uses GORM to insert the edge record</li>
+</ol>
+<hr />
+<h2 id="duplicate-edge-detection">Duplicate Edge Detection<a class="headerlink" href="#duplicate-edge-detection" title="Permanent link">&para;</a></h2>
+<h3 id="isduplicateedge-logic">isDuplicateEdge Logic<a class="headerlink" href="#isduplicateedge-logic" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    Start["isDuplicateEdge(edge, updated)"]
+    Query["OutgoingEdges(FromEntity)&lt;br/&gt;(line 85)"]
+    Iterate["Iterate through outgoing edges&lt;br/&gt;(line 86-98)"]
+    Match{{"ToEntity.ID matches&lt;br/&gt;AND&lt;br/&gt;Relation content matches?"}}
+    Update["edgeSeen(out, updated)&lt;br/&gt;(line 88)"]
+    Fetch["FindEdgeById(out.ID)&lt;br/&gt;(line 90)"]
+    ReturnDup["Return edge, true"]
+    ReturnNew["Return nil, false"]
+
+    Start --&gt; Query
+    Query --&gt; Iterate
+    Iterate --&gt; Match
+    Match --&gt;|"Yes"| Update
+    Update --&gt; Fetch
+    Fetch --&gt; ReturnDup
+    Match --&gt;|"No"| Iterate
+    Iterate --&gt;|"No more edges"| ReturnNew
+
+    style Match fill:#f9f9f9</code></pre>
+<p><strong>Diagram: Duplicate Edge Detection Mechanism</strong></p>
+<p>The duplicate detection mechanism prevents redundant edges in the database:</p>
+<ul>
+<li><strong>Query Existing Edges</strong> : Retrieves all outgoing edges from the source entity with the same label</li>
+<li><strong>Deep Comparison</strong> : Compares both the destination entity ID and the relation content using <code>reflect.DeepEqual</code></li>
+<li><strong>Update Timestamp</strong> : If a duplicate is found, updates its <code>updated_at</code> timestamp via <code>edgeSeen()</code></li>
+<li><strong>Return Existing</strong> : Fetches and returns the existing edge instead of creating a new one</li>
+</ul>
+<p>This approach ensures that re-discovering the same relationship updates the temporal information without creating duplicate records.</p>
+<hr />
+<h2 id="edge-timestamp-management">Edge Timestamp Management<a class="headerlink" href="#edge-timestamp-management" title="Permanent link">&para;</a></h2>
+<h3 id="edgeseen-method">edgeSeen Method<a class="headerlink" href="#edgeseen-method" title="Permanent link">&para;</a></h3>
+<p>The <code>edgeSeen</code> method updates the <code>updated_at</code> timestamp for an existing edge:</p>
+<pre class="mermaid"><code>flowchart LR
+    Input["Edge + new timestamp"]
+    ParseID["Parse edge.ID&lt;br/&gt;(line 105-108)"]
+    Serialize["Serialize Relation to JSON&lt;br/&gt;(line 110-113)"]
+    ParseFrom["Parse FromEntity.ID&lt;br/&gt;(line 115-118)"]
+    ParseTo["Parse ToEntity.ID&lt;br/&gt;(line 120-123)"]
+    BuildStruct["Build Edge struct&lt;br/&gt;with new UpdatedAt&lt;br/&gt;(line 125-133)"]
+    Save["sql.db.Save(&amp;r)&lt;br/&gt;(line 135-138)"]
+
+    Input --&gt; ParseID
+    ParseID --&gt; Serialize
+    Serialize --&gt; ParseFrom
+    ParseFrom --&gt; ParseTo
+    ParseTo --&gt; BuildStruct
+    BuildStruct --&gt; Save</code></pre>
+<p><strong>Diagram: Edge Timestamp Update Flow</strong></p>
+<p>The method preserves the original <code>created_at</code> timestamp while updating <code>updated_at</code> to reflect the most recent observation of the relationship.</p>
+<hr />
+<h2 id="querying-edges">Querying Edges<a class="headerlink" href="#querying-edges" title="Permanent link">&para;</a></h2>
+<h3 id="incoming-and-outgoing-edge-queries">Incoming and Outgoing Edge Queries<a class="headerlink" href="#incoming-and-outgoing-edge-queries" title="Permanent link">&para;</a></h3>
+<p>Both <code>IncomingEdges</code> and <code>OutgoingEdges</code> methods support:
+- Temporal filtering via the <code>since</code> parameter
+- Label filtering to retrieve edges of specific relation types
+- Optional label filtering (returns all edges if no labels specified)</p>
+<h4 id="incomingedges-query-structure">IncomingEdges Query Structure<a class="headerlink" href="#incomingedges-query-structure" title="Permanent link">&para;</a></h4>
+<pre class="mermaid"><code>flowchart TD
+    Start["IncomingEdges(entity, since, labels...)"]
+    ParseID["Parse entity.ID to int64&lt;br/&gt;(line 157-160)"]
+    CheckSince{{"since.IsZero()?"}}
+    QueryAll["WHERE to_entity_id = ?&lt;br/&gt;(line 165)"]
+    QueryTime["WHERE to_entity_id = ?&lt;br/&gt;AND updated_at &gt;= ?&lt;br/&gt;(line 167)"]
+    Filter{{"labels&lt;br/&gt;provided?"}}
+    FilterLoop["Filter by relation label&lt;br/&gt;(line 174-186)"]
+    NoFilter["Use all edges&lt;br/&gt;(line 188)"]
+    Return["Return filtered edges&lt;br/&gt;via toEdges()&lt;br/&gt;(line 194)"]
+
+    Start --&gt; ParseID
+    ParseID --&gt; CheckSince
+    CheckSince --&gt;|"Yes"| QueryAll
+    CheckSince --&gt;|"No"| QueryTime
+    QueryAll --&gt; Filter
+    QueryTime --&gt; Filter
+    Filter --&gt;|"Yes"| FilterLoop
+    Filter --&gt;|"No"| NoFilter
+    FilterLoop --&gt; Return
+    NoFilter --&gt; Return
+
+    style CheckSince fill:#f9f9f9
+    style Filter fill:#f9f9f9</code></pre>
+<p><strong>Diagram: IncomingEdges Query Flow</strong></p>
+<h4 id="outgoingedges-query-structure">OutgoingEdges Query Structure<a class="headerlink" href="#outgoingedges-query-structure" title="Permanent link">&para;</a></h4>
+<p>The <code>OutgoingEdges</code> method follows the same pattern but queries on <code>from_entity_id</code> instead:</p>
+<table>
+<thead>
+<tr>
+<th>Query Parameter</th>
+<th>SQL WHERE Clause</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No time filter</td>
+<td><code>from_entity_id = ?</code></td>
+</tr>
+<tr>
+<td>With time filter</td>
+<td><code>from_entity_id = ? AND updated_at &gt;= ?</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Label Filtering Implementation:</strong></p>
+<p>When labels are provided :
+1. Parse each edge's JSON content to extract the relation
+2. Compare the relation's label against the requested labels
+3. Include the edge only if its label matches</p>
+<hr />
+<h2 id="edge-retrieval-and-deletion">Edge Retrieval and Deletion<a class="headerlink" href="#edge-retrieval-and-deletion" title="Permanent link">&para;</a></h2>
+<h3 id="findedgebyid">FindEdgeById<a class="headerlink" href="#findedgebyid" title="Permanent link">&para;</a></h3>
+<p>The <code>FindEdgeById</code> method retrieves a single edge by its ID:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>func FindEdgeById(id string) (*types.Edge, error)
+</span></code></pre></div>
+<p>Implementation details :
+- Parses the string ID
+- Queries using <code>WHERE edge_id = ?</code>
+- Converts the database <code>Edge</code> to <code>types.Edge</code> via <code>toEdge()</code></p>
+<h3 id="deleteedge">DeleteEdge<a class="headerlink" href="#deleteedge" title="Permanent link">&para;</a></h3>
+<p>The <code>DeleteEdge</code> method removes an edge from the database:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>func DeleteEdge(id string) error
+</span></code></pre></div>
+<p>Implementation :
+- Parses the string ID to uint64
+- Delegates to <code>deleteEdges()</code> which executes: <code>DELETE FROM edges WHERE edge_id IN ?</code></p>
+<p>The <code>deleteEdges</code> helper method  accepts a slice of IDs, enabling batch deletion operations.</p>
+<hr />
+<h2 id="type-conversion-functions">Type Conversion Functions<a class="headerlink" href="#type-conversion-functions" title="Permanent link">&para;</a></h2>
+<h3 id="database-to-domain-model-conversion">Database to Domain Model Conversion<a class="headerlink" href="#database-to-domain-model-conversion" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart LR
+    DB["Edge&lt;br/&gt;(database struct)"]
+    Parse["Parse JSON content&lt;br/&gt;to oam.Relation&lt;br/&gt;(line 260)"]
+    Build["Build types.Edge&lt;br/&gt;with converted fields&lt;br/&gt;(line 265-278)"]
+    Domain["types.Edge&lt;br/&gt;(domain model)"]
+
+    DB --&gt; Parse
+    Parse --&gt; Build
+    Build --&gt; Domain
+
+    Note1["FromEntity and ToEntity&lt;br/&gt;contain only IDs,&lt;br/&gt;not full asset content&lt;br/&gt;(line 272-276)"]
+
+    Build -.-&gt; Note1</code></pre>
+<p><strong>Diagram: Edge Type Conversion</strong></p>
+<h3 id="toedge-function">toEdge Function<a class="headerlink" href="#toedge-function" title="Permanent link">&para;</a></h3>
+<p>The <code>toEdge</code> function  converts a database <code>Edge</code> struct to a <code>types.Edge</code>:</p>
+<ul>
+<li>Parses the JSON <code>Content</code> field back to an <code>oam.Relation</code></li>
+<li>Converts numeric timestamps to <code>time.Time</code> in local timezone</li>
+<li>Creates entity references with IDs only (does not join to fetch full entity data)</li>
+<li>Converts uint64 IDs to string format</li>
+</ul>
+<h3 id="toedges-function">toEdges Function<a class="headerlink" href="#toedges-function" title="Permanent link">&para;</a></h3>
+<p>The <code>toEdges</code> helper  applies <code>toEdge</code> to a slice of edges, filtering out any that fail to parse.</p>
+<p><strong>Important Note:</strong> The converted <code>FromEntity</code> and <code>ToEntity</code> objects contain only the ID field. Full entity content is not joined during edge queries for performance reasons. To retrieve complete entity data, use <code>FindEntityById()</code> on the entity IDs.</p>
+<hr />
+<h2 id="integration-testing-examples">Integration Testing Examples<a class="headerlink" href="#integration-testing-examples" title="Permanent link">&para;</a></h2>
+<p>The test suite demonstrates typical edge operations:</p>
+<h3 id="basic-edge-creation-and-query">Basic Edge Creation and Query<a class="headerlink" href="#basic-edge-creation-and-query" title="Permanent link">&para;</a></h3>
+<p>From :</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>edge := &amp;types.Edge{
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    Relation:   tc.relation,
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    FromEntity: sourceEntity,
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    ToEntity:   destinationEntity,
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>}
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>e, err := store.CreateEdge(edge)
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>// Query incoming edges
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>incoming, err := store.IncomingEdges(destinationEntity, start, tc.relation.Label())
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>// Query outgoing edges  
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>outgoing, err := store.OutgoingEdges(sourceEntity, start, tc.relation.Label())
+</span></code></pre></div>
+<h3 id="duplicate-handling">Duplicate Handling<a class="headerlink" href="#duplicate-handling" title="Permanent link">&para;</a></h3>
+<p>From :</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>// Store duplicate relation - last_seen is updated
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>rr, err := store.CreateEdge(edge2)
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>// Verify LastSeen timestamp increased
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>assert(rr.LastSeen &gt; originalEdge.LastSeen)
+</span></code></pre></div>
+<h3 id="unfiltered-edge-queries">Unfiltered Edge Queries<a class="headerlink" href="#unfiltered-edge-queries" title="Permanent link">&para;</a></h3>
+<p>From :</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>// Retrieve all outgoing edges (no label filter)
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>outs, err := store.OutgoingEdges(sourceEntity, time.Time{})
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>// Returns all edges regardless of relation type
+</span></code></pre></div>
+<hr />
+<h2 id="error-handling_1">Error Handling<a class="headerlink" href="#error-handling_1" title="Permanent link">&para;</a></h2>
+<p>Edge operations return errors for the following conditions:</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Error Condition</th>
+<th>Error Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CreateEdge</code></td>
+<td>Nil input fields</td>
+<td>"failed input validation checks"</td>
+</tr>
+<tr>
+<td><code>CreateEdge</code></td>
+<td>Invalid taxonomy relationship</td>
+<td>"%s -%s-&gt; %s is not valid in the taxonomy"</td>
+</tr>
+<tr>
+<td><code>CreateEdge</code></td>
+<td>Entity ID parse failure</td>
+<td>Parse error</td>
+</tr>
+<tr>
+<td><code>CreateEdge</code></td>
+<td>JSON serialization failure</td>
+<td>Serialization error</td>
+</tr>
+<tr>
+<td><code>CreateEdge</code></td>
+<td>Database insert failure</td>
+<td>GORM error</td>
+</tr>
+<tr>
+<td><code>IncomingEdges</code></td>
+<td>Entity ID parse failure</td>
+<td>Parse error</td>
+</tr>
+<tr>
+<td><code>IncomingEdges</code></td>
+<td>Zero edges found</td>
+<td>"zero edges found"</td>
+</tr>
+<tr>
+<td><code>OutgoingEdges</code></td>
+<td>Entity ID parse failure</td>
+<td>Parse error</td>
+</tr>
+<tr>
+<td><code>OutgoingEdges</code></td>
+<td>Zero edges found</td>
+<td>"zero edges found"</td>
+</tr>
+<tr>
+<td><code>FindEdgeById</code></td>
+<td>Edge not found</td>
+<td>GORM error (record not found)</td>
+</tr>
+<tr>
+<td><code>DeleteEdge</code></td>
+<td>ID parse failure</td>
+<td>Parse error</td>
+</tr>
+<tr>
+<td><code>DeleteEdge</code></td>
+<td>Database delete failure</td>
+<td>GORM error</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="performance-considerations_1">Performance Considerations<a class="headerlink" href="#performance-considerations_1" title="Permanent link">&para;</a></h2>
+<h3 id="query-optimization_1">Query Optimization<a class="headerlink" href="#query-optimization_1" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Indexed Lookups:</strong> The <code>from_entity_id</code> and <code>to_entity_id</code> columns should be indexed for efficient edge traversal queries</li>
+<li><strong>Time-based Filtering:</strong> The <code>updated_at</code> column enables temporal queries for incremental data retrieval</li>
+<li><strong>Label Filtering:</strong> Performed in-memory after database query, requires parsing JSON content</li>
+</ol>
+<h3 id="duplicate-detection-cost">Duplicate Detection Cost<a class="headerlink" href="#duplicate-detection-cost" title="Permanent link">&para;</a></h3>
+<p>The <code>isDuplicateEdge</code> check  queries all outgoing edges with the same label and performs deep equality checks. For entities with many outgoing edges, this can be expensive. The cost is traded off against preventing duplicate records.</p>
+<h3 id="lazy-entity-loading">Lazy Entity Loading<a class="headerlink" href="#lazy-entity-loading" title="Permanent link">&para;</a></h3>
+<p>Edge queries return entity references with IDs only, avoiding JOIN operations. This design improves query performance but requires separate queries to fetch full entity data when needed.</p>
+<h2 id="sql-tag-management">SQL Tag Management<a class="headerlink" href="#sql-tag-management" title="Permanent link">&para;</a></h2>
+<p>This document details how the SQL repository implementation manages entity and edge tags. Tags are metadata containers that store OAM properties (from the Open Asset Model) as JSON content attached to entities and edges. This page covers tag creation, retrieval, content-based searching, duplicate handling, and deletion.</p>
+<p>For entity and edge operations themselves, see <a href="./postgres/#sql-entity-operations">SQL Entity Operations</a> and <a href="./postgres/#sql-edge-operations">SQL Edge Operations</a>. For tag management in Neo4j, see <a href="./triples/#neo4j-tag-management">Neo4j Tag Management</a>.</p>
+<hr />
+<h2 id="overview_1">Overview<a class="headerlink" href="#overview_1" title="Permanent link">&para;</a></h2>
+<p>Tags in the SQL repository serve as a flexible metadata system for attaching properties to both entities and edges. Each tag wraps an <code>oam.Property</code> object, serializes it to JSON, and stores it in the database with timestamp tracking. The system prevents duplicate tags and supports content-based queries.</p>
+<hr />
+<h2 id="database-schema-and-core-structures">Database Schema and Core Structures<a class="headerlink" href="#database-schema-and-core-structures" title="Permanent link">&para;</a></h2>
+<p>The SQL repository uses two separate tables for tags: <code>entity_tags</code> and <code>edge_tags</code>. Both follow a similar structure, storing the property type, JSON content, and foreign key references.</p>
+<pre class="mermaid"><code>erDiagram
+    entities ||--o{ entity_tags : "has many"
+    edges ||--o{ edge_tags : "has many"
+
+    entities {
+        uint64 id PK
+        string atype
+        string content
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    entity_tags {
+        uint64 id PK
+        string ttype
+        string content
+        uint64 entity_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    edges {
+        uint64 id PK
+        string rtype
+        string content
+        uint64 from_entity_id FK
+        uint64 to_entity_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    edge_tags {
+        uint64 id PK
+        string ttype
+        string content
+        uint64 edge_id FK
+        timestamp created_at
+        timestamp updated_at
+    }</code></pre>
+<h3 id="internal-tag-structures">Internal Tag Structures<a class="headerlink" href="#internal-tag-structures" title="Permanent link">&para;</a></h3>
+<p>The <code>EntityTag</code> and <code>EdgeTag</code> structs are internal GORM models that map to database tables:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ID</code></td>
+<td><code>uint64</code></td>
+<td>Auto-incrementing primary key</td>
+</tr>
+<tr>
+<td><code>Type</code></td>
+<td><code>string</code></td>
+<td>The property type (e.g., "simple_property")</td>
+</tr>
+<tr>
+<td><code>Content</code></td>
+<td><code>string</code></td>
+<td>JSON-serialized property data</td>
+</tr>
+<tr>
+<td><code>EntityID</code> / <code>EdgeID</code></td>
+<td><code>uint64</code></td>
+<td>Foreign key reference</td>
+</tr>
+<tr>
+<td><code>CreatedAt</code></td>
+<td><code>time.Time</code></td>
+<td>Initial creation timestamp</td>
+</tr>
+<tr>
+<td><code>UpdatedAt</code></td>
+<td><code>time.Time</code></td>
+<td>Last seen timestamp</td>
+</tr>
+</tbody>
+</table>
+<p>These internal structs are converted to <code>types.EntityTag</code> and <code>types.EdgeTag</code> for external API consumption.</p>
+<hr />
+<h2 id="entity-tag-operations">Entity Tag Operations<a class="headerlink" href="#entity-tag-operations" title="Permanent link">&para;</a></h2>
+<h3 id="creating-entity-tags">Creating Entity Tags<a class="headerlink" href="#creating-entity-tags" title="Permanent link">&para;</a></h3>
+<p>The <code>CreateEntityTag</code> function persists property metadata for an entity. It serializes the OAM property to JSON and implements duplicate detection logic.</p>
+<pre class="mermaid"><code>flowchart TD
+    Start["CreateEntityTag(entity, input)"]
+    ParseID["Parse entity.ID to uint64"]
+    Serialize["Serialize input.Property to JSON"]
+    CreateStruct["Create EntityTag struct&lt;br/&gt;with Type, Content, EntityID"]
+
+    CheckDup["GetEntityTags(entity, time.Time{}, prop.Name())"]
+    DupFound{"Duplicates&lt;br/&gt;found?"}
+
+    IterateDups["Iterate through existing tags"]
+    MatchFound{"PropertyType &amp;&lt;br/&gt;Value match?"}
+    UpdateID["Set tag.ID = existing.ID&lt;br/&gt;Set tag.CreatedAt = existing.CreatedAt&lt;br/&gt;Set tag.UpdatedAt = now()"]
+
+    SetNew["Set tag.CreatedAt from input&lt;br/&gt;or now()&lt;br/&gt;Set tag.UpdatedAt from input.LastSeen&lt;br/&gt;or now()"]
+
+    Save["sql.db.Save(&amp;tag)"]
+    Return["Return types.EntityTag"]
+
+    Start --&gt; ParseID
+    ParseID --&gt; Serialize
+    Serialize --&gt; CreateStruct
+    CreateStruct --&gt; CheckDup
+    CheckDup --&gt; DupFound
+
+    DupFound --&gt;|Yes| IterateDups
+    IterateDups --&gt; MatchFound
+    MatchFound --&gt;|Yes| UpdateID
+    MatchFound --&gt;|No| IterateDups
+    UpdateID --&gt; Save
+
+    DupFound --&gt;|No| SetNew
+    SetNew --&gt; Save
+    Save --&gt; Return</code></pre>
+<p><strong>Key behaviors:</strong></p>
+<ol>
+<li><strong>Duplicate Prevention</strong>: The function queries existing tags with the same name </li>
+<li><strong>Type and Value Matching</strong>: Duplicates are identified by matching <code>PropertyType()</code> and <code>Value()</code> </li>
+<li><strong>Update vs Insert</strong>: Duplicates update <code>UpdatedAt</code> while preserving <code>CreatedAt</code>; new tags set both timestamps </li>
+<li><strong>GORM Save</strong>: Uses <code>Save()</code> to perform INSERT or UPDATE based on whether <code>ID</code> is set </li>
+</ol>
+<h3 id="convenience-wrapper">Convenience Wrapper<a class="headerlink" href="#convenience-wrapper" title="Permanent link">&para;</a></h3>
+<p>The <code>CreateEntityProperty</code> function provides a simpler interface when you only have an <code>oam.Property</code>:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1">// Wrapper that creates EntityTag from Property</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">sql</span><span class="w"> </span><span class="o">*</span><span class="nx">sqlRepository</span><span class="p">)</span><span class="w"> </span><span class="nx">CreateEntityProperty</span><span class="p">(</span><span class="nx">entity</span><span class="w"> </span><span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Entity</span><span class="p">,</span><span class="w"> </span><span class="nx">prop</span><span class="w"> </span><span class="nx">oam</span><span class="p">.</span><span class="nx">Property</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">EntityTag</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="finding-entity-tags-by-id">Finding Entity Tags by ID<a class="headerlink" href="#finding-entity-tags-by-id" title="Permanent link">&para;</a></h3>
+<p>The <code>FindEntityTagById</code> function retrieves a single tag by its unique identifier:</p>
+<pre class="mermaid"><code>flowchart LR
+    Input["id (string)"]
+    Parse["strconv.ParseUint(id, 10, 64)"]
+    Query["sql.db.First(&amp;tag)"]
+    ParseContent["tag.Parse()"]
+    Convert["Convert to types.EntityTag"]
+    Output["Return *types.EntityTag"]
+
+    Input --&gt; Parse --&gt; Query --&gt; ParseContent --&gt; Convert --&gt; Output</code></pre>
+<h3 id="content-based-tag-searching">Content-Based Tag Searching<a class="headerlink" href="#content-based-tag-searching" title="Permanent link">&para;</a></h3>
+<p>The <code>FindEntityTagsByContent</code> function enables searching for tags by property content. It uses JSON field extraction to query specific property values.</p>
+<pre class="mermaid"><code>flowchart TD
+    Input["FindEntityTagsByContent(prop, since)"]
+    Serialize["prop.JSON()"]
+    CreateTag["Create EntityTag with&lt;br/&gt;Type and Content"]
+
+    BuildQueries["tag.NameJSONQuery()&lt;br/&gt;tag.ValueJSONQuery()"]
+
+    BaseQuery["tx = sql.db.Where('ttype = ?', tag.Type)"]
+    SinceCheck{"since.IsZero()?"}
+    AddSince["tx.Where('updated_at &gt;= ?', since.UTC())"]
+
+    Execute["tx.Where(nameQuery).Where(valueQuery).Find(&amp;tags)"]
+    Parse["Parse each tag.Content to Property"]
+    Convert["Convert to []*types.EntityTag"]
+    Return["Return results"]
+
+    Input --&gt; Serialize --&gt; CreateTag --&gt; BuildQueries
+    BuildQueries --&gt; BaseQuery --&gt; SinceCheck
+    SinceCheck --&gt;|No| AddSince
+    SinceCheck --&gt;|Yes| Execute
+    AddSince --&gt; Execute
+    Execute --&gt; Parse --&gt; Convert --&gt; Return</code></pre>
+<p>The <code>NameJSONQuery()</code> and <code>ValueJSONQuery()</code> methods generate database-specific JSON extraction queries for PostgreSQL and SQLite. This allows efficient content filtering at the database level.</p>
+<h3 id="retrieving-all-entity-tags">Retrieving All Entity Tags<a class="headerlink" href="#retrieving-all-entity-tags" title="Permanent link">&para;</a></h3>
+<p>The <code>GetEntityTags</code> function retrieves all tags for a specific entity with optional filtering:</p>
+<p><strong>Function Signature:</strong>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">sql</span><span class="w"> </span><span class="o">*</span><span class="nx">sqlRepository</span><span class="p">)</span><span class="w"> </span><span class="nx">GetEntityTags</span><span class="p">(</span><span class="nx">entity</span><span class="w"> </span><span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Entity</span><span class="p">,</span><span class="w"> </span><span class="nx">since</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">,</span><span class="w"> </span><span class="nx">names</span><span class="w"> </span><span class="o">...</span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">([]</span><span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">EntityTag</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span>
+</span></code></pre></div></p>
+<p><strong>Parameters:</strong>
+- <code>entity</code>: The entity whose tags to retrieve
+- <code>since</code>: If not zero, only returns tags with <code>updated_at &gt;= since</code>
+- <code>names</code>: Optional property names to filter by</p>
+<p><strong>Query Logic:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Condition</th>
+<th>Query</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>since.IsZero()</code></td>
+<td><code>WHERE entity_id = ?</code></td>
+</tr>
+<tr>
+<td><code>!since.IsZero()</code></td>
+<td><code>WHERE entity_id = ? AND updated_at &gt;= ?</code></td>
+</tr>
+</tbody>
+</table>
+<p>After database retrieval, the function filters results by property name if <code>names</code> are provided .</p>
+<h3 id="deleting-entity-tags">Deleting Entity Tags<a class="headerlink" href="#deleting-entity-tags" title="Permanent link">&para;</a></h3>
+<p>The <code>DeleteEntityTag</code> function removes a tag by its ID:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">sql</span><span class="w"> </span><span class="o">*</span><span class="nx">sqlRepository</span><span class="p">)</span><span class="w"> </span><span class="nx">DeleteEntityTag</span><span class="p">(</span><span class="nx">id</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span>
+</span></code></pre></div>
+<p>It parses the string ID to <code>uint64</code>, creates an <code>EntityTag</code> struct with that ID, and uses GORM's <code>Delete()</code> method.</p>
+<hr />
+<h2 id="edge-tag-operations">Edge Tag Operations<a class="headerlink" href="#edge-tag-operations" title="Permanent link">&para;</a></h2>
+<p>Edge tag operations mirror entity tag operations but target edge relationships instead of entities.</p>
+<h3 id="creating-edge-tags">Creating Edge Tags<a class="headerlink" href="#creating-edge-tags" title="Permanent link">&para;</a></h3>
+<p>The <code>CreateEdgeTag</code> function follows the same pattern as <code>CreateEntityTag</code>:</p>
+<pre class="mermaid"><code>graph TB
+    subgraph "CreateEdgeTag Flow"
+        A["Parse edge.ID"]
+        B["Serialize property to JSON"]
+        C["Create EdgeTag struct"]
+        D["Check for duplicates via GetEdgeTags"]
+        E["Duplicate found?"]
+        F["Update existing tag ID and timestamps"]
+        G["Set new timestamps"]
+        H["sql.db.Save(&amp;tag)"]
+        I["Return types.EdgeTag"]
+    end
+
+    A --&gt; B --&gt; C --&gt; D --&gt; E
+    E --&gt;|Yes| F --&gt; H
+    E --&gt;|No| G --&gt; H
+    H --&gt; I</code></pre>
+<p><strong>Duplicate detection logic:</strong>
+1. Queries existing edge tags with the same property name 
+2. Compares <code>PropertyType()</code> and <code>Value()</code> 
+3. Updates timestamp on match or creates new tag</p>
+<h3 id="edge-tag-convenience-functions">Edge Tag Convenience Functions<a class="headerlink" href="#edge-tag-convenience-functions" title="Permanent link">&para;</a></h3>
+<p>Similar to entity tags, edge tags provide a convenience wrapper:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">sql</span><span class="w"> </span><span class="o">*</span><span class="nx">sqlRepository</span><span class="p">)</span><span class="w"> </span><span class="nx">CreateEdgeProperty</span><span class="p">(</span><span class="nx">edge</span><span class="w"> </span><span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Edge</span><span class="p">,</span><span class="w"> </span><span class="nx">prop</span><span class="w"> </span><span class="nx">oam</span><span class="p">.</span><span class="nx">Property</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">EdgeTag</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="finding-edge-tags">Finding Edge Tags<a class="headerlink" href="#finding-edge-tags" title="Permanent link">&para;</a></h3>
+<p>Edge tag retrieval functions parallel their entity counterparts:</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Purpose</th>
+<th>Sources</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FindEdgeTagById</code></td>
+<td>Retrieve by unique ID</td>
+<td></td>
+</tr>
+<tr>
+<td><code>FindEdgeTagsByContent</code></td>
+<td>Search by property content</td>
+<td></td>
+</tr>
+<tr>
+<td><code>GetEdgeTags</code></td>
+<td>Get all tags for an edge</td>
+<td></td>
+</tr>
+<tr>
+<td><code>DeleteEdgeTag</code></td>
+<td>Remove by ID</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>The implementation details match entity tag operations but operate on the <code>edge_tags</code> table with <code>edge_id</code> foreign keys instead of <code>entity_id</code>.</p>
+<hr />
+<h2 id="tag-lifecycle-and-timestamp-management">Tag Lifecycle and Timestamp Management<a class="headerlink" href="#tag-lifecycle-and-timestamp-management" title="Permanent link">&para;</a></h2>
+<p>Tags maintain two timestamps that track their lifecycle:</p>
+<pre class="mermaid"><code>stateDiagram-v2
+    [*] --&gt; Created: CreateEntityTag/CreateEdgeTag&lt;br/&gt;with new property
+    Created --&gt; Updated: CreateEntityTag/CreateEdgeTag&lt;br/&gt;with duplicate property
+    Updated --&gt; Updated: Subsequent duplicate creates
+    Updated --&gt; Deleted: DeleteEntityTag/DeleteEdgeTag
+    Deleted --&gt; [*]
+
+    note right of Created
+        created_at: Set once
+        updated_at: Set to now()
+    end note
+
+    note right of Updated
+        created_at: Preserved
+        updated_at: Updated to now()
+    end note</code></pre>
+<h3 id="timestamp-behavior">Timestamp Behavior<a class="headerlink" href="#timestamp-behavior" title="Permanent link">&para;</a></h3>
+<p><strong>On Initial Creation</strong> :
+- <code>created_at</code>: Set from <code>input.CreatedAt</code> if provided, otherwise <code>time.Now().UTC()</code>
+- <code>updated_at</code>: Set from <code>input.LastSeen</code> if provided, otherwise <code>time.Now().UTC()</code></p>
+<p><strong>On Duplicate Update</strong> :
+- <code>created_at</code>: Preserved from existing tag
+- <code>updated_at</code>: Set to <code>time.Now().UTC()</code></p>
+<p><strong>Time Zone Handling:</strong>
+All timestamps are stored in UTC but converted to local time when returned via <code>types.EntityTag</code> or <code>types.EdgeTag</code> .</p>
+<hr />
+<h2 id="json-content-storage-and-querying">JSON Content Storage and Querying<a class="headerlink" href="#json-content-storage-and-querying" title="Permanent link">&para;</a></h2>
+<p>Tags store OAM properties as JSON strings in the <code>content</code> field. This enables flexible property storage while supporting content-based queries.</p>
+<h3 id="serialization-process">Serialization Process<a class="headerlink" href="#serialization-process" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart LR
+    Property["oam.Property&lt;br/&gt;(Go struct)"]
+    JSON["property.JSON()&lt;br/&gt;(method call)"]
+    String["JSON string&lt;br/&gt;(database storage)"]
+    Parse["Parse()&lt;br/&gt;(method call)"]
+    PropertyOut["oam.Property&lt;br/&gt;(Go struct)"]
+
+    Property --&gt;|"Serialize"| JSON
+    JSON --&gt; String
+    String --&gt;|"Deserialize"| Parse
+    Parse --&gt; PropertyOut</code></pre>
+<h3 id="json-query-methods">JSON Query Methods<a class="headerlink" href="#json-query-methods" title="Permanent link">&para;</a></h3>
+<p>The internal <code>EntityTag</code> and <code>EdgeTag</code> structs implement methods for generating database-specific JSON extraction queries:</p>
+<ul>
+<li><code>NameJSONQuery()</code>: Extracts the property name field</li>
+<li><code>ValueJSONQuery()</code>: Extracts the property value field</li>
+</ul>
+<p>These methods handle differences between PostgreSQL's <code>-&gt;&gt;</code> operator and SQLite's <code>json_extract()</code> function, abstracting database-specific syntax.</p>
+<hr />
+<h2 id="code-entity-mapping">Code Entity Mapping<a class="headerlink" href="#code-entity-mapping" title="Permanent link">&para;</a></h2>
+<p>The following diagram maps the public API functions to their internal implementations and database operations:</p>
+<pre class="mermaid"><code>flowchart TB
+    subgraph "Public API (repository.Repository interface)"
+        CreateEntityTag["CreateEntityTag(entity, tag)"]
+        CreateEntityProperty["CreateEntityProperty(entity, prop)"]
+        FindEntityTagById["FindEntityTagById(id)"]
+        FindEntityTagsByContent["FindEntityTagsByContent(prop, since)"]
+        GetEntityTags["GetEntityTags(entity, since, names...)"]
+        DeleteEntityTag["DeleteEntityTag(id)"]
+
+        CreateEdgeTag["CreateEdgeTag(edge, tag)"]
+        CreateEdgeProperty["CreateEdgeProperty(edge, prop)"]
+        FindEdgeTagById["FindEdgeTagById(id)"]
+        FindEdgeTagsByContent["FindEdgeTagsByContent(prop, since)"]
+        GetEdgeTags["GetEdgeTags(edge, since, names...)"]
+        DeleteEdgeTag["DeleteEdgeTag(id)"]
+    end
+
+    subgraph "sqlRepository Implementation"
+        CreateEntityTagImpl["sqlRepository.CreateEntityTag&lt;br/&gt;[tag.go:21-76]"]
+        CreateEntityPropertyImpl["sqlRepository.CreateEntityProperty&lt;br/&gt;[tag.go:82-84]"]
+        FindEntityTagByIdImpl["sqlRepository.FindEntityTagById&lt;br/&gt;[tag.go:89-113]"]
+        FindEntityTagsByContentImpl["sqlRepository.FindEntityTagsByContent&lt;br/&gt;[tag.go:120-169]"]
+        GetEntityTagsImpl["sqlRepository.GetEntityTags&lt;br/&gt;[tag.go:174-226]"]
+        DeleteEntityTagImpl["sqlRepository.DeleteEntityTag&lt;br/&gt;[tag.go:231-243]"]
+
+        CreateEdgeTagImpl["sqlRepository.CreateEdgeTag&lt;br/&gt;[tag.go:249-304]"]
+        CreateEdgePropertyImpl["sqlRepository.CreateEdgeProperty&lt;br/&gt;[tag.go:310-312]"]
+        FindEdgeTagByIdImpl["sqlRepository.FindEdgeTagById&lt;br/&gt;[tag.go:317-346]"]
+        FindEdgeTagsByContentImpl["sqlRepository.FindEdgeTagsByContent&lt;br/&gt;[tag.go:353-402]"]
+        GetEdgeTagsImpl["sqlRepository.GetEdgeTags&lt;br/&gt;[tag.go:407-459]"]
+        DeleteEdgeTagImpl["sqlRepository.DeleteEdgeTag&lt;br/&gt;[tag.go:464-476]"]
+    end
+
+    subgraph "GORM Database Operations"
+        Save["db.Save(&amp;tag)"]
+        First["db.First(&amp;tag)"]
+        Where["db.Where(...).Find(&amp;tags)"]
+        Delete["db.Delete(&amp;tag)"]
+    end
+
+    CreateEntityTag --&gt; CreateEntityTagImpl --&gt; Save
+    CreateEntityProperty --&gt; CreateEntityPropertyImpl --&gt; CreateEntityTagImpl
+    FindEntityTagById --&gt; FindEntityTagByIdImpl --&gt; First
+    FindEntityTagsByContent --&gt; FindEntityTagsByContentImpl --&gt; Where
+    GetEntityTags --&gt; GetEntityTagsImpl --&gt; Where
+    DeleteEntityTag --&gt; DeleteEntityTagImpl --&gt; Delete
+
+    CreateEdgeTag --&gt; CreateEdgeTagImpl --&gt; Save
+    CreateEdgeProperty --&gt; CreateEdgePropertyImpl --&gt; CreateEdgeTagImpl
+    FindEdgeTagById --&gt; FindEdgeTagByIdImpl --&gt; First
+    FindEdgeTagsByContent --&gt; FindEdgeTagsByContentImpl --&gt; Where
+    GetEdgeTags --&gt; GetEdgeTagsImpl --&gt; Where
+    DeleteEdgeTag --&gt; DeleteEdgeTagImpl --&gt; Delete</code></pre>
+<hr />
+<h2 id="usage-examples-from-tests">Usage Examples from Tests<a class="headerlink" href="#usage-examples-from-tests" title="Permanent link">&para;</a></h2>
+<p>The test suite demonstrates typical tag operations:</p>
+<h3 id="entity-tag-test-flow">Entity Tag Test Flow<a class="headerlink" href="#entity-tag-test-flow" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Test as Test Code
+    participant Repo as sqlRepository
+    participant DB as Database
+
+    Test-&gt;&gt;Repo: CreateAsset(&amp;dns.FQDN{Name: "utica.edu"})
+    Repo-&gt;&gt;DB: INSERT entity
+    DB--&gt;&gt;Repo: entity with ID
+    Repo--&gt;&gt;Test: entity
+
+    Test-&gt;&gt;Repo: CreateEntityProperty(entity, SimpleProperty{Name:"test", Value:"foo"})
+    Repo-&gt;&gt;DB: Check for duplicates via GetEntityTags
+    DB--&gt;&gt;Repo: No duplicates found
+    Repo-&gt;&gt;DB: INSERT entity_tag
+    DB--&gt;&gt;Repo: tag with ID
+    Repo--&gt;&gt;Test: tag (CreatedAt and LastSeen set)
+
+    Note over Test: Wait 1 second
+
+    Test-&gt;&gt;Repo: CreateEntityProperty(entity, same property)
+    Repo-&gt;&gt;DB: Check for duplicates via GetEntityTags
+    DB--&gt;&gt;Repo: Duplicate found
+    Repo-&gt;&gt;DB: UPDATE entity_tag (UpdatedAt only)
+    DB--&gt;&gt;Repo: updated tag
+    Repo--&gt;&gt;Test: tag (LastSeen updated, CreatedAt preserved)
+
+    Test-&gt;&gt;Repo: GetEntityTags(entity, since, "test")
+    Repo-&gt;&gt;DB: SELECT entity_tags WHERE entity_id = ? AND name = 'test'
+    DB--&gt;&gt;Repo: matching tags
+    Repo--&gt;&gt;Test: []*types.EntityTag
+
+    Test-&gt;&gt;Repo: DeleteEntityTag(tag.ID)
+    Repo-&gt;&gt;DB: DELETE entity_tag WHERE id = ?
+    DB--&gt;&gt;Repo: Success
+    Repo--&gt;&gt;Test: nil error</code></pre>
+<h3 id="edge-tag-test-flow">Edge Tag Test Flow<a class="headerlink" href="#edge-tag-test-flow" title="Permanent link">&para;</a></h3>
+<p>Edge tags follow an identical pattern but require an edge to be created first:</p>
+<ol>
+<li>Create two entities (<code>CreateAsset</code>)</li>
+<li>Create an edge between them (<code>CreateEdge</code>)</li>
+<li>Attach properties to the edge via <code>CreateEdgeProperty</code></li>
+<li>Query and verify tags via <code>GetEdgeTags</code></li>
+<li>Clean up with <code>DeleteEdgeTag</code></li>
+</ol>
+<hr />
+<h2 id="error-handling_2">Error Handling<a class="headerlink" href="#error-handling_2" title="Permanent link">&para;</a></h2>
+<p>The tag management system returns errors in the following scenarios:</p>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Error Source</th>
+<th>Functions Affected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Invalid ID format</td>
+<td><code>strconv.ParseUint</code></td>
+<td><code>FindEntityTagById</code>, <code>DeleteEntityTag</code>, <code>FindEdgeTagById</code>, <code>DeleteEdgeTag</code></td>
+</tr>
+<tr>
+<td>JSON serialization failure</td>
+<td><code>property.JSON()</code></td>
+<td><code>CreateEntityTag</code>, <code>CreateEdgeTag</code>, <code>FindEntityTagsByContent</code>, <code>FindEdgeTagsByContent</code></td>
+</tr>
+<tr>
+<td>Tag not found</td>
+<td><code>gorm.First</code></td>
+<td><code>FindEntityTagById</code>, <code>FindEdgeTagById</code></td>
+</tr>
+<tr>
+<td>Database operation failure</td>
+<td><code>gorm.Save</code>, <code>gorm.Delete</code></td>
+<td>All create and delete operations</td>
+</tr>
+<tr>
+<td>Zero results</td>
+<td>Custom check</td>
+<td><code>FindEntityTagsByContent</code>, <code>GetEntityTags</code>, <code>FindEdgeTagsByContent</code>, <code>GetEdgeTags</code></td>
+</tr>
+</tbody>
+</table>
+<p>The "zero tags found" error  is explicitly returned when queries produce no results, distinguishing between database errors and legitimate empty result sets.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-circle-arrow-up" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4M12 16V8"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../api/data-types/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Core Data Types">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Core Data Types
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="./entity-operations/" class="md-footer__link md-footer__link--next" aria-label="Next: SQL Entity Operations">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                SQL Entity Operations
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2017-2026 Jeff Foley &mdash; Licensed under Apache 2.0
+
+    </div>
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/owasp-amass" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/owasp-amass/amass-docker-compose" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M349.9 236.3h-66.1v-59.4h66.1zm0-204.3h-66.1v60.7h66.1zm78.2 144.8H362v59.4h66.1zm-156.3-72.1h-66.1v60.1h66.1zm78.1 0h-66.1v60.1h66.1zm276.8 100c-14.4-9.7-47.6-13.2-73.1-8.4-3.3-24-16.7-44.9-41.1-63.7l-14-9.3-9.3 14c-18.4 27.8-23.4 73.6-3.7 103.8-8.7 4.7-25.8 11.1-48.4 10.7H2.4c-8.7 50.8 5.8 116.8 44 162.1 37.1 43.9 92.7 66.2 165.4 66.2 157.4 0 273.9-72.5 328.4-204.2 21.4.4 67.6.1 91.3-45.2 1.5-2.5 6.6-13.2 8.5-17.1zm-511.1-27.9h-66v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1zm78.1 0h-66.1v59.4h66.1zm-78.1-72.1h-66.1v60.1h66.1z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://discord.gg/HNePVyX3cp" target="_blank" rel="noopener" title="discord.gg" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+    
+    
+      
+    
+    
+    
+      
+      
+    
+    <a href="https://infosec.exchange/@amass" target="_blank" rel="noopener me" title="infosec.exchange" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M433 179.1c0-97.2-63.7-125.7-63.7-125.7-62.5-28.7-228.6-28.4-290.5 0 0 0-63.7 28.5-63.7 125.7 0 115.7-6.6 259.4 105.6 289.1 40.5 10.7 75.3 13 103.3 11.4 50.8-2.8 79.3-18.1 79.3-18.1l-1.7-36.9s-36.3 11.4-77.1 10.1c-40.4-1.4-83-4.4-89.6-54-.6-4.6-.9-9.3-.9-13.9 85.6 20.9 158.7 9.1 178.7 6.7 56.1-6.7 105-41.3 111.2-72.9 9.8-49.8 9-121.5 9-121.5zm-75.1 125.2h-46.6V190.1c0-49.7-64-51.6-64 6.9v62.5H201V197c0-58.5-64-56.6-64-6.9v114.2H90.3c0-122.1-5.2-147.9 18.4-175 25.9-28.9 79.8-30.8 103.8 6.1l11.6 19.5 11.6-19.5c24.1-37.1 78.1-34.8 103.8-6.1 23.7 27.3 18.4 53 18.4 175"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://x.com/owaspamass/" target="_blank" rel="noopener" title="x.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M357.2 48h70.6L273.6 224.2 455 464H313L201.7 318.6 74.5 464H3.8l164.9-188.5L-5.2 48h145.6l100.5 132.9zm-24.8 373.8h39.1L119.1 88h-42z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["announce.dismiss","content.action.edit","content.action.view","content.code.annotate","content.code.copy","content.code.select","content.footnote.tooltips","content.tabs.link","content.tooltips","navigation.footer","navigation.path","navigation.tabs","navigation.top","search.highlight"],"search":"../../assets/javascripts/workers/search.e2d2d235.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.16f8adc2.min.js"></script>
+      
+    
+  </body>
+</html>

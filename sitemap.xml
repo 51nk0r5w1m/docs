@@ -259,7 +259,7 @@
         <loc>https://51nk0r5w1m.github.io/docs/asset_db/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/asset_db/getting-started/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/setup/</loc>
       </url>
       <url>
         <loc>https://51nk0r5w1m.github.io/docs/asset_db/postgres/</loc>
@@ -277,52 +277,52 @@
         <loc>https://51nk0r5w1m.github.io/docs/asset_db/neo4j/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/asset_db/neo4j-entity-operations/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/neo4j/entity-operations/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/asset_db/neo4j-edge-operations/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/neo4j/edge-operations/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/asset_db/neo4j-tag-management/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/neo4j/tag-management/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/asset_db/neo4j-schema/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/neo4j/schema/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/asset_db/api-reference/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/api/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/asset_db/repository-interface/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/api/repository-interface/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/asset_db/api-reference-cache/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/api/cache-interface/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/asset_db/api-reference-types/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/api/data-types/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/asset_db/sql-repository/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/sql/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/asset_db/sql-entity-operations/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/sql/entity-operations/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/asset_db/sql-edge-operations/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/sql/edge-operations/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/asset_db/sql-tag-management/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/sql/tag-management/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/asset_db/sql-schema/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/sql/schema/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/asset_db/installation/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/setup/installation/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/asset_db/db-configuration/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/setup/configuration/</loc>
       </url>
       <url>
-        <loc>https://51nk0r5w1m.github.io/docs/asset_db/basic-usage/</loc>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/setup/basic-usage/</loc>
       </url>
       <url>
         <loc>https://51nk0r5w1m.github.io/docs/asset_db/docker/</loc>
