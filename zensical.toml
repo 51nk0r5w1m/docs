@@ -19,6 +19,7 @@ Copyright &copy; 2017-2026 Jeff Foley &mdash; Licensed under Apache 2.0
 """
 
 extra_css = ["stylesheets/extra.css"]
+extra_javascript = ["javascripts/mermaid-zoom.js"]
 
 nav = [
   { "Getting Started" = [
