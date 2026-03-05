@@ -1,10 +1,10 @@
-# :material-auto-fix: Asset Transformations Configuration
+# Asset Transformations Configuration
 
 The `transformations` section of the OWASP Amass `config.yaml` file is one of the most powerful parts of the collection engine. It controls **how data flows through the system**, defines **which types of assets can be transformed into others**, and sets **constraints like freshness (TTL), trustworthiness (confidence), and urgency (priority)** on those transformations.
 
 This section empowers users to **customize and optimize their data collection workflows** based on their goals, risk tolerance, and update requirements.
 
-## :material-help-circle-outline: What Are Transformations?
+## What Are Transformations?
 
 In Amass, the data collection process is modeled as a pipeline of **asset transformations**. Each asset observed (like an IP address, domain, ASN, etc.) can trigger **handlers**, which attempt to enrich, correlate, or expand on that asset type by transforming it into new assets.
 
@@ -19,7 +19,7 @@ The `transformations` section defines:
 - **How much confidence** the system should have in the results (`confidence`)
 - **How important** the transformation is (`priority`)
 
-## :material-cog-outline: Configuration Overview
+## Configuration Overview
 
 Here's the structure of a typical configuration:
 
@@ -92,7 +92,7 @@ transformations:
 * **IPAddress->ALL**: All available transformations for IPs are enabled (e.g., geolocation, RDAP, reverse DNS).
 * **TLSCertificate->ALL**: Certificates fetched from services are checked weekly.
 
-## :material-refresh: What is `ttl`?
+## What is `ttl`?
 
 `ttl` (Time To Live) controls **how often a transformation can be retried** from the original source:
 
@@ -101,18 +101,18 @@ transformations:
 
 This ensures the system avoids unnecessary queries and controls bandwidth/load.
 
-## :material-shield-check: What is `confidence`?
+## What is `confidence`?
 
 `confidence` helps Amass **filter out noisy or speculative results**. Some plugins or handlers may return results with associated confidence scores.
 
 * If a handler returns a transformation with `confidence: 40`, and your threshold is `50`, **it will be ignored**.
 * Use this to reduce false positives or to tune behavior in environments where high data quality is crucial.
 
-## :material-star: What is `priority`?
+## What is `priority`?
 
 The `priority` value is a **relative score (1–10)** that can help inform which transformations are more important. While not strictly enforced in the engine today, this allows **future prioritization of more urgent or valuable tasks**—like scanning attack surfaces or refreshing high-risk domains.
 
-## :material-clipboard-list-outline: Tips and Best Practices
+## Tips and Best Practices
 
 - Use `->ALL` to simplify enabling all known transformations for an asset type.
 - Use higher TTLs (e.g., 30+ days) for records that rarely change (e.g., `RDAP`, `GLEIF`, `DomainRecord`).
@@ -120,7 +120,7 @@ The `priority` value is a **relative score (1–10)** that can help inform which
 - Set `confidence` thresholds higher (e.g., 70–90) in production pipelines where trust is critical.
 - Consider adjusting `priority` for critical infrastructure or high-value assets.
 
-## :material-rocket-launch: Summary
+## Summary
 
 The `transformations` section of the Amass configuration lets users **shape the intelligence collection process**, optimize for **freshness vs. efficiency**, and **control data quality** through TTLs and confidence scoring.
 

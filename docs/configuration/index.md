@@ -164,7 +164,8 @@ The `transformations` section controls how assets should be proccessed, how long
   - `exclude` (array of strings, optional): List of transforms to exclude.
 In this example, the TTL and confidence settings will only apply when the transformation is handled by the plugin named `myplugin`.
 
-> **Tip:** Use `ALL` as the transform to apply the rule to all transforms for a given entity.
+!!! tip
+    Use `ALL` as the transform to apply the rule to all transforms for a given entity.
 
 **Example:**
 
@@ -222,4 +223,5 @@ Amass uses Go interfaces and flexible types in its configuration structs to allo
 
 - **Programmatic Access:** If you use Amass as a Go library, you can read, modify, or extend the config structs directly, including any custom or experimental options you add to your YAML.
 
-> **Tip:** This flexibility is powerful for advanced users and developers, but be careful—unsupported or misspelled options may be silently ignored unless handled in code.
+!!! tip
+    This flexibility is powerful for advanced users and developers, but be careful—unsupported or misspelled options may be silently ignored unless handled in code.

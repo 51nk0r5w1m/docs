@@ -1,6 +1,5 @@
 # Deployment Overview
 
-## Purpose and Scope
 
 This document describes the deployment strategies and distribution mechanisms for OWASP Amass. It covers the available installation methods, platform support, and the automated build and release pipeline that produces binaries, Docker images, and package manager distributions.
 

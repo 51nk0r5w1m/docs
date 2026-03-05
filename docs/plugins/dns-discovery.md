@@ -1,6 +1,5 @@
 # DNS Discovery Plugins
 
-## Purpose and Scope
 
 The DNS Discovery Plugin suite is responsible for performing comprehensive DNS-based reconnaissance to discover FQDNs, IP addresses, and their relationships. This includes querying various DNS record types (TXT, CNAME, A/AAAA, NS, MX, SRV, PTR), managing the domain hierarchy, and triggering cascading discovery through event dispatch.
 

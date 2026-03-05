@@ -1,6 +1,5 @@
 # Event Dispatcher
 
-## Purpose and Scope
 
 The Event Dispatcher is the central routing component of the Amass engine that manages the flow of events from discovery sources to asset processing pipelines. It coordinates between sessions, plugin handlers, and work queues to ensure events are processed in priority order while maintaining session isolation and resource efficiency.
 

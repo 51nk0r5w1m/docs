@@ -263,7 +263,6 @@ entities, err := cachedRepo.FindEntitiesByType(oam.FQDN, cachedRepo.StartTime())
 
 ## Cache Architecture
 
-## Purpose and Scope
 
 This document describes the architectural design of the caching layer in asset-db. The cache provides a performance optimization layer that wraps any repository implementation (SQL or Neo4j) with an in-memory cache. This page focuses on the core architectural patterns: the dual-repository design, tag-based cache invalidation, and frequency-based write throttling.
 

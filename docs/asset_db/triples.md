@@ -121,7 +121,6 @@ The **Triples Query Language** is a powerful way to interact with the OWASP Asse
 
 ## Neo4j Repository
 
-## Purpose and Scope
 
 The Neo4j Repository provides a graph database implementation of the Repository interface, enabling asset storage and retrieval using Neo4j's native graph data model. This implementation leverages Neo4j's Cypher query language and graph traversal capabilities to efficiently manage entities, edges, and their associated tags.
 

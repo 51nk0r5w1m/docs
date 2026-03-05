@@ -1,6 +1,5 @@
 # API Reference
 
-## Purpose and Scope
 
 This page provides an overview of the asset-db API structure and conventions. It describes the main interfaces, factory methods, and type system that developers interact with when using asset-db as a library.
 
@@ -357,7 +356,6 @@ For detailed method signatures and behaviors, see the child pages listed at the 
 
 ## Repository Interface
 
-## Purpose and Scope
 
 The Repository interface is the central contract for all database operations in asset-db. It defines a unified API for creating, retrieving, and managing entities, edges, and tags across different database backends (PostgreSQL, SQLite, Neo4j). This page documents all methods in the `repository.Repository` interface.
 
@@ -1605,7 +1603,6 @@ flowchart TD
 
 ## Core Data Types
 
-## Purpose and Scope
 
 This page provides reference documentation for the four core data types defined in the `types` package: `Entity`, `Edge`, `EntityTag`, and `EdgeTag`. These types form the foundation of the asset-db data model and are used consistently across all repository implementations.
 

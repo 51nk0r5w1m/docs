@@ -1,6 +1,5 @@
 # Database Migrations
 
-## Purpose and Scope
 
 This page provides an overview of the database migration system in asset-db, which ensures database schemas are properly initialized and versioned before data operations begin. The migration system automatically creates the necessary tables, indexes, and constraints required by the repository implementations.
 
@@ -297,7 +296,6 @@ For details on how repositories use the migrated schema:
 
 ## SQL Schema Migrations
 
-## Purpose and Scope
 
 This document covers the SQL schema migration system for PostgreSQL and SQLite databases in the asset-db repository. It details the migration scripts, table structures, indexes, constraints, and the execution mechanism using the `sql-migrate` library.
 

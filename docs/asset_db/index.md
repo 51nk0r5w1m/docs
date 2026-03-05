@@ -79,7 +79,6 @@ the [Triples Query Language](triples.md) possible.
 
 ## Architecture
 
-## Purpose and Scope
 
 This document provides an architectural overview of the `asset-db` repository, a Go library that provides unified, multi-backend database storage for asset management in the OWASP Amass ecosystem. It explains the core design patterns, supported database backends, and how the system integrates with the Open Asset Model (OAM) to store and query relationships between security reconnaissance assets.
 
@@ -625,7 +624,6 @@ This sequence shows:
 
 ### Open Asset Model Integration
 
-## Purpose and Scope
 
 This page describes how the asset-db system integrates with the Open Asset Model (OAM) for standardized asset, property, and relationship definitions. It covers the OAM type system, how OAM types are embedded in the core data structures, and how they are serialized for database storage. For details on the core data structures themselves, see [Data Model](./index.md#data-model). For implementation-specific storage details, see [SQL Repository](./postgres.md#sql-repository-implementation) and [Neo4j Repository](./triples.md#neo4j-repository).
 

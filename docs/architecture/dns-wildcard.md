@@ -1,6 +1,5 @@
 # DNS Wildcard Detection
 
-## Purpose and Scope
 
 This page describes the wildcard DNS detection mechanism in Amass, which prevents false positive domain discoveries caused by wildcard DNS records. Wildcard detection is a critical filtering step that runs during DNS query resolution to ensure enumeration accuracy.
 

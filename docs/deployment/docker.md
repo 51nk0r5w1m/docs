@@ -1,6 +1,5 @@
 # Docker Deployment
 
-## Purpose and Scope
 
 This document explains the Docker image structure for OWASP Amass, including the multi-stage build process, file system layout, volume management, and container usage patterns. It covers how to run Amass and its suite of OAM tools in containerized environments.
 

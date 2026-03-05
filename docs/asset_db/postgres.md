@@ -2,7 +2,8 @@
 
 The OWASP Amass framework can store collected data in a PostgreSQL database. This page walks you through the recommended setup process, including environment variables, database initialization, and configuration in your `config.yaml` file.
 
-> **Note:** These instructions assume PostgreSQL is already installed and running on your system (e.g., `localhost:5432`). You’ll need access to a user with sufficient privileges (typically `postgres`).
+!!! note
+    These instructions assume PostgreSQL is already installed and running on your system (e.g., `localhost:5432`). You’ll need access to a user with sufficient privileges (typically `postgres`).
 
 ## 1. Define Environment Variables
 
@@ -108,7 +109,6 @@ Amass is now ready to store data in your PostgreSQL database. This enables you t
 
 ## SQL Repository Implementation
 
-## Purpose and Scope
 
 The SQL Repository provides a relational database implementation of the `Repository` interface using GORM as the ORM layer. It supports PostgreSQL for production deployments and SQLite for embedded/development use cases. This document covers the architecture, initialization, and data storage approach of the SQL repository implementation.
 
@@ -1650,7 +1650,6 @@ The "zero tags found" error  is explicitly returned when queries produce no resu
 
 ## Database Schema & Migrations
 
-## Purpose and Scope
 
 This document covers the SQL schema migration system for PostgreSQL and SQLite databases in the asset-db repository. It details the migration scripts, table structures, indexes, constraints, and the execution mechanism using the `sql-migrate` library.
 

@@ -1,6 +1,5 @@
 # Service Discovery Plugins
 
-## Purpose and Scope
 
 Service Discovery Plugins actively probe and identify running services on discovered assets. These plugins transform passive asset discoveries (FQDNs and IP addresses) into detailed service information including HTTP endpoints, TLS certificates, and service fingerprints.
 

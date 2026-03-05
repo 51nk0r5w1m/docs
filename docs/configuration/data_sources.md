@@ -2,7 +2,8 @@
 
 This document explains how to configure external data sources for Amass using the `datasources.yaml` file. Data sources provide additional information for enumeration and require credentials for access.
 
-> **Note:** Some data sources require a paid subscription or API key to access advanced features. Using paid or premium data sources can unlock extra capabilities and may provide a better experience for the Amass engine, including more comprehensive results and faster queries.
+!!! note
+    Some data sources require a paid subscription or API key to access advanced features. Using paid or premium data sources can unlock extra capabilities and may provide a better experience for the Amass engine, including more comprehensive results and faster queries.
 
 ---
 

@@ -1,6 +1,5 @@
 # DNS TTL & Caching
 
-## Purpose and Scope
 
 This page documents Amass's DNS response caching mechanisms, Time-To-Live (TTL) management, and query deduplication strategies. It explains how the system balances performance through caching with data freshness requirements, prevents redundant DNS queries, and handles DNS TTL values to avoid overloading resolvers while maintaining up-to-date reconnaissance data.
 

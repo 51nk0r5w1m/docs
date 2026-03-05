@@ -1,6 +1,5 @@
 # Plugin Registry & Pipelines
 
-## Purpose and Scope
 
 This page explains the plugin registry and asset pipeline system, which orchestrates how plugins process events in Amass. The registry manages handler registration from plugins, constructs priority-ordered pipelines for each asset type, and coordinates execution of handlers across multiple concurrent sessions.
 
