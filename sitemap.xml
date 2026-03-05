@@ -37,6 +37,9 @@
         <loc>https://51nk0r5w1m.github.io/docs/cli/viz/</loc>
       </url>
       <url>
+        <loc>https://51nk0r5w1m.github.io/docs/cli/oam-tools/</loc>
+      </url>
+      <url>
         <loc>https://51nk0r5w1m.github.io/docs/configuration/</loc>
       </url>
       <url>
@@ -67,6 +70,9 @@
         <loc>https://51nk0r5w1m.github.io/docs/architecture/data-model/</loc>
       </url>
       <url>
+        <loc>https://51nk0r5w1m.github.io/docs/architecture/graph-querying/</loc>
+      </url>
+      <url>
         <loc>https://51nk0r5w1m.github.io/docs/architecture/network-mapping/</loc>
       </url>
       <url>
@@ -91,7 +97,13 @@
         <loc>https://51nk0r5w1m.github.io/docs/plugins/service-discovery/</loc>
       </url>
       <url>
+        <loc>https://51nk0r5w1m.github.io/docs/plugins/service-discovery-integration/</loc>
+      </url>
+      <url>
         <loc>https://51nk0r5w1m.github.io/docs/plugins/enrichment/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/plugins/support-utilities/</loc>
       </url>
       <url>
         <loc>https://51nk0r5w1m.github.io/docs/open_asset_model/</loc>
@@ -223,6 +235,18 @@
         <loc>https://51nk0r5w1m.github.io/docs/asset_db/neo4j/</loc>
       </url>
       <url>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/neo4j-entity-operations/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/neo4j-edge-operations/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/neo4j-tag-management/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/neo4j-schema/</loc>
+      </url>
+      <url>
         <loc>https://51nk0r5w1m.github.io/docs/asset_db/api-reference/</loc>
       </url>
       <url>
@@ -248,6 +272,12 @@
       </url>
       <url>
         <loc>https://51nk0r5w1m.github.io/docs/asset_db/basic-usage/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/docker/</loc>
+      </url>
+      <url>
+        <loc>https://51nk0r5w1m.github.io/docs/asset_db/testing/</loc>
       </url>
       <url>
         <loc>https://51nk0r5w1m.github.io/docs/contributing/contributing/</loc>

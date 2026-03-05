@@ -1,0 +1,5637 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="In-depth OSINT collection and external attack surface mapping">
+      
+      
+        <meta name="author" content="OWASP Amass Contributors">
+      
+      
+        <link rel="canonical" href="https://51nk0r5w1m.github.io/docs/cli/oam-tools/">
+      
+      
+        <link rel="prev" href="../viz/">
+      
+      
+        <link rel="next" href="../../configuration/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="zensical-0.0.24">
+    
+    
+      
+        <title>OAM Analysis Tools - OWASP Amass Project</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.28978c9b.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/modern/palette.dfe2e883.min.css">
+      
+      
+
+  
+  
+  
+  
+  <style>:root{--md-annotation-icon:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M17%2013h-4v4h-2v-4H7v-2h4V7h2v4h4m-5-9A10%2010%200%200%200%202%2012a10%2010%200%200%200%2010%2010%2010%2010%200%200%200%2010-10A10%2010%200%200%200%2012%202%22/%3E%3C/svg%3E');}</style>
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,500,500i,700,700i%7CFira+Code:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Lato";--md-code-font:"Fira Code"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,a=__md_scope)=>JSON.parse(t.getItem(a.pathname+"."+e)),__md_set=(e,t,a=localStorage,_=__md_scope)=>{try{a.setItem(_.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#oam-analysis-tools" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="OWASP Amass Project" class="md-header__button md-logo" aria-label="OWASP Amass Project" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.897 20.503c-.384 0-1.782-2.489-1.97-3.198-.393-1.486-.308-2.114-.285-2.314.072-.613.667-.92.703-1.748.01-.256.14-1.535.243-2.534a1.7 1.7 0 0 1-.733-.343c.676.908-.32 1.995-1.767 3.443-1.536 1.536-4.945 2.961-4.945 2.961s1.425-3.41 2.961-4.945c1.13-1.129 2.04-1.983 2.816-1.983.22 0 .427.067.627.216a1.7 1.7 0 0 1-.343-.733c-.999.103-2.278.232-2.534.244-.829.036-1.135.63-1.747.702-.07.008-.194.024-.388.024-.36 0-.963-.054-1.926-.31-.772-.203-3.648-1.84-3.14-2.045.26-.105 1.087-.176 2.175-.176 1.047 0 2.337.066 3.596.23 1.57.205 3.01.463 3.992.656q.024-.08.058-.154l-1.004-.48s-.8-.92-.715-.984l.012-.003c.126 0 .767.733.829.816l.605.202-.284-.249s-.388-1.438-.287-1.472h.004c.106 0 .459 1.25.489 1.34.07.06.303.152.596.32l-.308-.79s.14-1.305.243-1.305h.003c.105.021-.02 1.089-.047 1.221l.51.783a1.3 1.3 0 0 1 .463-.082c.184 0 .374.036.558.107-.236-.502-.218-1.025.095-1.338a.84.84 0 0 1 .353-.209.46.46 0 0 1 .457-.383c.127 0 .254.05.352.148a.5.5 0 0 1 .147.335c.151-.311.329-.73.317-.867-.03-.307-.386-.852-.39-.857a.076.076 0 0 1 .064-.119c.025 0 .05.012.064.035.016.023.381.582.414.927.018.198-.21.696-.333.95a2.23 2.23 0 0 1 .873.874c.245-.12.715-.334.927-.334l.024.001c.345.033.904.399.927.414a.076.076 0 0 1-.084.128c-.005-.004-.55-.36-.857-.39h-.015c-.15 0-.552.171-.852.317.12.004.242.053.335.147a.48.48 0 0 1 .012.681.46.46 0 0 1-.247.128.85.85 0 0 1-.21.354.92.92 0 0 1-.67.255c-.212 0-.441-.055-.667-.16.132.343.142.708.025 1.02l.783.51c.095-.019.666-.088.993-.088.13 0 .222.011.228.04.02.106-1.305.247-1.305.247l-.79-.308c.168.293.26.527.32.596.091.03 1.374.392 1.34.493q-.007.018-.063.017c-.283 0-1.41-.304-1.41-.304l-.248-.284.202.605c.087.065.876.755.813.841q-.006.007-.016.007c-.139 0-.967-.722-.967-.722l-.481-1.004a1 1 0 0 1-.154.058c.193.982.451 2.422.656 3.992.335 2.569.26 5.261.054 5.77q-.024.06-.076.06M12 24C5.373 24 0 18.627 0 12S5.373 0 12 0s12 5.373 12 12-5.373 12-12 12m0-22.153C6.393 1.847 1.847 6.393 1.847 12S6.393 22.153 12 22.153 22.153 17.607 22.153 12 17.607 1.847 12 1.847"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OWASP Amass Project
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              OAM Analysis Tools
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/51nk0r5w1m/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    OWASP Amass
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../.." class="md-tabs__link">
+          
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  CLI
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../configuration/" class="md-tabs__link">
+          
+  
+  Configuration
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/" class="md-tabs__link">
+          
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../plugins/" class="md-tabs__link">
+          
+  
+  Plugins
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../open_asset_model/" class="md-tabs__link">
+          
+  
+  Open Asset Model
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../asset_db/" class="md-tabs__link">
+          
+  
+  Asset Database
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../contributing/contributing/" class="md-tabs__link">
+          
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="OWASP Amass Project" class="md-nav__button md-logo" aria-label="OWASP Amass Project" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.897 20.503c-.384 0-1.782-2.489-1.97-3.198-.393-1.486-.308-2.114-.285-2.314.072-.613.667-.92.703-1.748.01-.256.14-1.535.243-2.534a1.7 1.7 0 0 1-.733-.343c.676.908-.32 1.995-1.767 3.443-1.536 1.536-4.945 2.961-4.945 2.961s1.425-3.41 2.961-4.945c1.13-1.129 2.04-1.983 2.816-1.983.22 0 .427.067.627.216a1.7 1.7 0 0 1-.343-.733c-.999.103-2.278.232-2.534.244-.829.036-1.135.63-1.747.702-.07.008-.194.024-.388.024-.36 0-.963-.054-1.926-.31-.772-.203-3.648-1.84-3.14-2.045.26-.105 1.087-.176 2.175-.176 1.047 0 2.337.066 3.596.23 1.57.205 3.01.463 3.992.656q.024-.08.058-.154l-1.004-.48s-.8-.92-.715-.984l.012-.003c.126 0 .767.733.829.816l.605.202-.284-.249s-.388-1.438-.287-1.472h.004c.106 0 .459 1.25.489 1.34.07.06.303.152.596.32l-.308-.79s.14-1.305.243-1.305h.003c.105.021-.02 1.089-.047 1.221l.51.783a1.3 1.3 0 0 1 .463-.082c.184 0 .374.036.558.107-.236-.502-.218-1.025.095-1.338a.84.84 0 0 1 .353-.209.46.46 0 0 1 .457-.383c.127 0 .254.05.352.148a.5.5 0 0 1 .147.335c.151-.311.329-.73.317-.867-.03-.307-.386-.852-.39-.857a.076.076 0 0 1 .064-.119c.025 0 .05.012.064.035.016.023.381.582.414.927.018.198-.21.696-.333.95a2.23 2.23 0 0 1 .873.874c.245-.12.715-.334.927-.334l.024.001c.345.033.904.399.927.414a.076.076 0 0 1-.084.128c-.005-.004-.55-.36-.857-.39h-.015c-.15 0-.552.171-.852.317.12.004.242.053.335.147a.48.48 0 0 1 .012.681.46.46 0 0 1-.247.128.85.85 0 0 1-.21.354.92.92 0 0 1-.67.255c-.212 0-.441-.055-.667-.16.132.343.142.708.025 1.02l.783.51c.095-.019.666-.088.993-.088.13 0 .222.011.228.04.02.106-1.305.247-1.305.247l-.79-.308c.168.293.26.527.32.596.091.03 1.374.392 1.34.493q-.007.018-.063.017c-.283 0-1.41-.304-1.41-.304l-.248-.284.202.605c.087.065.876.755.813.841q-.006.007-.016.007c-.139 0-.967-.722-.967-.722l-.481-1.004a1 1 0 0 1-.154.058c.193.982.451 2.422.656 3.992.335 2.569.26 5.261.054 5.77q-.024.06-.076.06M12 24C5.373 24 0 18.627 0 12S5.373 0 12 0s12 5.373 12 12-5.373 12-12 12m0-22.153C6.393 1.847 1.847 6.393 1.847 12S6.393 22.153 12 22.153 22.153 17.607 22.153 12 17.607 1.847 12 1.847"/></svg>
+
+    </a>
+    OWASP Amass Project
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/51nk0r5w1m/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    OWASP Amass
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deployment/docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deployment/config-best-practices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Best Practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CLI
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../enum/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    enum
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../subs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    subs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../assoc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    assoc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../track/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    track
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../viz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    viz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OAM Analysis Tools
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OAM Analysis Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tool-suite-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tool Suite Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#oam_assoc-association-walk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        oam_assoc - Association Walk
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="oam_assoc - Association Walk">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#args-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Args Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output Format
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#oam_subs-subdomain-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        oam_subs - Subdomain Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="oam_subs - Subdomain Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-structure-and-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command Structure and Flags
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#args-structure_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Args Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-retrieval-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Retrieval Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asn-information-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ASN Information System
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-formatting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output Formatting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#oam_track-asset-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        oam_track - Asset Tracking
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="oam_track - Asset Tracking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-structure_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#args-structure_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Args Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow Implementation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#default-time-calculation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default Time Calculation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#oam_viz-visualization-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        oam_viz - Visualization Generation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="oam_viz - Visualization Generation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-structure-and-format-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command Structure and Format Selection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#args-structure_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Args Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visualization-data-retrieval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visualization Data Retrieval
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-writing-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Writing Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-format-characteristics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output Format Characteristics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Infrastructure
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Infrastructure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-loading-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Loading Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-connection-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database Connection Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-formatting-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output Formatting System
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Configuration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/data_sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Sources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/transformations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transformations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Engine
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/engine-core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/event-dispatcher/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Dispatcher
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/plugin-registry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin Registry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/sessions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sessions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/data-flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/data-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/graph-querying/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Graph Database & Querying
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/network-mapping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network Mapping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DNS
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/dns-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/dns-wildcard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wildcard Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/dns-caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/dns-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNS Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/api-integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Integrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/service-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/service-discovery-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service Discovery Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/enrichment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enrichment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/support-utilities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Support Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Asset Model
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Open Asset Model
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assets
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Assets
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/account/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Account
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/autnum_record/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AutnumRecord
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/autonomous_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AutonomousSystem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/contact_record/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ContactRecord
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/domain_record/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DomainRecord
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/file/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    File
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/fqdn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FQDN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/funds_transfer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FundsTransfer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/identifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/ip_address/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IPAddress
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/ipnet_record/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IPNetRecord
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/location/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Location
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/netblock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Netblock
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/person/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Person
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/phone/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Phone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/product/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/product_release/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ProductRelease
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/tls_certificate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TLSCertificate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/assets/url/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    URL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_3" id="__nav_6_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Relations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/basic_dns_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BasicDNSRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/port_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PortRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/pref_dns_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PrefDNSRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/simple_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SimpleRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/relations/srv_dns_relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SRVDNSRelation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Properties
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Properties
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/properties/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Properties
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/properties/dns_property/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DNSRecordProperty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/properties/simple_property/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SimpleProperty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/properties/source_property/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SourceProperty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/properties/vuln_property/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VulnProperty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../open_asset_model/use-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Use Cases & Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset Database
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Asset Database
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/postgres/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PostgreSQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/migrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/triples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Triples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/neo4j/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Neo4j Repository
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/neo4j-entity-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Neo4j Entity Operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/neo4j-edge-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Neo4j Edge Operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/neo4j-tag-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Neo4j Tag Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/neo4j-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Neo4j Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/repository-interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository Interface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/api-reference-cache/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cache Interface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/api-reference-types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Data Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/sql-repository/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL Repository
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/sql-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL Schema & Migrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/db-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/basic-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Basic Usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../asset_db/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tool-suite-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tool Suite Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#oam_assoc-association-walk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        oam_assoc - Association Walk
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="oam_assoc - Association Walk">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#args-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Args Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output Format
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#oam_subs-subdomain-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        oam_subs - Subdomain Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="oam_subs - Subdomain Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-structure-and-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command Structure and Flags
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#args-structure_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Args Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-retrieval-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Retrieval Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asn-information-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ASN Information System
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-formatting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output Formatting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#oam_track-asset-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        oam_track - Asset Tracking
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="oam_track - Asset Tracking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-structure_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#args-structure_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Args Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow Implementation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#default-time-calculation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default Time Calculation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#oam_viz-visualization-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        oam_viz - Visualization Generation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="oam_viz - Visualization Generation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-structure-and-format-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command Structure and Format Selection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#args-structure_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Args Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visualization-data-retrieval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visualization Data Retrieval
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-writing-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Writing Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-format-characteristics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output Format Characteristics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Infrastructure
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Infrastructure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-loading-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Loading Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-connection-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database Connection Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-formatting-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output Formatting System
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Amass Docs
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    CLI
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+  
+    <a href="https://github.com/51nk0r5w1m/docs/edit/main/docs/cli/oam-tools.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-file-pen" viewBox="0 0 24 24"><path d="M12.659 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v9.34"/><path d="M14 2v5a1 1 0 0 0 1 1h5M10.378 12.622a1 1 0 0 1 3 3.003L8.36 20.637a2 2 0 0 1-.854.506l-2.867.837a.5.5 0 0 1-.62-.62l.836-2.869a2 2 0 0 1 .506-.853z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/51nk0r5w1m/docs/raw/main/docs/cli/oam-tools.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-file-code-2" viewBox="0 0 24 24"><path d="M4 12.15V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.706.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2h-3.35"/><path d="M14 2v5a1 1 0 0 0 1 1h5M5 16l-3 3 3 3M9 22l3-3-3-3"/></svg>
+    </a>
+  
+
+
+<h1 id="oam-analysis-tools">OAM Analysis Tools<a class="headerlink" href="#oam-analysis-tools" title="Permanent link">&para;</a></h1>
+<p>The OAM Analysis Tools are a suite of standalone command-line utilities that query and analyze data stored in the Asset-DB graph database after collection. These tools operate independently of the enumeration process and provide different views of the collected Open Asset Model (OAM) data. Each tool reads from the persistent graph database and outputs formatted results for specific analysis tasks.</p>
+<p>For information about the data collection process, see <a href="#3.1">Main CLI and Subcommands</a>. For details on the underlying data model, see <a href="#7.1">Open Asset Model (OAM)</a>.</p>
+<h2 id="tool-suite-overview">Tool Suite Overview<a class="headerlink" href="#tool-suite-overview" title="Permanent link">&para;</a></h2>
+<p>The OAM Analysis Tools consist of four primary utilities, each serving a distinct analysis purpose:</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+<th>Primary Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>oam_assoc</code></td>
+<td>Graph traversal using triple patterns</td>
+<td>JSON results of association walks</td>
+</tr>
+<tr>
+<td><code>oam_subs</code></td>
+<td>Subdomain enumeration with infrastructure data</td>
+<td>Terminal tables with ASN/netblock information</td>
+</tr>
+<tr>
+<td><code>oam_track</code></td>
+<td>Time-based discovery tracking</td>
+<td>List of newly discovered assets since timestamp</td>
+</tr>
+<tr>
+<td><code>oam_viz</code></td>
+<td>Graph visualization generation</td>
+<td>D3.js HTML, Graphviz DOT, or GEXF files</td>
+</tr>
+</tbody>
+</table>
+<p>All tools share a common architecture pattern: they accept configuration via YAML files and CLI arguments, connect to the Asset-DB graph database, query the OAM data, and format output for their specific use case.</p>
+<p>Sources: , , , </p>
+<h2 id="architecture-pattern">Architecture Pattern<a class="headerlink" href="#architecture-pattern" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>graph TB
+    subgraph "oam_assoc"
+        AssocMain["cmd/oam_assoc/main.go&lt;br/&gt;Entry Point"]
+        AssocCLI["internal/assoc/cli.go&lt;br/&gt;CLIWorkflow()"]
+        AssocArgs["Args Struct&lt;br/&gt;Triples[10], Help, Filepaths"]
+    end
+
+    subgraph "oam_subs"
+        SubsMain["cmd/oam_subs/main.go&lt;br/&gt;Entry Point"]
+        SubsCLI["internal/subs/cli.go&lt;br/&gt;CLIWorkflow()"]
+        SubsArgs["Args Struct&lt;br/&gt;Domains, Options, Filepaths"]
+    end
+
+    subgraph "oam_track"
+        TrackMain["cmd/oam_track/main.go&lt;br/&gt;Entry Point"]
+        TrackCLI["internal/track/cli.go&lt;br/&gt;CLIWorkflow()"]
+        TrackArgs["Args Struct&lt;br/&gt;Domains, Since, Filepaths"]
+    end
+
+    subgraph "oam_viz"
+        VizMain["cmd/oam_viz/main.go&lt;br/&gt;Entry Point"]
+        VizCLI["internal/viz/cli.go&lt;br/&gt;CLIWorkflow()"]
+        VizArgs["Args Struct&lt;br/&gt;Domains, Since, Options"]
+    end
+
+    subgraph "Shared Infrastructure"
+        ConfigSystem["config.AcquireConfig()&lt;br/&gt;YAML + CLI merge"]
+        DBTools["tools.OpenGraphDatabase()&lt;br/&gt;Connection mgmt"]
+        GraphDB[("Asset-DB&lt;br/&gt;repository.Repository")]
+        OutputFormatters["afmt Package&lt;br/&gt;Banner, Colors, Tables"]
+    end
+
+    AssocMain --&gt; AssocCLI
+    AssocCLI --&gt; AssocArgs
+    AssocCLI --&gt; ConfigSystem
+    AssocCLI --&gt; DBTools
+
+    SubsMain --&gt; SubsCLI
+    SubsCLI --&gt; SubsArgs
+    SubsCLI --&gt; ConfigSystem
+    SubsCLI --&gt; DBTools
+
+    TrackMain --&gt; TrackCLI
+    TrackCLI --&gt; TrackArgs
+    TrackCLI --&gt; ConfigSystem
+    TrackCLI --&gt; DBTools
+
+    VizMain --&gt; VizCLI
+    VizCLI --&gt; VizArgs
+    VizCLI --&gt; ConfigSystem
+    VizCLI --&gt; DBTools
+
+    DBTools --&gt; GraphDB
+    AssocCLI --&gt; GraphDB
+    SubsCLI --&gt; GraphDB
+    TrackCLI --&gt; GraphDB
+    VizCLI --&gt; GraphDB
+
+    AssocCLI --&gt; OutputFormatters
+    SubsCLI --&gt; OutputFormatters
+    TrackCLI --&gt; OutputFormatters
+    VizCLI --&gt; OutputFormatters</code></pre>
+<p><strong>Common CLI Workflow Pattern</strong></p>
+<p>Each tool follows an identical architectural pattern for consistency. The <code>main.go</code> entry point extracts the command name using <code>path.Base(os.Args[0])</code> and delegates to the internal package's <code>CLIWorkflow()</code> function. This function handles flag parsing, configuration loading, database connection, and output formatting.</p>
+<p>Sources: , , , , , , , </p>
+<h2 id="oam_assoc-association-walk">oam_assoc - Association Walk<a class="headerlink" href="#oam_assoc-association-walk" title="Permanent link">&para;</a></h2>
+<p>The <code>oam_assoc</code> tool performs graph traversal queries using "triples" - a pattern-based syntax for walking relationships in the Asset-DB graph. It outputs JSON-formatted results showing entities and relationships discovered along the walk path.</p>
+<h3 id="command-structure">Command Structure<a class="headerlink" href="#command-structure" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    User["User Input"] --&gt; Flags["Flag Parsing&lt;br/&gt;NewFlagset()"]
+    Flags --&gt; Triple1["-t1 triple"]
+    Flags --&gt; Triple2["-t2...t10 triples"]
+    Flags --&gt; TripleFile["-tf path&lt;br/&gt;File of triples"]
+    Flags --&gt; Config["-config path&lt;br/&gt;-dir path"]
+
+    Triple1 --&gt; Parser["triples.ParseTriple()"]
+    Triple2 --&gt; Parser
+    TripleFile --&gt; FileLoader["config.GetListFromFile()"]
+    FileLoader --&gt; Parser
+
+    Config --&gt; ConfigLoad["config.AcquireConfig()"]
+    ConfigLoad --&gt; DBOpen["tools.OpenGraphDatabase()"]
+
+    Parser --&gt; TripleArray["[]*triples.Triple&lt;br/&gt;Array of parsed triples"]
+    TripleArray --&gt; Extract["triples.Extract(db, tris)"]
+    DBOpen --&gt; Extract
+
+    Extract --&gt; Results["JSON Results&lt;br/&gt;Entities + Relations"]
+    Results --&gt; Output["json.MarshalIndent()&lt;br/&gt;Pretty-printed JSON"]</code></pre>
+<p><strong>Triple-Based Query System</strong></p>
+<p>The tool accepts up to 10 triples via individual flags (<code>-t1</code> through <code>-t10</code>) or from a file (<code>-tf</code>). Each triple defines a graph traversal step using the pattern <code>subject predicate object</code>, where wildcards can be used. The triples are parsed by <code>triples.ParseTriple()</code> and executed sequentially by <code>triples.Extract()</code>.</p>
+<p>Sources: , , </p>
+<h3 id="args-structure">Args Structure<a class="headerlink" href="#args-structure" title="Permanent link">&para;</a></h3>
+<p>The <code>Args</code> struct in <code>internal/assoc/cli.go</code> defines the command-line arguments:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Args {
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    Help    bool
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    Triples []string              // Array of 10 triple strings
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    Options {
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        NoColor bool              // Disable colorized output
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        Silent  bool              // Disable all output
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    }
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    Filepaths {
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        ConfigFile string         // Path to YAML config
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        Directory  string         // Graph database directory
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        TripleFile string         // File containing triples list
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    }
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>}
+</span></code></pre></div>
+<p>The <code>Triples</code> array is pre-allocated to 10 elements at . The tool requires at least one triple to be provided, validated at .</p>
+<p>Sources: , </p>
+<h3 id="workflow-execution">Workflow Execution<a class="headerlink" href="#workflow-execution" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant User
+    participant CLI as CLIWorkflow()
+    participant Parser as Flag Parser
+    participant Config as config.AcquireConfig()
+    participant DB as tools.OpenGraphDatabase()
+    participant Extractor as triples.Extract()
+    participant Output as JSON Marshaler
+
+    User-&gt;&gt;CLI: oam_assoc -t1 "..." -t2 "..."
+    CLI-&gt;&gt;Parser: NewFlagset() + Parse()
+    Parser--&gt;&gt;CLI: Args struct populated
+
+    CLI-&gt;&gt;Config: Load YAML config
+    Config--&gt;&gt;CLI: cfg *config.Config
+
+    CLI-&gt;&gt;DB: OpenGraphDatabase(cfg)
+    DB--&gt;&gt;CLI: repository.Repository
+
+    loop For each triple string
+        CLI-&gt;&gt;Extractor: ParseTriple(tstr)
+        Extractor--&gt;&gt;CLI: *triples.Triple
+    end
+
+    CLI-&gt;&gt;Extractor: Extract(db, tris)
+    Extractor--&gt;&gt;CLI: results map
+
+    CLI-&gt;&gt;Output: json.MarshalIndent(results)
+    Output--&gt;&gt;CLI: Pretty JSON
+
+    CLI-&gt;&gt;User: Print to stdout</code></pre>
+<p><strong>Error Handling</strong></p>
+<p>The workflow includes multiple error exit points: failure to parse triples (), failure to extract associations (), and failure to marshal JSON (). Each error outputs a colored message to <code>color.Error</code> before calling <code>os.Exit(1)</code>.</p>
+<p>Sources: , </p>
+<h3 id="output-format">Output Format<a class="headerlink" href="#output-format" title="Permanent link">&para;</a></h3>
+<p>The tool outputs indented JSON with two-space formatting specified at . The JSON structure contains the results from <code>triples.Extract()</code>, which returns entities and relationships discovered during the graph walk. The output is printed to <code>color.Output</code> at .</p>
+<p>Sources: </p>
+<h2 id="oam_subs-subdomain-analysis">oam_subs - Subdomain Analysis<a class="headerlink" href="#oam_subs-subdomain-analysis" title="Permanent link">&para;</a></h2>
+<p>The <code>oam_subs</code> tool provides a formatted summary of discovered subdomains with optional IP address resolution and Autonomous System Number (ASN) infrastructure information. It displays results as colored terminal output with optional ASN summary tables.</p>
+<h3 id="command-structure-and-flags">Command Structure and Flags<a class="headerlink" href="#command-structure-and-flags" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    subgraph "Input Sources"
+        DomainFlag["-d domain&lt;br/&gt;Multiple allowed"]
+        DomainFile["-df path&lt;br/&gt;File of domains"]
+        ConfigFile["-config path&lt;br/&gt;YAML config"]
+    end
+
+    subgraph "Display Options"
+        ShowIP["-ip&lt;br/&gt;IPv4 + IPv6"]
+        ShowIPv4["-ipv4&lt;br/&gt;IPv4 only"]
+        ShowIPv6["-ipv6&lt;br/&gt;IPv6 only"]
+        ShowNames["-names&lt;br/&gt;Names only"]
+        ShowSummary["-summary&lt;br/&gt;ASN table only"]
+        ShowAll["-show&lt;br/&gt;Both names + ASN"]
+    end
+
+    subgraph "Output Options"
+        Demo["-demo&lt;br/&gt;Censor output"]
+        NoColor["-nocolor"]
+        Silent["-silent"]
+        Output["-o path&lt;br/&gt;Text file output"]
+    end
+
+    subgraph "Processing"
+        Merge["Merge all sources"]
+        GetNames["getNames()&lt;br/&gt;Query FQDN entities"]
+        AddAddrs["addAddresses()&lt;br/&gt;Resolve IPs"]
+        AddInfra["addInfrastructureInfo()&lt;br/&gt;ASN lookup"]
+    end
+
+    subgraph "Output Formatters"
+        LineFormatter["afmt.OutputLineParts()"]
+        TableFormatter["afmt.FprintEnumerationSummary()"]
+    end
+
+    DomainFlag --&gt; Merge
+    DomainFile --&gt; Merge
+    ConfigFile --&gt; Merge
+
+    Merge --&gt; GetNames
+    GetNames --&gt; AddAddrs
+    AddAddrs --&gt; AddInfra
+
+    ShowIP --&gt; AddAddrs
+    ShowIPv4 --&gt; AddAddrs
+    ShowIPv6 --&gt; AddAddrs
+
+    AddInfra --&gt; LineFormatter
+    AddInfra --&gt; TableFormatter
+
+    ShowNames --&gt; LineFormatter
+    ShowSummary --&gt; TableFormatter
+    ShowAll --&gt; LineFormatter
+    ShowAll --&gt; TableFormatter
+
+    Demo --&gt; LineFormatter
+    Demo --&gt; TableFormatter
+    Output --&gt; LineFormatter</code></pre>
+<p><strong>Display Mode Logic</strong></p>
+<p>The tool requires either <code>-names</code>, <code>-summary</code>, or <code>-show</code> to determine output mode (). The <code>-show</code> flag enables both modes by setting <code>DiscoveredNames</code> and <code>ASNTableSummary</code> to true (). The <code>-ip</code> flag is a convenience that enables both IPv4 and IPv6 ().</p>
+<p>Sources: , , </p>
+<h3 id="args-structure_1">Args Structure<a class="headerlink" href="#args-structure_1" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Args {
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    Help    bool
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    Domains *stringset.Set
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    Options {
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>        DemoMode        bool     // Censor sensitive data
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>        IPs             bool     // Show all IP addresses
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        IPv4            bool     // Show IPv4 addresses
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>        IPv6            bool     // Show IPv6 addresses
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>        ASNTableSummary bool     // Print ASN table
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>        DiscoveredNames bool     // Print subdomain list
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>        NoColor         bool
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>        ShowAll         bool     // Enable both names + ASN
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>        Silent          bool
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    }
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    Filepaths {
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>        ConfigFile string
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>        Directory  string
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>        Domains    string
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>        TermOut    string        // Redirect output to file
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>    }
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>}
+</span></code></pre></div>
+<p>Sources: </p>
+<h3 id="data-retrieval-workflow">Data Retrieval Workflow<a class="headerlink" href="#data-retrieval-workflow" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    Domains["Domain List&lt;br/&gt;[]string"] --&gt; QueryRoot["db.FindEntitiesByContent()&lt;br/&gt;Find root FQDN entities"]
+    QueryRoot --&gt; ScopeWalk["amassdb.FindByFQDNScope()&lt;br/&gt;Get in-scope subdomains"]
+    ScopeWalk --&gt; NamesList["[]*amassnet.Output&lt;br/&gt;Name field only"]
+
+    NamesList --&gt; CheckFlags{"Need IP/ASN&lt;br/&gt;info?"}
+
+    CheckFlags --&gt;|No| OutputNames["Output names only"]
+    CheckFlags --&gt;|Yes| ResolveIPs["addAddresses()&lt;br/&gt;amassnet.NamesToAddrs()"]
+
+    ResolveIPs --&gt; CheckASN{"ASN info&lt;br/&gt;needed?"}
+    CheckASN --&gt;|No| OutputWithIPs["Output names + IPs"]
+    CheckASN --&gt;|Yes| PopulateCache["amassnet.FillCache()&lt;br/&gt;Load ASN data"]
+
+    PopulateCache --&gt; EnrichInfra["addInfrastructureInfo()&lt;br/&gt;ASN, CIDR, Netblock"]
+    EnrichInfra --&gt; UpdateSummary["afmt.UpdateSummaryData()&lt;br/&gt;Build ASN maps"]
+    UpdateSummary --&gt; OutputFull["Output names + IPs + ASN table"]</code></pre>
+<p><strong>Database Query Strategy</strong></p>
+<p>The <code>getNames()</code> function at  queries for root domain FQDN entities, then uses <code>amassdb.FindByFQDNScope()</code> to retrieve all subdomains within scope. This returns <code>[]*dbt.Entity</code> containing <code>oamdns.FQDN</code> assets. The function uses a <code>stringset.Set</code> filter to deduplicate names.</p>
+<p>The <code>addAddresses()</code> function at  uses <code>amassnet.NamesToAddrs()</code> to bulk query DNS A/AAAA relationships, populating the <code>Addresses</code> field of each <code>amassnet.Output</code> struct.</p>
+<p>Sources: , </p>
+<h3 id="asn-information-system">ASN Information System<a class="headerlink" href="#asn-information-system" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    subgraph "ASN Cache"
+        FillCache["amassnet.FillCache(cache, db)&lt;br/&gt;Load all ASN records"]
+        Cache["*amassnet.ASNCache&lt;br/&gt;In-memory lookup"]
+    end
+
+    subgraph "Per-Address Enrichment"
+        AddrLoop["For each AddressInfo"]
+        CacheSearch["cache.AddrSearch(ip)&lt;br/&gt;Find ASN record"]
+        ParseCIDR["net.ParseCIDR(prefix)"]
+        BuildAddr["Populate ASN, CIDRStr,&lt;br/&gt;Netblock, Description"]
+    end
+
+    subgraph "Summary Aggregation"
+        UpdateSummary["afmt.UpdateSummaryData()"]
+        ASNMap["map[int]*ASNSummaryData&lt;br/&gt;ASN -&gt; Name, Netblocks"]
+        NetblockCount["Netblocks map[string]int&lt;br/&gt;CIDR -&gt; IP count"]
+    end
+
+    FillCache --&gt; Cache
+    Cache --&gt; AddrLoop
+    AddrLoop --&gt; CacheSearch
+    CacheSearch --&gt; ParseCIDR
+    ParseCIDR --&gt; BuildAddr
+    BuildAddr --&gt; UpdateSummary
+    UpdateSummary --&gt; ASNMap
+    ASNMap --&gt; NetblockCount</code></pre>
+<p><strong>ASN Cache Population</strong></p>
+<p>When ASN information is requested, the tool creates an <code>amassnet.ASNCache</code> at  and populates it using <code>amassnet.FillCache()</code> at . This loads all ASN records from the database into memory for efficient lookup.</p>
+<p>The <code>addInfrastructureInfo()</code> function at  iterates through each IP address, calls <code>cache.AddrSearch()</code> to find the corresponding ASN record, and enriches the <code>AddressInfo</code> struct with ASN number, CIDR prefix, netblock, and description.</p>
+<p>Sources: , </p>
+<h3 id="output-formatting">Output Formatting<a class="headerlink" href="#output-formatting" title="Permanent link">&para;</a></h3>
+<p>The tool generates two types of output:</p>
+<ol>
+<li>
+<p><strong>Name Listing</strong>: Each subdomain is printed with optional IP addresses using <code>afmt.OutputLineParts()</code> at . Output goes to either a file specified by <code>-o</code> or to colored terminal output at .</p>
+</li>
+<li>
+<p><strong>ASN Summary Table</strong>: Generated by <code>afmt.FprintEnumerationSummary()</code> at , this displays ASN numbers, descriptions, and netblock statistics with IP counts per CIDR. The table format is defined in .</p>
+</li>
+</ol>
+<p>The <code>DemoMode</code> flag () censors sensitive data using functions like <code>censorDomain()</code> and <code>censorIP()</code> defined in .</p>
+<p>Sources: , , </p>
+<h2 id="oam_track-asset-tracking">oam_track - Asset Tracking<a class="headerlink" href="#oam_track-asset-tracking" title="Permanent link">&para;</a></h2>
+<p>The <code>oam_track</code> tool identifies newly discovered assets by filtering the graph database based on creation timestamps. It outputs a simple list of FQDNs that were discovered after a specified time.</p>
+<h3 id="command-structure_1">Command Structure<a class="headerlink" href="#command-structure_1" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    subgraph "Input Parameters"
+        DomainInput["-d domain&lt;br/&gt;Multiple allowed"]
+        DomainFile["-df path"]
+        SinceTime["-since 'MM/DD HH:MM:SS YYYY TZ'&lt;br/&gt;TimeFormat"]
+        Config["-config path&lt;br/&gt;-dir path"]
+    end
+
+    subgraph "Time Processing"
+        ParseTime["time.Parse(TimeFormat, args.Since)"]
+        DefaultTime["If no -since:&lt;br/&gt;Find latest asset timestamp&lt;br/&gt;Truncate to 24h boundary"]
+    end
+
+    subgraph "Database Query"
+        FindRoot["db.FindEntitiesByContent()&lt;br/&gt;Root FQDN, since time"]
+        FindScope["amassdb.FindByFQDNScope()&lt;br/&gt;All in-scope assets, since time"]
+    end
+
+    subgraph "Filtering"
+        CheckTime["CreatedAt &gt;= since&lt;br/&gt;LastSeen &gt;= since"]
+        Dedupe["stringset.Set&lt;br/&gt;Deduplication"]
+    end
+
+    DomainInput --&gt; FindRoot
+    DomainFile --&gt; FindRoot
+    Config --&gt; FindRoot
+
+    SinceTime --&gt; ParseTime
+    ParseTime --&gt; FindRoot
+    ParseTime --&gt; FindScope
+    ParseTime --&gt; CheckTime
+
+    FindRoot --&gt; FindScope
+    FindScope --&gt; CheckTime
+    CheckTime --&gt; Dedupe
+
+    DefaultTime --&gt; CheckTime
+
+    Dedupe --&gt; Output["Print FQDNs&lt;br/&gt;One per line"]</code></pre>
+<p><strong>Time Format Specification</strong></p>
+<p>The tool uses a specific time format defined at : <code>"01/02 15:04:05 2006 MST"</code>. This format is used for both the <code>-since</code> flag and in error messages. If no <code>-since</code> is provided, the tool finds the latest asset timestamp and truncates it to a 24-hour boundary at .</p>
+<p>Sources: , , </p>
+<h3 id="args-structure_2">Args Structure<a class="headerlink" href="#args-structure_2" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Args {
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    Help    bool
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    Domains *stringset.Set
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    Since   string              // Time string in TimeFormat
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    Options {
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        NoColor bool
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        Silent  bool
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    }
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    Filepaths {
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>        ConfigFile string
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        Directory  string
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>        Domains    string
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    }
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>}
+</span></code></pre></div>
+<p>The <code>Since</code> field is a string that gets parsed using <code>time.Parse()</code> at . An empty string indicates no time filter was provided.</p>
+<p>Sources: </p>
+<h3 id="workflow-implementation">Workflow Implementation<a class="headerlink" href="#workflow-implementation" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant User
+    participant CLI as CLIWorkflow()
+    participant Parser as time.Parse()
+    participant DB as Graph Database
+    participant Filter as getNewNames()
+    participant Output as color.Output
+
+    User-&gt;&gt;CLI: oam_track -d example.com -since "..."
+    CLI-&gt;&gt;Parser: Parse(TimeFormat, args.Since)
+    Parser--&gt;&gt;CLI: start time.Time
+
+    CLI-&gt;&gt;DB: config.AcquireConfig()
+    CLI-&gt;&gt;DB: tools.OpenGraphDatabase(cfg)
+    DB--&gt;&gt;CLI: repository.Repository
+
+    CLI-&gt;&gt;Filter: getNewNames(domains, start, db)
+
+    loop For each domain
+        Filter-&gt;&gt;DB: FindEntitiesByContent(&amp;FQDN, since)
+        DB--&gt;&gt;Filter: Root entity
+        Filter-&gt;&gt;DB: FindByFQDNScope(root, since)
+        DB--&gt;&gt;Filter: []*dbt.Entity
+    end
+
+    Filter-&gt;&gt;Filter: Check CreatedAt &gt;= since
+    Filter-&gt;&gt;Filter: Check LastSeen &gt;= since
+    Filter-&gt;&gt;Filter: Deduplicate with stringset
+    Filter--&gt;&gt;CLI: []string names
+
+    loop For each name
+        CLI-&gt;&gt;Output: Print FQDN
+    end</code></pre>
+<p><strong>Database Query with Timestamp</strong></p>
+<p>The <code>getNewNames()</code> function at  queries the database twice per domain. First, <code>db.FindEntitiesByContent()</code> locates the root FQDN entity with the <code>since</code> timestamp parameter at . Second, <code>amassdb.FindByFQDNScope()</code> retrieves all related assets, also filtered by the timestamp at .</p>
+<p><strong>Timestamp Filtering Logic</strong></p>
+<p>Assets are included if both conditions are met at :
+- <code>CreatedAt</code> is equal to or after <code>since</code>
+- <code>LastSeen</code> is equal to or after <code>since</code></p>
+<p>This ensures only assets created and validated within the time window are returned.</p>
+<p>Sources: , </p>
+<h3 id="default-time-calculation">Default Time Calculation<a class="headerlink" href="#default-time-calculation" title="Permanent link">&para;</a></h3>
+<p>When no <code>-since</code> flag is provided, the tool calculates a default starting time:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>// Find the latest LastSeen timestamp among all assets
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>for _, a := range assets {
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    if _, ok := a.Asset.(*oamdns.FQDN); ok &amp;&amp; a.LastSeen.After(latest) {
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>        latest = a.LastSeen
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    }
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>}
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>// Truncate to 24-hour boundary
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>since = latest.Truncate(24 * time.Hour)
+</span></code></pre></div>
+<p>This logic at  finds the most recently validated asset and sets the filter to the beginning of that day, effectively showing assets from the last 24 hours.</p>
+<p>Sources: </p>
+<h2 id="oam_viz-visualization-generation">oam_viz - Visualization Generation<a class="headerlink" href="#oam_viz-visualization-generation" title="Permanent link">&para;</a></h2>
+<p>The <code>oam_viz</code> tool generates graph visualizations in three formats: D3.js force simulation HTML, Graphviz DOT, and GEXF (Gephi Exchange Format). It queries the database for nodes and edges, then renders them into the selected output format.</p>
+<h3 id="command-structure-and-format-selection">Command Structure and Format Selection<a class="headerlink" href="#command-structure-and-format-selection" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    subgraph "Input Specification"
+        Domains["-d domain&lt;br/&gt;Multiple allowed"]
+        DomainFile["-df path"]
+        Since["-since 'TimeFormat'&lt;br/&gt;Optional filter"]
+        Config["-config path&lt;br/&gt;-dir path"]
+    end
+
+    subgraph "Format Selection"
+        D3Flag["-d3&lt;br/&gt;D3.js HTML"]
+        DOTFlag["-dot&lt;br/&gt;Graphviz DOT"]
+        GEXFFlag["-gexf&lt;br/&gt;GEXF XML"]
+        Required{"At least one&lt;br/&gt;format required"}
+    end
+
+    subgraph "Output Location"
+        OutputDir["-o path&lt;br/&gt;Output directory"]
+        Prefix["-oA prefix&lt;br/&gt;Default: 'amass'"]
+        FileGen["Generate files:&lt;br/&gt;prefix.html&lt;br/&gt;prefix.dot&lt;br/&gt;prefix.gexf"]
+    end
+
+    subgraph "Data Pipeline"
+        VizData["VizData(domains, since, db)&lt;br/&gt;Query nodes &amp; edges"]
+        D3Writer["WriteD3Data(f, nodes, edges)"]
+        DOTWriter["WriteDOTData(f, nodes, edges)"]
+        GEXFWriter["WriteGEXFData(f, nodes, edges)"]
+    end
+
+    Domains --&gt; VizData
+    DomainFile --&gt; VizData
+    Since --&gt; VizData
+    Config --&gt; VizData
+
+    D3Flag --&gt; Required
+    DOTFlag --&gt; Required
+    GEXFFlag --&gt; Required
+
+    Required --&gt;|Pass| VizData
+    VizData --&gt; D3Writer
+    VizData --&gt; DOTWriter
+    VizData --&gt; GEXFWriter
+
+    OutputDir --&gt; FileGen
+    Prefix --&gt; FileGen
+
+    D3Writer --&gt; FileGen
+    DOTWriter --&gt; FileGen
+    GEXFWriter --&gt; FileGen</code></pre>
+<p><strong>Format Requirement Validation</strong></p>
+<p>The tool requires at least one output format to be specified, validated at . If no format flags are provided, it outputs an error and exits. Each format flag triggers generation of a corresponding output file with the prefix from <code>-oA</code> (defaulting to "amass" at ).</p>
+<p>Sources: , , </p>
+<h3 id="args-structure_3">Args Structure<a class="headerlink" href="#args-structure_3" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Args {
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    Help    bool
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    Domains *stringset.Set
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    Since   string              // TimeFormat timestamp
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    Options {
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>        D3      bool            // Generate D3.js HTML
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>        DOT     bool            // Generate Graphviz DOT
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>        GEXF    bool            // Generate GEXF XML
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>        NoColor bool
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>        Silent  bool
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    }
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>    Filepaths {
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>        ConfigFile    string
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>        Directory     string
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>        Domains       string
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>        Output        string    // Output directory
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>        AllFilePrefix string    // Filename prefix (-oA)
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>    }
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>}
+</span></code></pre></div>
+<p>Sources: </p>
+<h3 id="visualization-data-retrieval">Visualization Data Retrieval<a class="headerlink" href="#visualization-data-retrieval" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    subgraph "Query Phase"
+        Domains["Domain List"] --&gt; VizData["VizData(domains, since, db)"]
+        Since["time.Time filter"] --&gt; VizData
+        DB["repository.Repository"] --&gt; VizData
+    end
+
+    subgraph "Data Structures"
+        VizData --&gt; Nodes["[]Node&lt;br/&gt;ID, Label, Type"]
+        VizData --&gt; Edges["[]Edge&lt;br/&gt;From, To, Label, Type"]
+    end
+
+    subgraph "Output Writers"
+        Nodes --&gt; D3["WriteD3Data()&lt;br/&gt;Embed in HTML template"]
+        Edges --&gt; D3
+
+        Nodes --&gt; DOT["WriteDOTData()&lt;br/&gt;Graph syntax"]
+        Edges --&gt; DOT
+
+        Nodes --&gt; GEXF["WriteGEXFData()&lt;br/&gt;XML format"]
+        Edges --&gt; GEXF
+    end
+
+    subgraph "File Creation"
+        D3 --&gt; HTMLFile["prefix.html&lt;br/&gt;Self-contained D3.js"]
+        DOT --&gt; DOTFile["prefix.dot&lt;br/&gt;Graphviz source"]
+        GEXF --&gt; GEXFFile["prefix.gexf&lt;br/&gt;Gephi import"]
+    end</code></pre>
+<p><strong>VizData Function</strong></p>
+<p>The <code>VizData()</code> function (referenced but not shown in provided files) queries the graph database for nodes and edges filtered by domain scope and timestamp. It returns two slices: <code>[]Node</code> containing graph vertices and <code>[]Edge</code> containing relationships.</p>
+<p>The <code>Node</code> structure likely contains fields for ID, label, and type. The <code>Edge</code> structure contains source/target IDs and relationship metadata. These are consumed by the format-specific writer functions.</p>
+<p>Sources: </p>
+<h3 id="file-writing-pipeline">File Writing Pipeline<a class="headerlink" href="#file-writing-pipeline" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant CLI as CLIWorkflow()
+    participant VizData as VizData()
+    participant Writer as writeGraphOutputFile()
+    participant D3 as WriteD3Data()
+    participant DOT as WriteDOTData()
+    participant GEXF as WriteGEXFData()
+    participant File as os.File
+
+    CLI-&gt;&gt;VizData: Query graph data
+    VizData--&gt;&gt;CLI: nodes []Node, edges []Edge
+
+    alt D3 format requested
+        CLI-&gt;&gt;Writer: "d3", path, nodes, edges
+        Writer-&gt;&gt;File: OpenFile(path)
+        Writer-&gt;&gt;File: Truncate(0)
+        Writer-&gt;&gt;D3: WriteD3Data(f, nodes, edges)
+        D3-&gt;&gt;File: Write HTML + embedded JSON
+        Writer-&gt;&gt;File: Sync() + Close()
+    end
+
+    alt DOT format requested
+        CLI-&gt;&gt;Writer: "dot", path, nodes, edges
+        Writer-&gt;&gt;File: OpenFile(path)
+        Writer-&gt;&gt;DOT: WriteDOTData(f, nodes, edges)
+        DOT-&gt;&gt;File: Write DOT syntax
+        Writer-&gt;&gt;File: Sync() + Close()
+    end
+
+    alt GEXF format requested
+        CLI-&gt;&gt;Writer: "gexf", path, nodes, edges
+        Writer-&gt;&gt;File: OpenFile(path)
+        Writer-&gt;&gt;GEXF: WriteGEXFData(f, nodes, edges)
+        GEXF-&gt;&gt;File: Write XML
+        Writer-&gt;&gt;File: Sync() + Close()
+    end</code></pre>
+<p><strong>File Management</strong></p>
+<p>The <code>writeGraphOutputFile()</code> function at  handles file creation and format dispatching. It opens the file with <code>os.O_WRONLY|os.O_CREATE</code> at , truncates to zero length at , writes the appropriate format, then syncs and closes at .</p>
+<p>A switch statement at  routes to the correct writer based on the format type string ("d3", "dot", or "gexf").</p>
+<p>Sources: , </p>
+<h3 id="output-format-characteristics">Output Format Characteristics<a class="headerlink" href="#output-format-characteristics" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>File Extension</th>
+<th>Purpose</th>
+<th>Key Features</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D3.js</td>
+<td><code>.html</code></td>
+<td>Interactive web visualization</td>
+<td>Self-contained HTML with embedded force simulation, requires browser</td>
+</tr>
+<tr>
+<td>DOT</td>
+<td><code>.dot</code></td>
+<td>Graphviz rendering</td>
+<td>Text-based graph description, can be rendered with <code>dot</code> command</td>
+</tr>
+<tr>
+<td>GEXF</td>
+<td><code>.gexf</code></td>
+<td>Gephi import</td>
+<td>XML format for loading into Gephi for advanced analysis</td>
+</tr>
+</tbody>
+</table>
+<p>The D3 output generates a single HTML file with all JavaScript and data embedded, making it portable. The DOT format produces graph description language that can be rendered to PNG/SVG using Graphviz tools. The GEXF format creates XML compatible with the Gephi graph visualization platform.</p>
+<p>Sources: </p>
+<h2 id="common-infrastructure">Common Infrastructure<a class="headerlink" href="#common-infrastructure" title="Permanent link">&para;</a></h2>
+<p>All OAM tools share common infrastructure components that provide consistent configuration loading, database access, and output formatting.</p>
+<h3 id="configuration-loading-pattern">Configuration Loading Pattern<a class="headerlink" href="#configuration-loading-pattern" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    subgraph "Configuration Sources"
+        CLIArgs["Command-line Args&lt;br/&gt;flag.FlagSet"]
+        YAMLFile["-config path&lt;br/&gt;YAML file"]
+        EnvVar["AMASS_CONFIG&lt;br/&gt;Environment var"]
+        DefaultDir["Default directory&lt;br/&gt;$HOME/.config/amass"]
+    end
+
+    subgraph "Merge Logic"
+        NewConfig["config.NewConfig()&lt;br/&gt;Initialize defaults"]
+        AcquireConfig["config.AcquireConfig(dir, file, cfg)&lt;br/&gt;Load and merge"]
+        Priority["Priority:&lt;br/&gt;CLI args &gt; YAML &gt; defaults"]
+    end
+
+    subgraph "Output Configuration"
+        ConfigStruct["*config.Config&lt;br/&gt;Dir, Domains, Resolvers"]
+        DBPath["cfg.Dir&lt;br/&gt;Database location"]
+    end
+
+    CLIArgs --&gt; AcquireConfig
+    YAMLFile --&gt; AcquireConfig
+    EnvVar --&gt; AcquireConfig
+    DefaultDir --&gt; AcquireConfig
+
+    NewConfig --&gt; AcquireConfig
+    AcquireConfig --&gt; Priority
+    Priority --&gt; ConfigStruct
+    ConfigStruct --&gt; DBPath</code></pre>
+<p><strong>AcquireConfig Function</strong></p>
+<p>Every tool calls <code>config.AcquireConfig()</code> with the directory path, config file path, and a <code>*config.Config</code> instance. This function, referenced at , , , and , loads YAML configuration and merges it with existing settings.</p>
+<p>If a config file is explicitly specified but fails to load, tools exit with an error. If no config is specified, the function attempts default locations without error.</p>
+<p>Sources: , , , </p>
+<h3 id="database-connection-pattern">Database Connection Pattern<a class="headerlink" href="#database-connection-pattern" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    Config["*config.Config&lt;br/&gt;Dir field"] --&gt; OpenDB["tools.OpenGraphDatabase(cfg)"]
+    OpenDB --&gt; CheckNil{"db != nil?"}
+    CheckNil --&gt;|Yes| Repo["repository.Repository&lt;br/&gt;Interface to Asset-DB"]
+    CheckNil --&gt;|No| Error["Print error to stderr&lt;br/&gt;os.Exit(1)"]
+
+    Repo --&gt; Query["Database operations:&lt;br/&gt;FindEntitiesByContent()&lt;br/&gt;FindByFQDNScope()&lt;br/&gt;etc."]</code></pre>
+<p><strong>OpenGraphDatabase Function</strong></p>
+<p>The <code>tools.OpenGraphDatabase()</code> function, called by all tools, returns a <code>repository.Repository</code> interface. If the connection fails, it returns <code>nil</code>, prompting each tool to output an error message to <code>color.Error</code> and exit at , , , and .</p>
+<p>The repository interface provides methods like <code>FindEntitiesByContent()</code> for querying OAM entities and associated relationships stored in the Asset-DB graph database.</p>
+<p>Sources: , , , </p>
+<h3 id="output-formatting-system">Output Formatting System<a class="headerlink" href="#output-formatting-system" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    subgraph "Color Management"
+        NoColorFlag["--nocolor flag"] --&gt; DisableColor["color.NoColor = true"]
+        SilentFlag["--silent flag"] --&gt; DiscardOut["color.Output = io.Discard&lt;br/&gt;color.Error = io.Discard"]
+    end
+
+    subgraph "Formatters in afmt Package"
+        Banner["afmt.PrintBanner()&lt;br/&gt;ASCII art header"]
+        Colors["Color variables:&lt;br/&gt;R, G, B, Y (bright)&lt;br/&gt;FgR, FgY (foreground)"]
+        LineParts["afmt.OutputLineParts()&lt;br/&gt;Format name + IPs"]
+        Summary["afmt.FprintEnumerationSummary()&lt;br/&gt;ASN table with colors"]
+    end
+
+    subgraph "Output Destinations"
+        ColorOut["color.Output&lt;br/&gt;Defaults to stdout"]
+        ColorErr["color.Error&lt;br/&gt;Defaults to stderr"]
+        FileOut["os.File&lt;br/&gt;Text file output"]
+    end
+
+    DisableColor --&gt; Colors
+    DiscardOut --&gt; ColorOut
+    DiscardOut --&gt; ColorErr
+
+    Banner --&gt; ColorErr
+    LineParts --&gt; ColorOut
+    LineParts --&gt; FileOut
+    Summary --&gt; ColorOut
+    Summary --&gt; ColorErr
+    Summary --&gt; FileOut</code></pre>
+<p><strong>Color Package Integration</strong></p>
+<p>All tools use the <code>github.com/fatih/color</code> package for terminal output. The package is configured through global variables at the start of each workflow. The <code>--nocolor</code> flag disables colored output by setting <code>color.NoColor = true</code> at , , , and .</p>
+<p>The <code>--silent</code> flag redirects both <code>color.Output</code> and <code>color.Error</code> to <code>io.Discard</code>, suppressing all output at , , , and .</p>
+<p><strong>Banner Display</strong></p>
+<p>Every tool displays the Amass banner using <code>afmt.PrintBanner()</code> in its usage function. The banner is defined in  and includes version information, project attribution, and the Discord invitation link.</p>
+<p>Sources: , , , , , </p>
+<h3 id="error-handling-pattern">Error Handling Pattern<a class="headerlink" href="#error-handling-pattern" title="Permanent link">&para;</a></h3>
+<p>All tools follow a consistent error handling approach:</p>
+<ol>
+<li><strong>Flag Parsing Errors</strong>: Output error to <code>color.Error</code>, then <code>os.Exit(1)</code> at </li>
+<li><strong>Config Loading Errors</strong>: When explicit config file specified, output error and exit at </li>
+<li><strong>Database Connection Errors</strong>: Output to <code>color.Error</code> and exit at </li>
+<li><strong>Operation Errors</strong>: Tool-specific errors (parse failures, query failures) output and exit similarly</li>
+</ol>
+<p>The pattern ensures consistent error reporting across all tools, with colored error messages to <code>stderr</code> before termination.</p>
+<p>Sources: , , , , ,</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-circle-arrow-up" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4M12 16V8"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../viz/" class="md-footer__link md-footer__link--prev" aria-label="Previous: viz">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                viz
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../configuration/" class="md-footer__link md-footer__link--next" aria-label="Next: Configuration">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Configuration
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2017-2026 Jeff Foley &mdash; Licensed under Apache 2.0
+
+    </div>
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/owasp-amass" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/owasp-amass/amass-docker-compose" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M349.9 236.3h-66.1v-59.4h66.1zm0-204.3h-66.1v60.7h66.1zm78.2 144.8H362v59.4h66.1zm-156.3-72.1h-66.1v60.1h66.1zm78.1 0h-66.1v60.1h66.1zm276.8 100c-14.4-9.7-47.6-13.2-73.1-8.4-3.3-24-16.7-44.9-41.1-63.7l-14-9.3-9.3 14c-18.4 27.8-23.4 73.6-3.7 103.8-8.7 4.7-25.8 11.1-48.4 10.7H2.4c-8.7 50.8 5.8 116.8 44 162.1 37.1 43.9 92.7 66.2 165.4 66.2 157.4 0 273.9-72.5 328.4-204.2 21.4.4 67.6.1 91.3-45.2 1.5-2.5 6.6-13.2 8.5-17.1zm-511.1-27.9h-66v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1zm78.1 0h-66.1v59.4h66.1zm-78.1-72.1h-66.1v60.1h66.1z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://discord.gg/HNePVyX3cp" target="_blank" rel="noopener" title="discord.gg" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+    
+    
+      
+    
+    
+    
+      
+      
+    
+    <a href="https://infosec.exchange/@amass" target="_blank" rel="noopener me" title="infosec.exchange" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M433 179.1c0-97.2-63.7-125.7-63.7-125.7-62.5-28.7-228.6-28.4-290.5 0 0 0-63.7 28.5-63.7 125.7 0 115.7-6.6 259.4 105.6 289.1 40.5 10.7 75.3 13 103.3 11.4 50.8-2.8 79.3-18.1 79.3-18.1l-1.7-36.9s-36.3 11.4-77.1 10.1c-40.4-1.4-83-4.4-89.6-54-.6-4.6-.9-9.3-.9-13.9 85.6 20.9 158.7 9.1 178.7 6.7 56.1-6.7 105-41.3 111.2-72.9 9.8-49.8 9-121.5 9-121.5zm-75.1 125.2h-46.6V190.1c0-49.7-64-51.6-64 6.9v62.5H201V197c0-58.5-64-56.6-64-6.9v114.2H90.3c0-122.1-5.2-147.9 18.4-175 25.9-28.9 79.8-30.8 103.8 6.1l11.6 19.5 11.6-19.5c24.1-37.1 78.1-34.8 103.8-6.1 23.7 27.3 18.4 53 18.4 175"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://x.com/owaspamass/" target="_blank" rel="noopener" title="x.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M357.2 48h70.6L273.6 224.2 455 464H313L201.7 318.6 74.5 464H3.8l164.9-188.5L-5.2 48h145.6l100.5 132.9zm-24.8 373.8h39.1L119.1 88h-42z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["announce.dismiss","content.action.edit","content.action.view","content.code.annotate","content.code.copy","content.code.select","content.footnote.tooltips","content.tabs.link","content.tooltips","navigation.footer","navigation.path","navigation.tabs","navigation.top","search.highlight"],"search":"../../assets/javascripts/workers/search.e2d2d235.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.16f8adc2.min.js"></script>
+      
+    
+  </body>
+</html>
